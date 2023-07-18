@@ -13,6 +13,8 @@ import CmnObj from './cmnObj';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
 import { translations } from "../../configs/translations";
+import CmnObjattsL from './cmnObjattsL';
+import CmnObjlinkL from './cmnObjlinkL';
 
 export default function CmnObjL(props) {
   let i = 0
@@ -26,6 +28,8 @@ export default function CmnObjL(props) {
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
+  const [cmnObjattsLVisible, setCmnObjattsLVisible] = useState(false);
+  const [cmnObjlinkLVisible, setCmnObjlinkLVisible] = useState(false);
   const [visible, setVisible] = useState(false);
   const [objTip, setObjtpTip] = useState('');
 
@@ -70,6 +74,14 @@ export default function CmnObjL(props) {
     setCmnObj(emptyCmnObj);
   };
 
+  const handleCmnObjattsLDialogClose = (newObj) => {
+    const localObj = { newObj };
+  };
+
+  const handleCmnObjlinkLDialogClose = (newObj) => {
+    const localObj = { newObj };
+  };  
+
   const findIndexById = (id) => {
     let index = -1;
 
@@ -86,6 +98,14 @@ export default function CmnObjL(props) {
   const openNew = () => {
     setCmnObjDialog(emptyCmnObj);
   };
+
+  const openObjAtt = () => {
+    setCmnObjattsLDialog();
+  };
+  
+  const openObjLink = () => {
+    setCmnObjlinkLDialog();
+  };  
 
   const onRowSelect = (event) => {
     toast.current.show({
@@ -141,8 +161,14 @@ export default function CmnObjL(props) {
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
+        <div className="flex flex-wrap gap-1">
+          <Button label={translations[selectedLanguage].Attributes} icon="pi pi-shield" onClick={openObjAtt} text raised disabled={!cmnObj} />
+        </div>
+        <div className="flex flex-wrap gap-1">
+          <Button label={translations[selectedLanguage].Links} icon="pi pi-sitemap" onClick={openObjLink} text raised disabled={!cmnObj} />
+        </div>        
         <div className="flex-grow-1" />
-        <b>{translations[selectedLanguage].LocTpList}</b>
+        <b>{translations[selectedLanguage].ObjList}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -199,6 +225,17 @@ export default function CmnObjL(props) {
     setObjtpTip("CREATE")
     setCmnObj({ ...cmnObj });
   }
+
+  const setCmnObjattsLDialog = () => {
+    setShowMyComponent(true);
+    setCmnObjattsLVisible(true);
+
+  }  
+  const setCmnObjlinkLDialog = () => {
+    setShowMyComponent(true);
+    setCmnObjlinkLVisible(true);
+
+  }   
   //  Dialog --->
 
   const header = renderHeader();
@@ -285,7 +322,7 @@ export default function CmnObjL(props) {
         ></Column>
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].LocTp}
+        header={translations[selectedLanguage].Obj}
         visible={visible}
         style={{ width: '70%' }}
         onHide={() => {
@@ -304,6 +341,46 @@ export default function CmnObjL(props) {
           />
         )}
       </Dialog>
+      <Dialog
+        header={translations[selectedLanguage].ObjattsLista}
+        visible={cmnObjattsLVisible}
+        style={{ width: '70%' }}
+        onHide={() => {
+          setCmnObjattsLVisible(false);
+          setShowMyComponent(false);
+        }}
+      >
+        {showMyComponent && (
+          <CmnObjattsL
+            parameter={"inputTextValue"}
+            cmnObj={cmnObj}
+            handleCmnObjattsLDialogClose={handleCmnObjattsLDialogClose}
+            setCmnObjattsLVisible={setCmnObjattsLVisible}
+            dialog={true}
+            lookUp={false}
+          />
+        )}
+      </Dialog> 
+      <Dialog
+        header={translations[selectedLanguage].ObjlinkLista}
+        visible={cmnObjlinkLVisible}
+        style={{ width: '70%' }}
+        onHide={() => {
+          setCmnObjlinkLVisible(false);
+          setShowMyComponent(false);
+        }}
+      >
+        {showMyComponent && (
+          <CmnObjlinkL
+            parameter={"inputTextValue"}
+            cmnObj={cmnObj}
+            handleCmnObjlinkLDialogClose={handleCmnObjlinkLDialogClose}
+            setCmnObjlinkLVisible={setCmnObjlinkLVisible}
+            dialog={true}
+            lookUp={false}
+          />
+        )}
+      </Dialog>      
     </div>
   );
 }

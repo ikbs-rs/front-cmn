@@ -192,7 +192,8 @@ const EmptyEntities =
     "obj": null,
     "cmn_objatt": null,
     "begda": "",
-    "endda": ""
+    "endda": "",
+    "value": ""
   },
   "cmn_objatttp": {
     "id": null,
