@@ -7,36 +7,38 @@ import { Button } from "primereact/button";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
-import { AdmUserGrpService } from "../../service/model/AdmUserGrpService";
-import AdmAkcija from './admUserGrp';
+import './index.css';
+import { CmnObjService } from "../../service/model/CmnObjService";
+import CmnObj from './cmnObj';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
-import './index.css';
 import { translations } from "../../configs/translations";
-import AdmUserGrp from "./admUserGrp";
 
-
-export default function AdmUserGrpL(props) {
-  const objName = "adm_usergrp"
+export default function CmnObjL(props) {
+  let i = 0
+  const objName = "cmn_obj"
   const selectedLanguage = localStorage.getItem('sl')||'en'
-  const emptyAdmUserGrp = EmptyEntities[objName]
+  const emptyCmnObj = EmptyEntities[objName]
   const [showMyComponent, setShowMyComponent] = useState(true);
-  const [admUserGrps, setAdmUserGrps] = useState([]);
-  const [admUserGrp, setAdmUserGrp] = useState(emptyAdmUserGrp);
+  const [cmnObjs, setCmnObjs] = useState([]);
+  const [cmnObj, setCmnObj] = useState(emptyCmnObj);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
-  const [userGrpTip, setUserGrpTip] = useState('');
+  const [objTip, setObjtpTip] = useState('');
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const admUserGrpService = new AdmUserGrpService();
-        const data = await admUserGrpService.getAdmUserGrp();
-        setAdmUserGrps(data);
+        ++i
+        if (i<2) {  
+        const cmnObjService = new CmnObjService();
+        const data = await cmnObjService.getCmnObjs();
+        setCmnObjs(data);
         initFilters();
+        }
       } catch (error) {
         console.error(error);
         // Obrada greške ako je potrebna
@@ -48,31 +50,31 @@ export default function AdmUserGrpL(props) {
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
 
-    let _admUserGrps = [...admUserGrps];
-    let _admUserGrp = { ...localObj.newObj.obj };
+    let _cmnObjs = [...cmnObjs];
+    let _cmnObj = { ...localObj.newObj.obj };
 
     //setSubmitted(true);
-    if (localObj.newObj.userGrpTip === "CREATE") {
-      _admUserGrps.push(_admUserGrp);
-    } else if (localObj.newObj.userGrpTip === "UPDATE") {
+    if (localObj.newObj.objTip === "CREATE") {
+      _cmnObjs.push(_cmnObj);
+    } else if (localObj.newObj.objTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
-      _admUserGrps[index] = _admUserGrp;
-    } else if ((localObj.newObj.userGrpTip === "DELETE")) {
-      _admUserGrps = admUserGrps.filter((val) => val.id !== localObj.newObj.obj.id);
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'AdmUserGrp Delete', life: 3000 });
+      _cmnObjs[index] = _cmnObj;
+    } else if ((localObj.newObj.objTip === "DELETE")) {
+      _cmnObjs = cmnObjs.filter((val) => val.id !== localObj.newObj.obj.id);
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnObj Delete', life: 3000 });
     } else {
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'AdmUserGrp ?', life: 3000 });
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnObj ?', life: 3000 });
     }
-    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.userGrpTip}`, life: 3000 });
-    setAdmUserGrps(_admUserGrps);
-    setAdmUserGrp(emptyAdmUserGrp);
+    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.objTip}`, life: 3000 });
+    setCmnObjs(_cmnObjs);
+    setCmnObj(emptyCmnObj);
   };
 
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < admUserGrps.length; i++) {
-      if (admUserGrps[i].id === id) {
+    for (let i = 0; i < cmnObjs.length; i++) {
+      if (cmnObjs[i].id === id) {
         index = i;
         break;
       }
@@ -82,7 +84,7 @@ export default function AdmUserGrpL(props) {
   };
 
   const openNew = () => {
-    setAdmUserGrpDialog(emptyAdmUserGrp);
+    setCmnObjDialog(emptyCmnObj);
   };
 
   const onRowSelect = (event) => {
@@ -140,7 +142,7 @@ export default function AdmUserGrpL(props) {
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
         <div className="flex-grow-1" />
-        <b>{translations[selectedLanguage].UsergroupLista}</b>
+        <b>{translations[selectedLanguage].LocTpList}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -192,17 +194,17 @@ export default function AdmUserGrpL(props) {
   };
 
   // <--- Dialog
-  const setAdmUserGrpDialog = (admUserGrp) => {
+  const setCmnObjDialog = (cmnObj) => {
     setVisible(true)
-    setUserGrpTip("CREATE")
-    setAdmUserGrp({ ...admUserGrp });
+    setObjtpTip("CREATE")
+    setCmnObj({ ...cmnObj });
   }
   //  Dialog --->
 
   const header = renderHeader();
   // heder za filter/>
 
-  const userGrpTemplate = (rowData) => {
+  const actionTemplate = (rowData) => {
     return (
       <div className="flex flex-wrap gap-1">
 
@@ -211,8 +213,8 @@ export default function AdmUserGrpL(props) {
           icon="pi pi-pencil"
           style={{ width: '24px', height: '24px' }}
           onClick={() => {
-            setAdmUserGrpDialog(rowData)
-            setUserGrpTip("UPDATE")
+            setCmnObjDialog(rowData)
+            setObjtpTip("UPDATE")
           }}
           text
           raised ></Button>
@@ -227,14 +229,16 @@ export default function AdmUserGrpL(props) {
       <DataTable
         dataKey="id"
         selectionMode="single"
-        selection={admUserGrp}
+        selection={cmnObj}
         loading={loading}
-        value={admUserGrps}
+        value={cmnObjs}
         header={header}
         showGridlines
         removableSort
         filters={filters}
         scrollable
+        sortField="code"        
+        sortOrder={1}
         scrollHeight="750px"
         virtualScrollerOptions={{ itemSize: 46 }}
         tableStyle={{ minWidth: "50rem" }}
@@ -242,13 +246,13 @@ export default function AdmUserGrpL(props) {
         paginator
         rows={10}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        onSelectionChange={(e) => setAdmUserGrp(e.value)}
+        onSelectionChange={(e) => setCmnObj(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
       >
         <Column
           //bodyClassName="text-center"
-          body={userGrpTemplate}
+          body={actionTemplate}
           exportable={false}
           headerClassName="w-10rem"
           style={{ minWidth: '4rem' }}
@@ -281,7 +285,7 @@ export default function AdmUserGrpL(props) {
         ></Column>
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].Usergroup}
+        header={translations[selectedLanguage].LocTp}
         visible={visible}
         style={{ width: '70%' }}
         onHide={() => {
@@ -290,21 +294,16 @@ export default function AdmUserGrpL(props) {
         }}
       >
         {showMyComponent && (
-          <AdmUserGrp
+          <CmnObj
             parameter={"inputTextValue"}
-            admUserGrp={admUserGrp}
+            cmnObj={cmnObj}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
-            userGrpTip={userGrpTip}
+            objTip={objTip}
           />
         )}
-        <div className="p-dialog-header-icons" style={{ display: 'none' }}>
-          <button className="p-dialog-header-close p-link">
-            <span className="p-dialog-header-close-icon pi pi-times"></span>
-          </button>
-        </div>
-      </Dialog>      
+      </Dialog>
     </div>
   );
 }

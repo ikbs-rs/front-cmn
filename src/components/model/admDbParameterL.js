@@ -11,9 +11,10 @@ import { AdmDbParameterService } from "../../service/model/AdmDbParameterService
 import DbParameter from './admDbParameter';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
+import './index.css';
 
 
-export default function AdmDbParameterL() {
+export default function AdmDbParameterL(props) {
   const objName = "adm_dbparameter"
   const emptyAdmDbParameter = EmptyEntities[objName]
   const [showMyComponent, setShowMyComponent] = useState(true);
@@ -223,6 +224,13 @@ export default function AdmDbParameterL() {
         onRowUnselect={onRowUnselect}
       >
         <Column
+          //bodyClassName="text-center"
+          body={dbParameterTemplate}
+          exportable={false}
+          headerClassName="w-10rem"
+          style={{ minWidth: '4rem' }}
+        />        
+        <Column
           field="code"
           header="Code"
           sortable
@@ -234,7 +242,7 @@ export default function AdmDbParameterL() {
           header="Text"
           sortable
           filter
-          style={{ width: "30%" }}
+          style={{ width: "50%" }}
         ></Column>
         <Column
           field="comment"
@@ -250,13 +258,6 @@ export default function AdmDbParameterL() {
           filter
           style={{ width: "25%" }}
         ></Column>        
-        <Column
-          //bodyClassName="text-center"
-          body={dbParameterTemplate}
-          exportable={false}
-          headerClassName="w-10rem"
-          style={{ minWidth: '4rem' }}
-        />
       </DataTable>
       <Dialog
         header="DbParameter"

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { classNames } from 'primereact/utils';
-import { AdmUserGrpService } from "../../service/model/AdmUserGrpService";
+import { CmnObjatttpService } from "../../service/model/CmnObjatttpService";
 import './index.css';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -9,12 +9,12 @@ import { Toast } from "primereact/toast";
 import DeleteDialog from '../dialog/DeleteDialog';
 import { translations } from "../../configs/translations";
 
-const AdmUserGrp = (props) => {
+const CmnObjatttp = (props) => {
     const selectedLanguage = localStorage.getItem('sl')||'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [dropdownItem, setDropdownItem] = useState(null);
     const [dropdownItems, setDropdownItems] = useState(null);
-    const [admUserGrp, setAdmUserGrp] = useState(props.admUserGrp);
+    const [cmnObjatttp, setCmnObjatttp] = useState(props.cmnObjatttp);
     const [submitted, setSubmitted] = useState(false);
 
     const toast = useRef(null);
@@ -24,7 +24,7 @@ const AdmUserGrp = (props) => {
     ];
 
     useEffect(() => {
-        setDropdownItem(findDropdownItemByCode(props.admUserGrp.valid));
+        setDropdownItem(findDropdownItemByCode(props.cmnObjatttp.valid));
     }, []);
 
     const findDropdownItemByCode = (code) => {
@@ -43,10 +43,10 @@ const AdmUserGrp = (props) => {
     const handleCreateClick = async () => {
         try {
             setSubmitted(true);            
-                const admUserGrpService = new AdmUserGrpService();
-                const data = await admUserGrpService.postAdmUserGrp(admUserGrp);
-                admUserGrp.id = data
-                props.handleDialogClose({ obj: admUserGrp, userGrpTip: props.userGrpTip });
+                const cmnObjatttpService = new CmnObjatttpService();
+                const data = await cmnObjatttpService.postCmnObjatttp(cmnObjatttp);
+                cmnObjatttp.id = data
+                props.handleDialogClose({ obj: cmnObjatttp, objatttpTip: props.objatttpTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
@@ -61,9 +61,9 @@ const AdmUserGrp = (props) => {
     const handleSaveClick = async () => {
         try {
             setSubmitted(true);
-            const admUserGrpService = new AdmUserGrpService();
-            await admUserGrpService.putAdmUserGrp(admUserGrp);
-            props.handleDialogClose({ obj: admUserGrp, userGrpTip: props.userGrpTip });
+            const cmnObjatttpService = new CmnObjatttpService();
+            await cmnObjatttpService.putCmnObjatttp(cmnObjatttp);
+            props.handleDialogClose({ obj: cmnObjatttp, objatttpTip: props.objatttpTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
@@ -82,9 +82,9 @@ const AdmUserGrp = (props) => {
     const handleDeleteClick = async () => {
         try {
             setSubmitted(true);
-            const admUserGrpService = new AdmUserGrpService();
-            await admUserGrpService.deleteAdmUserGrp(admUserGrp);
-            props.handleDialogClose({ obj: admUserGrp, userGrpTip: 'DELETE' });
+            const cmnObjatttpService = new CmnObjatttpService();
+            await cmnObjatttpService.deleteCmnObjatttp(cmnObjatttp);
+            props.handleDialogClose({ obj: cmnObjatttp, objatttpTip: 'DELETE' });
             props.setVisible(false);
             hideDeleteDialog();
         } catch (err) {
@@ -106,11 +106,11 @@ const AdmUserGrp = (props) => {
             val = (e.target && e.target.value) || '';
         }
 
-        let _admUserGrp = { ...admUserGrp };
-        _admUserGrp[`${name}`] = val;
-        if (name===`textx`) _admUserGrp[`text`] = val
+        let _cmnObjatttp = { ...cmnObjatttp };
+        _cmnObjatttp[`${name}`] = val;
+        if (name===`textx`) _cmnObjatttp[`text`] = val
 
-        setAdmUserGrp(_admUserGrp);
+        setCmnObjatttp(_cmnObjatttp);
     };
 
     const hideDeleteDialog = () => {
@@ -126,22 +126,22 @@ const AdmUserGrp = (props) => {
                         <div className="field col-12 md:col-7">
                             <label htmlFor="code">{translations[selectedLanguage].Code}</label>
                             <InputText id="code" autoFocus
-                                value={admUserGrp.code} onChange={(e) => onInputChange(e, "text", 'code')}
+                                value={cmnObjatttp.code} onChange={(e) => onInputChange(e, "text", 'code')}
                                 required
-                                className={classNames({ 'p-invalid': submitted && !admUserGrp.code })}
+                                className={classNames({ 'p-invalid': submitted && !cmnObjatttp.code })}
                             />
-                            {submitted && !admUserGrp.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnObjatttp.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
                         <div className="field col-12 md:col-9">
                             <label htmlFor="textx">{translations[selectedLanguage].Text}</label>
                             <InputText
                                 id="textx"
-                                value={admUserGrp.textx} onChange={(e) => onInputChange(e, "text", 'textx')}
+                                value={cmnObjatttp.textx} onChange={(e) => onInputChange(e, "text", 'textx')}
                                 required
-                                className={classNames({ 'p-invalid': submitted && !admUserGrp.text })}
+                                className={classNames({ 'p-invalid': submitted && !cmnObjatttp.textx })}
                             />
-                            {submitted && !admUserGrp.textx && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
-                        </div>
+                            {submitted && !cmnObjatttp.textx && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>                       
                         <div className="field col-12 md:col-4">
                             <label htmlFor="valid">{translations[selectedLanguage].Valid}</label>
                             <Dropdown id="valid"
@@ -151,9 +151,9 @@ const AdmUserGrp = (props) => {
                                 required
                                 optionLabel="name"
                                 placeholder="Select One"
-                                className={classNames({ 'p-invalid': submitted && !admUserGrp.valid })}
+                                className={classNames({ 'p-invalid': submitted && !cmnObjatttp.valid })}
                             />
-                            {submitted && !admUserGrp.valid && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnObjatttp.valid && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>                        
                     </div>
 
@@ -169,7 +169,7 @@ const AdmUserGrp = (props) => {
                         ) : null}
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
-                            {(props.userGrpTip === 'CREATE') ? (
+                            {(props.objatttpTip === 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Create}
                                     icon="pi pi-check"
@@ -178,7 +178,7 @@ const AdmUserGrp = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.userGrpTip !== 'CREATE') ? (
+                            {(props.objatttpTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Delete}
                                     icon="pi pi-trash"
@@ -187,7 +187,7 @@ const AdmUserGrp = (props) => {
                                     outlined
                                 />
                             ) : null}                            
-                            {(props.userGrpTip !== 'CREATE') ? (
+                            {(props.objatttpTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Save}
                                     icon="pi pi-check"
@@ -203,7 +203,7 @@ const AdmUserGrp = (props) => {
             <DeleteDialog
                 visible={deleteDialogVisible}
                 inAction="delete"
-                item={admUserGrp.text}
+                item={cmnObjatttp.text}
                 onHide={hideDeleteDialog}
                 onDelete={handleDeleteClick}
             />
@@ -211,4 +211,4 @@ const AdmUserGrp = (props) => {
     );
 };
 
-export default AdmUserGrp;
+export default CmnObjatttp;

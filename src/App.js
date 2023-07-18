@@ -10,9 +10,14 @@ import AppMenu from './AppMenu';
 import AppRightMenu from './AppRightMenu';
 
 import UserGrp from './components/model/admUserGrpL';
-import User from './components/model/admAction';
-import Roll from './components/InputDemo';
-import Action from './components/model/admActionL';
+import LocTP from './components/model/cmnLoctpL';
+import ObjTp from './components/model/cmnObjtpL';
+import Obj from './components/model/cmnObjL';
+import ObjAtt from './components/model/cmnObjattL';
+import ObjAttTp from './components/model/cmnObjatttpL';
+import Link from './components/model/cmnLinkL';
+import User from './components/model/cmnObjattL';
+import Roll from './components/model/cmnObjattL';
 
 import DbParameter from './components/model/admDbParameterL';
 import Message from './components/model/admMessageL';
@@ -30,11 +35,13 @@ import './App.scss';
 import env from "./configs/env"
 import { useDispatch } from 'react-redux';
 import { setLanguage } from './store/actions';
+import { translations } from "./configs/translations";
 
 const App = () => {
     const dispatch = useDispatch();
     const urlParams = new URLSearchParams(window.location.search);
-    let selectedLanguage = urlParams.get('sl');
+    let selectedLanguage = localStorage.getItem('sl')
+    //let selectedLanguage = urlParams.get('sl');
     const [layoutMode, setLayoutMode] = useState('static');
     const [lightMenu, setLightMenu] = useState(true);
     const [overlayMenuActive, setOverlayMenuActive] = useState(false);
@@ -47,7 +54,7 @@ const App = () => {
     const [rightPanelMenuActive, setRightPanelMenuActive] = useState(null);
     const [inlineUserMenuActive, setInlineUserMenuActive] = useState(false);
     const [menuActive, setMenuActive] = useState(false);
-    const [topbarColor, setTopbarColor] = useState('layout-topbar-blue');
+    const [topbarColor, setTopbarColor] = useState('layout-topbar-bluegrey');
     const [theme, setTheme] = useState('blue');
     const [configActive, setConfigActive] = useState(false);
     const [inputStyle, setInputStyle] = useState('filled');
@@ -56,82 +63,88 @@ const App = () => {
     const location = useLocation();
     const inlineUserRef = useRef();
 
-    const menu = [
+     const menu = [
         {
-            label: 'Business partners administration',
-            icon: 'pi pi-fw pi-star-fill',
+            label: translations[selectedLanguage].Code_books,
+            icon: 'pi pi-fw pi-bars',
             items: [
-                { label: 'Type partners', icon: 'pi pi-fw pi-id-card', to: '/usergrp' },
-                { label: 'Business partners', icon: 'pi pi-users', to: '/action' },
-                { label: 'Properties partners', icon: 'pi pi-fw pi-bookmark', to: '/roll' },
-                { label: 'Actions', icon: 'pi pi-map-marker', to: '/action' }
+                {
+                    label: translations[selectedLanguage].Business_partners_administration,
+                    icon: 'pi pi-fw pi-bars',
+                    items: [
+                        { label: translations[selectedLanguage].Type_partners, icon: 'pi pi-fw pi-calendar', to: '/usergrp' },
+                        { label: translations[selectedLanguage].Business_partners, icon: 'pi pi-fw pi-calendar', to: '/action'  },
+                        { label: translations[selectedLanguage].Properties_partners, icon: 'pi pi-fw pi-calendar' , to: '/roll'},
+                        { label: translations[selectedLanguage].Actions, icon: 'pi pi-fw pi-calendar' , to: '/roll'}
+                    ]
+                },
+                {
+                    label: translations[selectedLanguage].Territorial_administration,
+                    icon: 'pi pi-fw pi-bars',
+                    items: [
+                        { label: translations[selectedLanguage].Type_of_territory, icon: 'pi pi-fw pi-calendar', to: '/usergrp' },
+                        { label: translations[selectedLanguage].Territory, icon: 'pi pi-fw pi-calendar', to: '/action'  },
+                        { label: translations[selectedLanguage].Properties_territory, icon: 'pi pi-fw pi-calendar' , to: '/roll'},
+                        { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/roll'}
+                    ]
+                },
+                {
+                    label: translations[selectedLanguage].Location_administration,
+                    icon: 'pi pi-fw pi-bars',
+                    items: [
+                        { label: translations[selectedLanguage].Location_type, icon: 'pi pi-fw pi-calendar', to: '/loctp' },
+                        { label: translations[selectedLanguage].Locations, icon: 'pi pi-fw pi-calendar', to: '/loc'  },
+                        { label: translations[selectedLanguage].Properties_location, icon: 'pi pi-fw pi-calendar' , to: '/locatt'},
+                        { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/loclinktp'}
+                    ]
+                },
+                {
+                    label: translations[selectedLanguage].Currency_administration,
+                    icon: 'pi pi-fw pi-bars',
+                    items: [
+                        { label: translations[selectedLanguage].Currency, icon: 'pi pi-fw pi-calendar' , to: '/roll'},
+                        { label: translations[selectedLanguage].Exchange_rate, icon: 'pi pi-fw pi-calendar' , to: '/roll'}
+                    ]
+                },
+                {
+                    label: translations[selectedLanguage].Tax_system,
+                    icon: 'pi pi-fw pi-bars',
+                    items: [
+                        { label: translations[selectedLanguage].Tariff_groups, icon: 'pi pi-fw pi-calendar' , to: '/roll'},
+                        { label: translations[selectedLanguage].Taxes, icon: 'pi pi-fw pi-calendar' , to: '/roll'}
+                    ]
+                },
+                {
+                    label: translations[selectedLanguage].Objects_administration,
+                    icon: 'pi pi-prime',
+                    items: [
+                        { label: translations[selectedLanguage].Objects_type, icon: 'pi pi-database', to: '/objtp' },
+                        { label: translations[selectedLanguage].Objects, icon: 'pi pi-fw pi-clone', to: '/obj' },
+                        { label: translations[selectedLanguage].Properties_object, icon: 'pi pi-fw pi-clone', to: '/objatt' },
+                        { label: translations[selectedLanguage].Group_of_properties, icon: 'pi pi-fw pi-clone', to: '/objatttp' },
+                        { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-exclamation-triangle', to: '/link' },
+                    ]
+                },
+                {
+                    label: translations[selectedLanguage].Other,
+                    icon: 'pi pi-prime',
+                    items: [
+                        { label: translations[selectedLanguage].Program_modules, icon: 'pi pi-database', to: '/dbparameter' },
+                        { label: translations[selectedLanguage].Menu_administration, icon: 'pi pi-fw pi-clone', to: '/message' },
+                        { label: translations[selectedLanguage].Units_of_measurement, icon: 'pi pi-fw pi-clone', to: '/message' },
+                    ]
+                }
             ]
         },
         {
-            label: 'Territorial administration',
-            icon: 'pi pi-prime',
-            items: [
-                { label: 'Type of territory', icon: 'pi pi-database', to: '/dbparameter' },
-                { label: 'Territory', icon: 'pi pi-fw pi-clone', to: '/message' },
-                { label: 'Properties territory', icon: 'pi pi-fw pi-clone', to: '/message' },
-                { label: 'Type of relationship', icon: 'pi pi-fw pi-exclamation-triangle', to: '/dbmserr' }
-            ]
-        },
-        {
-            label: 'Location administration',
-            icon: 'pi pi-prime',
-            items: [
-                { label: 'Location type', icon: 'pi pi-database', to: '/dbparameter' },
-                { label: 'Locations', icon: 'pi pi-fw pi-clone', to: '/message' },
-                { label: 'Properties location', icon: 'pi pi-fw pi-clone', to: '/message' },
-                { label: 'Type of relationship', icon: 'pi pi-fw pi-exclamation-triangle', to: '/dbmserr' }
-            ]
-        },
-        {
-            label: 'Currency administration',
-            icon: 'pi pi-prime',
-            items: [
-                { label: 'Currency', icon: 'pi pi-database', to: '/dbparameter' },
-                { label: 'Exchange rate', icon: 'pi pi-fw pi-clone', to: '/message' },
-            ]
-        },
-        {
-            label: 'Tax system',
-            icon: 'pi pi-prime',
-            items: [
-                { label: 'Tariff groups', icon: 'pi pi-database', to: '/dbparameter' },
-                { label: 'Taxes', icon: 'pi pi-fw pi-clone', to: '/message' },
-            ]
-        },
-        {
-            label: 'Objects administration',
-            icon: 'pi pi-prime',
-            items: [
-                { label: 'Objects type', icon: 'pi pi-database', to: '/dbparameter' },
-                { label: 'Objects', icon: 'pi pi-fw pi-clone', to: '/message' },
-                { label: 'Properties object', icon: 'pi pi-fw pi-clone', to: '/message' },
-                { label: 'Group of properties', icon: 'pi pi-fw pi-clone', to: '/message' },
-                { label: 'Type of relationship', icon: 'pi pi-fw pi-exclamation-triangle', to: '/dbmserr' },
-                { label: 'Site', icon: 'pi pi-fw pi-clone', to: '/message' }
-            ]
-        },
-        {
-            label: 'Other',
-            icon: 'pi pi-prime',
-            items: [
-                { label: 'Program modules', icon: 'pi pi-database', to: '/dbparameter' },
-                { label: 'Menu administration', icon: 'pi pi-fw pi-clone', to: '/message' },
-                { label: 'Units of measurement', icon: 'pi pi-fw pi-clone', to: '/message' },
-            ]
-        },
-        {
-            label: 'Module selection',
+            label: translations[selectedLanguage].Moduleselection,
             icon: 'pi pi-fw pi-compass',
             items: [
-                { label: 'Back', icon: 'pi pi-sign-out', url: `${env.START_URL}?sl=${selectedLanguage}` }
+                { label: translations[selectedLanguage].Back, icon: 'pi pi-sign-out', url: `${env.START_URL}?sl=${selectedLanguage}` }
             ]
         }
     ];
+
 
     let topbarItemClick;
     let menuClick;
@@ -139,10 +152,10 @@ const App = () => {
     let userMenuClick;
     let configClick = false;
 
-    useEffect(() => {
-        if (selectedLanguage) {
-            dispatch(setLanguage(selectedLanguage)); // Postavi jezik iz URL-a u globalni store
-        }
+    useEffect(() => {      
+      if (selectedLanguage) {
+        dispatch(setLanguage(selectedLanguage)); // Postavi jezik iz URL-a u globalni store
+      }
     }, [dispatch]);
 
     useEffect(() => {
@@ -441,11 +454,23 @@ const App = () => {
                         <Route path="/usergrp" element={<UserGrp />} />
                         <Route path="/user" element={<User />} />
                         <Route path="/roll" element={<Roll />} />
-                        <Route path="/action" element={<Action />} />
+                        <Route path="/action" element={<UserGrp />} />
                         <Route path="/dbparameter" element={<DbParameter />} />
                         <Route path="/message" element={<Message />} />
                         <Route path="/dbmserr" element={<DbmsErr />} />
                         <Route path="/icons" element={<IconsDemo />} />
+                        
+                        <Route path="/loctp" element={<LocTP />} />
+                        <Route path="/loc" element={<UserGrp />} />
+                        <Route path="/locatt" element={<UserGrp />} />
+                        <Route path="/loclinktp" element={<UserGrp />} />
+
+                        <Route path="/objtp" element={<ObjTp />} />
+                        <Route path="/obj" element={<Obj />} />
+                        <Route path="/objatttp" element={<ObjAttTp />} />
+                        <Route path="/objatt" element={<ObjAtt />} />
+                        <Route path="/link" element={<Link />} />
+                        
                     </Routes>
                 </div>
 

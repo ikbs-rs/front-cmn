@@ -1,141 +1,565 @@
 const EmptyEntities = 
 {
-    "adm_action": {
-      "id": null,
-      "site": null,
-      "code": "",
-      "text": "",
-      "valid": null
-    },
-    "adm_action_v": {
-      "id": null,
-      "site": null,
-      "code": "",
-      "text": "",
-      "valid": null
-    },
-    "adm_blacklist_token": {
-      "id": null,
-      "token": "",
-      "expiration": ""
-    },
-    "adm_dbmserr": {
-      "id": null,
-      "site": null,
-      "code": "",
-      "text": ""
-    },
-    "adm_dbparameter": {
-      "id": null,
-      "site": null,
-      "code": "",
-      "text": "",
-      "comment": "",
-      "version": ""
-    },
-    "adm_message": {
-      "id": null,
-      "site": null,
-      "code": "",
-      "text": ""
-    },
-    "adm_paruser": {
-      "id": null,
-      "site": null,
-      "par": null,
-      "usr": null,
-      "begda": "",
-      "endda": ""
-    },
-    "adm_roll": {
-      "id": null,
-      "site": null,
-      "code": "",
-      "name": "",
-      "strukturna": "",
-      "valid": null
-    },
-    "adm_rollact": {
-      "id": null,
-      "site": null,
-      "roll": null,
-      "action": null,
-      "cre_action": null,
-      "upd_action": null,
-      "del_action": null,
-      "exe_action": null,
-      "all_action": null
-    },
-    "adm_rolllink": {
-      "id": null,
-      "site": null,
-      "roll1": null,
-      "roll2": null,
-      "link": ""
-    },
-    "adm_rollstr": {
-      "id": null,
-      "site": null,
-      "roll": null,
-      "onoff": null,
-      "hijerarhija": null,
-      "objtp": "",
-      "obj": ""
-    },
-    "adm_user": {
-      "id": null,
-      "site": null,
-      "username": "",
-      "password": "",
-      "firstname": "",
-      "lastname": "",
-      "sapuser": "",
-      "aduser": "",
-      "tip": "",
-      "admin": null,
-      "mail": "",
-      "usergrp": null,
-      "valid": null,
-      "created_at": "",
-      "updated_at": ""
-    },
-    "adm_usergrp": {
-      "id": null,
-      "site": null,
-      "code": "",
-      "text": "",
-      "valid": null
-    },
-    "adm_userlink": {
-      "id": null,
-      "site": null,
-      "user1": null,
-      "user2": "",
-      "begda": "",
-      "endda": "",
-      "all": null
-    },
-    "adm_userlinkpremiss": {
-      "id": null,
-      "site": null,
-      "userlink": null,
-      "userpermiss": null
-    },
-    "adm_userloc": {
-      "id": null,
-      "site": null,
-      "usr": null,
-      "loc": null,
-      "begda": "",
-      "endda": ""
-    },
-    "adm_userpermiss": {
-      "id": null,
-      "site": null,
-      "usr": null,
-      "roll": null
-    }
+  "cmn_curr": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "tp": "",
+    "country": null,
+    "begda": "",
+    "endda": ""
+  },
+  "cmn_currrate": {
+    "id": null,
+    "site": null,
+    "curr1": null,
+    "curr2": null,
+    "begda": "",
+    "endda": "",
+    "rate": null,
+    "parity": null
+  },
+  "cmn_currx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_link": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "objtp1": null,
+    "objtp2": null,
+    "valid": "1"
+  },
+  "cmn_linkx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_loc": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "longtext": "",
+    "tp": null,
+    "valid": "1"
+  },
+  "cmn_locatt": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "valid": "1"
+  },
+  "cmn_locatts": {
+    "id": null,
+    "site": null,
+    "loc": null,
+    "locatt": null,
+    "text": "",
+    "begda": "",
+    "endda": ""
+  },
+  "cmn_locattx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_loclink": {
+    "id": null,
+    "site": null,
+    "tp": null,
+    "loc1": null,
+    "loc2": null,
+    "long": "",
+    "begda": "",
+    "endda": ""
+  },
+  "cmn_loclinktp": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "valid": "1"
+  },
+  "cmn_loclinktpx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_locobj": {
+    "id": null,
+    "site": null,
+    "loc": null,
+    "obj": null
+  },
+  "cmn_loctp": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "icon": "",
+    "valid": "1"
+  },
+  "cmn_loctpx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_locx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_menu": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "parentid": null,
+    "link": "",
+    "akction": "",
+    "module": null,
+    "icon": "",
+    "user": null,
+    "valid": "1"
+  },
+  "cmn_menux": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_module": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "app_id": null,
+    "valid": "1"
+  },
+  "cmn_modulex": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_obj": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "tp": null,
+    "valid": "1"
+  },
+  "cmn_objatt": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "cmn_objatttp": null,
+    "valid": "1"
+  },
+  "cmn_objatts": {
+    "id": null,
+    "site": null,
+    "obj": null,
+    "cmn_objatt": null,
+    "begda": "",
+    "endda": ""
+  },
+  "cmn_objatttp": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "valid": "1"
+  },
+  "cmn_objatttpx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_objattx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_objlink": {
+    "id": null,
+    "site": null,
+    "objtp1": null,
+    "obj1": null,
+    "objtp2": null,
+    "obj2": null,
+    "cmn_link": null,
+    "direction": "A",
+    "code": "",
+    "text": null,
+    "um": null,
+    "begda": "",
+    "endda": ""
+  },
+  "cmn_objlink_arr": {
+    "id": null,
+    "site": null,
+    "objtp1": null,
+    "obj1": null,
+    "objtp2": null,
+    "obj2": null,
+    "level": null,
+    "code": null,
+    "begda": "",
+    "endda": ""
+  },
+  "cmn_objtp": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "adm_table": null,
+    "valid": "1"
+  },
+  "cmn_objtpx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_objx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_par": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "tp": null,
+    "text": "",
+    "short": "",
+    "address": "",
+    "place": null,
+    "postcode": "",
+    "tel": "",
+    "activity": "",
+    "pib": "",
+    "idnum": "",
+    "pdvnum": "",
+    "begda": "",
+    "endda": ""
+  },
+  "cmn_paraccount": {
+    "id": null,
+    "site": null,
+    "cmn_par": null,
+    "bank": null,
+    "account": "",
+    "brojpartije": "",
+    "glavni": "N",
+    "begda": "",
+    "endda": ""
+  },
+  "cmn_paratt": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "valid": "1"
+  },
+  "cmn_paratts": {
+    "id": null,
+    "site": null,
+    "par": null,
+    "att": null,
+    "text": "",
+    "begda": "",
+    "endda": ""
+  },
+  "cmn_parattx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_parcontact": {
+    "id": null,
+    "site": null,
+    "cmn_par": null,
+    "tp": null,
+    "person": "",
+    "long": "",
+    "tel": "",
+    "mail": "",
+    "other": "",
+    "valid": "1"
+  },
+  "cmn_parcontacttp": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "sys_code": "",
+    "valid": "1"
+  },
+  "cmn_parcontacttpx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_parlink": {
+    "id": null,
+    "site": null,
+    "par1": null,
+    "par2": null,
+    "long": "",
+    "begda": "",
+    "datumod2": ""
+  },
+  "cmn_partp": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "valid": "1"
+  },
+  "cmn_partpx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_parx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_site": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "valid": "1"
+  },
+  "cmn_tax": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "country": null,
+    "valid": "1"
+  },
+  "cmn_taxrate": {
+    "id": null,
+    "cmn_id": null,
+    "site": null,
+    "tax": null,
+    "rate": null,
+    "begda": "",
+    "endda": ""
+  },
+  "cmn_taxx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_terr": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "tp": null,
+    "postcode": "",
+    "begda": "",
+    "endda": ""
+  },
+  "cmn_terratt": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "valid": "1"
+  },
+  "cmn_terratts": {
+    "id": null,
+    "site": null,
+    "loc": null,
+    "att": null,
+    "long": "",
+    "begda": "",
+    "endda": ""
+  },
+  "cmn_terrattx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_terrlink": {
+    "id": null,
+    "site": null,
+    "link": null,
+    "terr1": null,
+    "terr2": null,
+    "text": "",
+    "begda": "",
+    "endda": ""
+  },
+  "cmn_terrlinktp": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "valid": "1"
+  },
+  "cmn_terrlinktpx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_terrloc": {
+    "id": null,
+    "terr": null,
+    "loc": null
+  },
+  "cmn_terrtp": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "valid": "1"
+  },
+  "cmn_terrtpx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_terrx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_tgp": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "country": null,
+    "valid": "1"
+  },
+  "cmn_tgptax": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "tax": null,
+    "begda": "",
+    "endda": ""
+  },
+  "cmn_tgpx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_um": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "valid": "1"
+  },
+  "cmn_umparity": {
+    "id": null,
+    "site": null,
+    "um1": null,
+    "um2": null,
+    "parity": null,
+    "begda": "",
+    "datumod2": ""
+  },
+  "cmn_umx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_link_v": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "objtp1": null,
+    "objtp2": null,
+    "valid": "1",
+    "nobjtp1": null,
+    "nobjtp2": null
   }
+}
 
 export  {
     EmptyEntities,

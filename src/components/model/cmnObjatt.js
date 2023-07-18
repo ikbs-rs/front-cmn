@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { classNames } from 'primereact/utils';
-import { AdmUserGrpService } from "../../service/model/AdmUserGrpService";
+import { CmnObjattService } from "../../service/model/CmnObjattService";
 import './index.css';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -8,14 +8,17 @@ import { Dropdown } from 'primereact/dropdown';
 import { Toast } from "primereact/toast";
 import DeleteDialog from '../dialog/DeleteDialog';
 import { translations } from "../../configs/translations";
+import { CmnObjatttpService } from "../../service/model/CmnObjatttpService"
 
-const AdmUserGrp = (props) => {
+const CmnObjatt = (props) => {
     const selectedLanguage = localStorage.getItem('sl')||'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [dropdownItem, setDropdownItem] = useState(null);
     const [dropdownItems, setDropdownItems] = useState(null);
-    const [admUserGrp, setAdmUserGrp] = useState(props.admUserGrp);
+    const [cmnObjatt, setCmnObjatt] = useState(props.cmnObjatt);
     const [submitted, setSubmitted] = useState(false);
+    const [ddObjatttpItem, setDdObjatttpItem] = useState(null);
+    const [ddObjatttpItems, setDdObjatttpItems] = useState(null);    
 
     const toast = useRef(null);
     const items = [
@@ -24,7 +27,23 @@ const AdmUserGrp = (props) => {
     ];
 
     useEffect(() => {
-        setDropdownItem(findDropdownItemByCode(props.admUserGrp.valid));
+        async function fetchData() {
+            try {
+                const cmnObjatttpService = new CmnObjatttpService();
+                const data = await cmnObjatttpService.getCmnObjatttps();
+                const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
+                setDdObjatttpItems(dataDD);
+                setDdObjatttpItem(dataDD.find((item) => item.code === props.cmnObjatt.cmn_objatttp) || null);
+            } catch (error) {
+                console.error(error);
+                // Obrada greške ako je potrebna
+            }
+        }
+        fetchData();
+    }, []);    
+
+    useEffect(() => {
+        setDropdownItem(findDropdownItemByCode(props.cmnObjatt.valid));
     }, []);
 
     const findDropdownItemByCode = (code) => {
@@ -43,10 +62,10 @@ const AdmUserGrp = (props) => {
     const handleCreateClick = async () => {
         try {
             setSubmitted(true);            
-                const admUserGrpService = new AdmUserGrpService();
-                const data = await admUserGrpService.postAdmUserGrp(admUserGrp);
-                admUserGrp.id = data
-                props.handleDialogClose({ obj: admUserGrp, userGrpTip: props.userGrpTip });
+                const cmnObjattService = new CmnObjattService();
+                const data = await cmnObjattService.postCmnObjatt(cmnObjatt);
+                cmnObjatt.id = data
+                props.handleDialogClose({ obj: cmnObjatt, objattTip: props.objattTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
@@ -61,9 +80,9 @@ const AdmUserGrp = (props) => {
     const handleSaveClick = async () => {
         try {
             setSubmitted(true);
-            const admUserGrpService = new AdmUserGrpService();
-            await admUserGrpService.putAdmUserGrp(admUserGrp);
-            props.handleDialogClose({ obj: admUserGrp, userGrpTip: props.userGrpTip });
+            const cmnObjattService = new CmnObjattService();
+            await cmnObjattService.putCmnObjatt(cmnObjatt);
+            props.handleDialogClose({ obj: cmnObjatt, objattTip: props.objattTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
@@ -82,9 +101,9 @@ const AdmUserGrp = (props) => {
     const handleDeleteClick = async () => {
         try {
             setSubmitted(true);
-            const admUserGrpService = new AdmUserGrpService();
-            await admUserGrpService.deleteAdmUserGrp(admUserGrp);
-            props.handleDialogClose({ obj: admUserGrp, userGrpTip: 'DELETE' });
+            const cmnObjattService = new CmnObjattService();
+            await cmnObjattService.deleteCmnObjatt(cmnObjatt);
+            props.handleDialogClose({ obj: cmnObjatt, objattTip: 'DELETE' });
             props.setVisible(false);
             hideDeleteDialog();
         } catch (err) {
@@ -100,17 +119,22 @@ const AdmUserGrp = (props) => {
     const onInputChange = (e, type, name) => {
         let val = ''
         if (type === "options") {
-            setDropdownItem(e.value);
+            if (name==='cmn_objatttp') {
+                setDdObjatttpItem(e.value);
+                cmnObjatt.otext = e.value.name
+            } else {
+                setDropdownItem(e.value);
+            }
             val = (e.target && e.target.value && e.target.value.code) || '';
         } else {
             val = (e.target && e.target.value) || '';
         }
 
-        let _admUserGrp = { ...admUserGrp };
-        _admUserGrp[`${name}`] = val;
-        if (name===`textx`) _admUserGrp[`text`] = val
+        let _cmnObjatt = { ...cmnObjatt };
+        _cmnObjatt[`${name}`] = val;
+        if (name===`textx`) _cmnObjatt[`text`] = val
 
-        setAdmUserGrp(_admUserGrp);
+        setCmnObjatt(_cmnObjatt);
     };
 
     const hideDeleteDialog = () => {
@@ -126,23 +150,36 @@ const AdmUserGrp = (props) => {
                         <div className="field col-12 md:col-7">
                             <label htmlFor="code">{translations[selectedLanguage].Code}</label>
                             <InputText id="code" autoFocus
-                                value={admUserGrp.code} onChange={(e) => onInputChange(e, "text", 'code')}
+                                value={cmnObjatt.code} onChange={(e) => onInputChange(e, "text", 'code')}
                                 required
-                                className={classNames({ 'p-invalid': submitted && !admUserGrp.code })}
+                                className={classNames({ 'p-invalid': submitted && !cmnObjatt.code })}
                             />
-                            {submitted && !admUserGrp.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnObjatt.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
                         <div className="field col-12 md:col-9">
                             <label htmlFor="textx">{translations[selectedLanguage].Text}</label>
                             <InputText
                                 id="textx"
-                                value={admUserGrp.textx} onChange={(e) => onInputChange(e, "text", 'textx')}
+                                value={cmnObjatt.textx} onChange={(e) => onInputChange(e, "text", 'textx')}
                                 required
-                                className={classNames({ 'p-invalid': submitted && !admUserGrp.text })}
+                                className={classNames({ 'p-invalid': submitted && !cmnObjatt.textx })}
                             />
-                            {submitted && !admUserGrp.textx && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
-                        </div>
-                        <div className="field col-12 md:col-4">
+                            {submitted && !cmnObjatt.textx && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>  
+                        <div className="field col-12 md:col-8">
+                            <label htmlFor="cmn_objatttp">{translations[selectedLanguage].Objatttp} *</label>
+                            <Dropdown id="cmn_objatttp"
+                                value={ddObjatttpItem}
+                                options={ddObjatttpItems}
+                                onChange={(e) => onInputChange(e, "options", 'cmn_objatttp')}
+                                required
+                                optionLabel="name"
+                                placeholder="Select One"
+                                className={classNames({ 'p-invalid': submitted && !cmnObjatt.cmn_objatttp })}
+                            />
+                            {submitted && !cmnObjatt.cmn_objatttp && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>                                             
+                        <div className="field col-12 md:col-5">
                             <label htmlFor="valid">{translations[selectedLanguage].Valid}</label>
                             <Dropdown id="valid"
                                 value={dropdownItem}
@@ -151,9 +188,9 @@ const AdmUserGrp = (props) => {
                                 required
                                 optionLabel="name"
                                 placeholder="Select One"
-                                className={classNames({ 'p-invalid': submitted && !admUserGrp.valid })}
+                                className={classNames({ 'p-invalid': submitted && !cmnObjatt.valid })}
                             />
-                            {submitted && !admUserGrp.valid && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnObjatt.valid && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>                        
                     </div>
 
@@ -169,7 +206,7 @@ const AdmUserGrp = (props) => {
                         ) : null}
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
-                            {(props.userGrpTip === 'CREATE') ? (
+                            {(props.objattTip === 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Create}
                                     icon="pi pi-check"
@@ -178,7 +215,7 @@ const AdmUserGrp = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.userGrpTip !== 'CREATE') ? (
+                            {(props.objattTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Delete}
                                     icon="pi pi-trash"
@@ -187,7 +224,7 @@ const AdmUserGrp = (props) => {
                                     outlined
                                 />
                             ) : null}                            
-                            {(props.userGrpTip !== 'CREATE') ? (
+                            {(props.objattTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Save}
                                     icon="pi pi-check"
@@ -203,7 +240,7 @@ const AdmUserGrp = (props) => {
             <DeleteDialog
                 visible={deleteDialogVisible}
                 inAction="delete"
-                item={admUserGrp.text}
+                item={cmnObjatt.text}
                 onHide={hideDeleteDialog}
                 onDelete={handleDeleteClick}
             />
@@ -211,4 +248,4 @@ const AdmUserGrp = (props) => {
     );
 };
 
-export default AdmUserGrp;
+export default CmnObjatt;

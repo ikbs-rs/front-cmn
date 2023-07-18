@@ -4,10 +4,11 @@ import { AdmDbParameterService } from "../../service/model/AdmDbParameterService
 import './index.css';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
-import { Dropdown } from 'primereact/dropdown';
 import { Toast } from "primereact/toast";
+import DeleteDialog from '../dialog/DeleteDialog';
 
 const AdmDbParameter = (props) => {
+    const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [admDbParameter, setAdmDbParameter] = useState(props.admDbParameter);
     const [submitted, setSubmitted] = useState(false);
 
@@ -52,6 +53,10 @@ const AdmDbParameter = (props) => {
         }
     };
 
+    const showDeleteDialog = () => {
+        setDeleteDialogVisible(true);
+    };
+
     const handleDeleteClick = async () => {
         try {
             setSubmitted(true);
@@ -59,6 +64,7 @@ const AdmDbParameter = (props) => {
             await admDbParameterService.deleteAdmDbParameter(admDbParameter);
             props.handleDialogClose({ obj: admDbParameter, dbParameterTip: 'DELETE' });
             props.setVisible(false);
+            hideDeleteDialog();
         } catch (err) {
             toast.current.show({
                 severity: "error",
@@ -78,6 +84,10 @@ const AdmDbParameter = (props) => {
         _admDbParameter[`${name}`] = val;
 
         setAdmDbParameter(_admDbParameter);
+    };
+
+    const hideDeleteDialog = () => {
+        setDeleteDialogVisible(false);
     };
 
     return (
@@ -147,6 +157,15 @@ const AdmDbParameter = (props) => {
                             ) : null}
                             {(props.dbParameterTip !== 'CREATE') ? (
                                 <Button
+                                    label="Delete"
+                                    icon="pi pi-trash"
+                                    onClick={showDeleteDialog}
+                                    className="p-button-outlined p-button-danger"
+                                    outlined
+                                />
+                            ) : null}                            
+                            {(props.dbParameterTip !== 'CREATE') ? (
+                                <Button
                                     label="Save"
                                     icon="pi pi-check"
                                     onClick={handleSaveClick}
@@ -154,19 +173,17 @@ const AdmDbParameter = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.dbParameterTip !== 'CREATE') ? (
-                                <Button
-                                    label="Delete"
-                                    icon="pi pi-trash"
-                                    onClick={handleDeleteClick}
-                                    className="p-button-outlined p-button-danger"
-                                    outlined
-                                />
-                            ) : null}
                         </div>
                     </div>
                 </div>
             </div>
+            <DeleteDialog
+                visible={deleteDialogVisible}
+                inAction="delete"
+                item={admDbParameter.text}
+                onHide={hideDeleteDialog}
+                onDelete={handleDeleteClick}
+            />            
         </div>
     );
 };

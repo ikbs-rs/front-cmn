@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { classNames } from 'primereact/utils';
-import { AdmUserGrpService } from "../../service/model/AdmUserGrpService";
+import { AdmRollService } from "../../service/model/AdmRollService";
 import './index.css';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -9,31 +9,50 @@ import { Toast } from "primereact/toast";
 import DeleteDialog from '../dialog/DeleteDialog';
 import { translations } from "../../configs/translations";
 
-const AdmUserGrp = (props) => {
+const AdmRoll = (props) => {
     const selectedLanguage = localStorage.getItem('sl')||'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [dropdownItem, setDropdownItem] = useState(null);
+    const [dropdownDNItem, setDropdownDNItem] = useState(null);
     const [dropdownItems, setDropdownItems] = useState(null);
-    const [admUserGrp, setAdmUserGrp] = useState(props.admUserGrp);
+    const [dropdownDNItems, setDropdownDNItems] = useState(null);
+    const [admRoll, setAdmRoll] = useState(props.admRoll);
     const [submitted, setSubmitted] = useState(false);
 
     const toast = useRef(null);
-    const items = [
+    const items01 = [ 
         { name: `${translations[selectedLanguage].Yes}`, code: '1' },
         { name: `${translations[selectedLanguage].No}`, code: '0' }
     ];
 
+    const itemsDN = [ 
+        { name: `${translations[selectedLanguage].Yes}`, code: 'D' },
+        { name: `${translations[selectedLanguage].No}`, code: 'N' }
+    ];
+
     useEffect(() => {
-        setDropdownItem(findDropdownItemByCode(props.admUserGrp.valid));
+        setDropdownItem(findDropdownItemByCode(props.admRoll.valid));
+    }, []);
+
+    
+    useEffect(() => {
+        setDropdownDNItem(findDropdownItemDNByCode(props.admRoll.strukturna));
     }, []);
 
     const findDropdownItemByCode = (code) => {
-        return items.find((item) => item.code === code) || null;
+        return items01.find((item) => item.code === code) || null;
     };
 
+    const findDropdownItemDNByCode = (code) => {
+        return itemsDN.find((itemDN) => itemDN.code === code) || null;
+    };
 
     useEffect(() => {
-        setDropdownItems(items);
+        setDropdownItems(items01);
+    }, []);
+
+    useEffect(() => {
+        setDropdownDNItems(itemsDN);
     }, []);
 
     const handleCancelClick = () => {
@@ -43,10 +62,10 @@ const AdmUserGrp = (props) => {
     const handleCreateClick = async () => {
         try {
             setSubmitted(true);            
-                const admUserGrpService = new AdmUserGrpService();
-                const data = await admUserGrpService.postAdmUserGrp(admUserGrp);
-                admUserGrp.id = data
-                props.handleDialogClose({ obj: admUserGrp, userGrpTip: props.userGrpTip });
+                const admRollService = new AdmRollService();
+                const data = await admRollService.postAdmRoll(admRoll);
+                admRoll.id = data
+                props.handleDialogClose({ obj: admRoll, rollTip: props.rollTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
@@ -61,9 +80,9 @@ const AdmUserGrp = (props) => {
     const handleSaveClick = async () => {
         try {
             setSubmitted(true);
-            const admUserGrpService = new AdmUserGrpService();
-            await admUserGrpService.putAdmUserGrp(admUserGrp);
-            props.handleDialogClose({ obj: admUserGrp, userGrpTip: props.userGrpTip });
+            const admRollService = new AdmRollService();
+            await admRollService.putAdmRoll(admRoll);
+            props.handleDialogClose({ obj: admRoll, rollTip: props.rollTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
@@ -82,9 +101,9 @@ const AdmUserGrp = (props) => {
     const handleDeleteClick = async () => {
         try {
             setSubmitted(true);
-            const admUserGrpService = new AdmUserGrpService();
-            await admUserGrpService.deleteAdmUserGrp(admUserGrp);
-            props.handleDialogClose({ obj: admUserGrp, userGrpTip: 'DELETE' });
+            const admRollService = new AdmRollService();
+            await admRollService.deleteAdmRoll(admRoll);
+            props.handleDialogClose({ obj: admRoll, rollTip: 'DELETE' });
             props.setVisible(false);
             hideDeleteDialog();
         } catch (err) {
@@ -100,17 +119,22 @@ const AdmUserGrp = (props) => {
     const onInputChange = (e, type, name) => {
         let val = ''
         if (type === "options") {
-            setDropdownItem(e.value);
+            if (name==="strukturna") {
+                setDropdownDNItem(e.value);
+            }
+            if (name==="valid") {
+                setDropdownItem(e.value);
+            }            
             val = (e.target && e.target.value && e.target.value.code) || '';
         } else {
             val = (e.target && e.target.value) || '';
         }
 
-        let _admUserGrp = { ...admUserGrp };
-        _admUserGrp[`${name}`] = val;
-        if (name===`textx`) _admUserGrp[`text`] = val
+        let _admRoll = { ...admRoll };
+        _admRoll[`${name}`] = val;
+        if (name===`textx`) _admRoll[`text`] = val
 
-        setAdmUserGrp(_admUserGrp);
+        setAdmRoll(_admRoll);
     };
 
     const hideDeleteDialog = () => {
@@ -123,26 +147,39 @@ const AdmUserGrp = (props) => {
             <div className="col-12">
                 <div className="card">
                     <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-7">
+                        <div className="field col-12 md:col-5">
                             <label htmlFor="code">{translations[selectedLanguage].Code}</label>
                             <InputText id="code" autoFocus
-                                value={admUserGrp.code} onChange={(e) => onInputChange(e, "text", 'code')}
+                                value={admRoll.code} onChange={(e) => onInputChange(e, "text", 'code')}
                                 required
-                                className={classNames({ 'p-invalid': submitted && !admUserGrp.code })}
+                                className={classNames({ 'p-invalid': submitted && !admRoll.code })}
                             />
-                            {submitted && !admUserGrp.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !admRoll.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
-                        <div className="field col-12 md:col-9">
+                        <div className="field col-12 md:col-12">
                             <label htmlFor="textx">{translations[selectedLanguage].Text}</label>
                             <InputText
                                 id="textx"
-                                value={admUserGrp.textx} onChange={(e) => onInputChange(e, "text", 'textx')}
+                                value={admRoll.textx} onChange={(e) => onInputChange(e, "text", 'textx')}
                                 required
-                                className={classNames({ 'p-invalid': submitted && !admUserGrp.text })}
+                                className={classNames({ 'p-invalid': submitted && !admRoll.textx })}
                             />
-                            {submitted && !admUserGrp.textx && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !admRoll.textx && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
-                        <div className="field col-12 md:col-4">
+                        <div className="field col-6 md:col-4">
+                            <label htmlFor="strukturna">{translations[selectedLanguage].Structures}</label>
+                            <Dropdown id="strukturna"
+                                value={dropdownDNItem}
+                                options={dropdownDNItems}
+                                onChange={(e) => onInputChange(e, "options", 'strukturna')}
+                                required
+                                optionLabel="name"
+                                placeholder="Select One"
+                                className={classNames({ 'p-invalid': submitted && !admRoll.strukturna })}
+                            />
+                            {submitted && !admRoll.strukturna && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>                         
+                        <div className="field col-6 md:col-4">
                             <label htmlFor="valid">{translations[selectedLanguage].Valid}</label>
                             <Dropdown id="valid"
                                 value={dropdownItem}
@@ -151,9 +188,9 @@ const AdmUserGrp = (props) => {
                                 required
                                 optionLabel="name"
                                 placeholder="Select One"
-                                className={classNames({ 'p-invalid': submitted && !admUserGrp.valid })}
+                                className={classNames({ 'p-invalid': submitted && !admRoll.valid })}
                             />
-                            {submitted && !admUserGrp.valid && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !admRoll.valid && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>                        
                     </div>
 
@@ -169,7 +206,7 @@ const AdmUserGrp = (props) => {
                         ) : null}
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
-                            {(props.userGrpTip === 'CREATE') ? (
+                            {(props.rollTip === 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Create}
                                     icon="pi pi-check"
@@ -178,7 +215,7 @@ const AdmUserGrp = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.userGrpTip !== 'CREATE') ? (
+                            {(props.rollTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Delete}
                                     icon="pi pi-trash"
@@ -187,7 +224,7 @@ const AdmUserGrp = (props) => {
                                     outlined
                                 />
                             ) : null}                            
-                            {(props.userGrpTip !== 'CREATE') ? (
+                            {(props.rollTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Save}
                                     icon="pi pi-check"
@@ -203,7 +240,7 @@ const AdmUserGrp = (props) => {
             <DeleteDialog
                 visible={deleteDialogVisible}
                 inAction="delete"
-                item={admUserGrp.text}
+                item={admRoll.name}
                 onHide={hideDeleteDialog}
                 onDelete={handleDeleteClick}
             />
@@ -211,4 +248,4 @@ const AdmUserGrp = (props) => {
     );
 };
 
-export default AdmUserGrp;
+export default AdmRoll;

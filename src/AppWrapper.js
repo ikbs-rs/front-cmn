@@ -8,10 +8,15 @@ import { Access } from './pages/Access';
 import axios from 'axios';
 import env from "./configs/env"
 
+
 const AppWrapper = (props) => {
     let location = useLocation(); 
     const navigate = useNavigate();    
     let [isLoggedIn, setIsLoggedIn] = useState(true);
+    const search = window.location.search;
+    const params = new URLSearchParams(search);
+    const sl = params.get('sl');
+    localStorage.setItem('sl', sl||"en")
 
     useEffect(() => {
       const token = localStorage.getItem('token');      
@@ -46,8 +51,10 @@ const AppWrapper = (props) => {
         setIsLoggedIn(false);
       }
       window.scrollTo(0, 0);
-    }, [location]);
-  
+    }, []);
+
+
+
     return (
       <Routes>
         <Route path="/login" element={<Login />} />

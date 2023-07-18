@@ -11,9 +11,10 @@ import { AdmDbmsErrService } from "../../service/model/AdmDbmsErrService";
 import AdmAkcija from './admDbmsErr';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
+import './index.css';
 
 
-export default function AdmDbmsErrL() {
+export default function AdmDbmsErrL(props) {
   const objName = "adm_dbmserr"
   const emptyAdmDbmsErr = EmptyEntities[objName]
   const [showMyComponent, setShowMyComponent] = useState(true);
@@ -161,7 +162,6 @@ export default function AdmDbmsErrL() {
 
   // <--- Dialog
   const setAdmDbmsErrDialog = (admDbmsErr) => {
-    console.log("editData", admDbmsErr)
     setVisible(true)
     setDbmsErrTip("CREATE")
     setAdmDbmsErr({ ...admDbmsErr });
@@ -216,26 +216,26 @@ export default function AdmDbmsErrL() {
         onRowUnselect={onRowUnselect}
       >
         <Column
+          //bodyClassName="text-center"
+          body={dbmsErrTemplate}
+          exportable={false}
+          headerClassName="w-10rem"
+          style={{ minWidth: '4rem' }}
+        />        
+        <Column
           field="code"
           header="Code"
           sortable
           filter
-          style={{ width: "25%" }}
+          style={{ width: "20%" }}
         ></Column>
         <Column
           field="text"
           header="Text"
           sortable
           filter
-          style={{ width: "60%" }}
+          style={{ width: "75%" }}
         ></Column>
-        <Column
-          //bodyClassName="text-center"
-          body={dbmsErrTemplate}
-          exportable={false}
-          headerClassName="w-10rem"
-          style={{ minWidth: '4rem' }}
-        />
       </DataTable>
       <Dialog
         header="DbmsErr"
