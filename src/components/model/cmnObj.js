@@ -8,13 +8,19 @@ import { Dropdown } from 'primereact/dropdown';
 import { Toast } from "primereact/toast";
 import DeleteDialog from '../dialog/DeleteDialog';
 import { translations } from "../../configs/translations";
+import env from "../../configs/env"
+import axios from 'axios';
+import Token from "../../utilities/Token";
 
 const CmnObj = (props) => {
+    console.log(props)
     const selectedLanguage = localStorage.getItem('sl')||'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [dropdownItem, setDropdownItem] = useState(null);
     const [dropdownItems, setDropdownItems] = useState(null);
     const [cmnObj, setCmnObj] = useState(props.cmnObj);
+    const [ddTpItem, setDdTpItem] = useState(null);
+    const [ddTpItems, setDdTpItems] = useState(null);
     const [submitted, setSubmitted] = useState(false);
 
     const toast = useRef(null);
@@ -25,6 +31,28 @@ const CmnObj = (props) => {
 
     useEffect(() => {
         setDropdownItem(findDropdownItemByCode(props.cmnObj.valid));
+    }, []);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const url = `${env.CMN_BACK_URL}/cmn/x/objtp/?sl=${selectedLanguage}`;
+                const tokenLocal = await Token.getTokensLS();
+                const headers = {
+                    Authorization: tokenLocal.token
+                };
+
+                const response = await axios.get(url, { headers });
+                const data = response.data.items;
+                const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
+                setDdTpItems(dataDD);
+                setDdTpItem(dataDD.find((item) => item.code === props.cmnObj.tp) || null);
+            } catch (error) {
+                console.error(error);
+                // Obrada greške ako je potrebna
+            }
+        }
+        fetchData();
     }, []);
 
     const findDropdownItemByCode = (code) => {
@@ -100,8 +128,16 @@ const CmnObj = (props) => {
     const onInputChange = (e, type, name) => {
         let val = ''
         if (type === "options") {
-            setDropdownItem(e.value);
-            val = (e.target && e.target.value && e.target.value.code) || '';
+
+            if (name = "tp") { 
+                console.log( e.value.code, "****",  e.value.name)
+                setDdTpItem(e.value);
+                cmnObj.ctp = e.value.code
+                cmnObj.ntp = e.value.name
+            } else {
+                setDropdownItem(e.value);
+            }
+            val = (e.target && e.target.value && e.target.value.code) || '';        
         } else {
             val = (e.target && e.target.value) || '';
         }
@@ -141,8 +177,21 @@ const CmnObj = (props) => {
                                 className={classNames({ 'p-invalid': submitted && !cmnObj.textx })}
                             />
                             {submitted && !cmnObj.textx && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
-                        </div>                       
-                        <div className="field col-12 md:col-4">
+                        </div> 
+                        <div className="field col-12 md:col-8">
+                            <label htmlFor="tp">{translations[selectedLanguage].ObjtpText} *</label>
+                            <Dropdown id="tp"
+                                value={ddTpItem}
+                                options={ddTpItems}
+                                onChange={(e) => onInputChange(e, "options", 'tp')}
+                                required
+                                optionLabel="name"
+                                placeholder="Select One"
+                                className={classNames({ 'p-invalid': submitted && !cmnObj.tp })}
+                            />
+                            {submitted && !cmnObj.tp && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>                                              
+                        <div className="field col-12 md:col-5">
                             <label htmlFor="valid">{translations[selectedLanguage].Valid}</label>
                             <Dropdown id="valid"
                                 value={dropdownItem}

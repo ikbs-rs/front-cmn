@@ -97,6 +97,20 @@ function formatDateToDBFormat(maskedDate) {
     return `${day}.${month}.${year}`;    
   }  
 
+// Convert time from database format (HHmm) to display format (HH:mm)
+const convertTimeToDisplayFormat = (time) => {
+  const hours = time.substr(0, 2);
+  const minutes = time.substr(2, 2);
+  return `${hours}:${minutes}`;
+};
+
+// Convert time from display format (HH:mm) to database format (HHmm)
+const convertTimeToDBFormat = (time) => {
+  const [hours, minutes] = time.split(":");
+  return `${hours}${minutes}`;
+};
+
+
 export default {
     currDate,
     currDatetime,
@@ -109,4 +123,6 @@ export default {
     formatDateTimeToDBFormat,
     formatTimeToDBFormat,
     dateGetValue,
+    convertTimeToDisplayFormat,
+    convertTimeToDBFormat,
 };

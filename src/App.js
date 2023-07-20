@@ -13,6 +13,7 @@ import UserGrp from './components/model/admUserGrpL';
 import LocTP from './components/model/cmnLoctpL';
 import ObjTp from './components/model/cmnObjtpL';
 import Obj from './components/model/cmnObjL';
+import ObjTree from './components/model/cmnObjTreeL';
 import ObjAtt from './components/model/cmnObjattL';
 import ObjAttTp from './components/model/cmnObjatttpL';
 import Link from './components/model/cmnLinkL';
@@ -123,6 +124,7 @@ const App = () => {
                         { label: translations[selectedLanguage].Properties_object, icon: 'pi pi-fw pi-clone', to: '/objatt' },
                         { label: translations[selectedLanguage].Group_of_properties, icon: 'pi pi-fw pi-clone', to: '/objatttp' },
                         { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-exclamation-triangle', to: '/link' },
+                        { label: translations[selectedLanguage].ObjectsTree, icon: 'pi pi-fw pi-clone', to: '/objtree' },
                     ]
                 },
                 {
@@ -470,6 +472,7 @@ const App = () => {
                         <Route path="/objatttp" element={<ObjAttTp />} />
                         <Route path="/objatt" element={<ObjAtt />} />
                         <Route path="/link" element={<Link />} />
+                        <Route path="/objtree" element={<ObjTree />} />
                         
                     </Routes>
                 </div>

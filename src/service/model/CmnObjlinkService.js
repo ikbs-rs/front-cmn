@@ -3,10 +3,10 @@ import env from "../../configs/env"
 import Token from "../../utilities/Token";
 
 export class CmnObjlinkService {
-/*
-    async getCmnObjlinkOb(objId) {
+
+    async getLista(objId) {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.ADM_BACK_URL}/cmn/objlink/getallouter1/roll/${objId}/?sl=${selectedLanguage}&outer=cmn_objtp&outerKey=objtp&outer1=cmn_obj&outerKey1=obj`;
+        const url = `${env.CMN_BACK_URL}/cmn/link/_v/fkey/?stm=cmn_objlink_v&id=${objId}&sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
             Authorization: tokenLocal.token
@@ -20,10 +20,10 @@ export class CmnObjlinkService {
             throw error;
         }
     }
-*/
+
     async getCmnObjlinks() {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.ADM_BACK_URL}/cmn/objlink/?sl=${selectedLanguage}`;
+        const url = `${env.CMN_BACK_URL}/cmn/objlink/?sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
             Authorization: tokenLocal.token
@@ -40,7 +40,7 @@ export class CmnObjlinkService {
 
     async getCmnObjlink(objId) {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.ADM_BACK_URL}/cmn/objlink/${objId}/?sl=${selectedLanguage}`;
+        const url = `${env.CMN_BACK_URL}/cmn/objlink/${objId}/?sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
             Authorization: tokenLocal.token
@@ -64,7 +64,7 @@ export class CmnObjlinkService {
                     "Items must be filled!"
                 );
             }
-            const url = `${env.ADM_BACK_URL}/cmn/objlink/?sl=${selectedLanguage}`;
+            const url = `${env.CMN_BACK_URL}/cmn/objlink/?sl=${selectedLanguage}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Content-Type': 'application/json',
@@ -82,12 +82,12 @@ export class CmnObjlinkService {
     async putCmnObjlink(newObj) {
         try {
             const selectedLanguage = localStorage.getItem('sl') || 'en'
-            if (newObj.obj === null || newObj.objtp === null)  {
+            if (newObj.obj === null || newObj.objtp === null) {
                 throw new Error(
                     "Items must be filled!"
                 );
             }
-            const url = `${env.ADM_BACK_URL}/cmn/objlink/?sl=${selectedLanguage}`;
+            const url = `${env.CMN_BACK_URL}/cmn/objlink/?sl=${selectedLanguage}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ export class CmnObjlinkService {
 
     async deleteCmnObjlink(newObj) {
         try {
-            const url = `${env.ADM_BACK_URL}/cmn/objlink/${newObj.id}`;
+            const url = `${env.CMN_BACK_URL}/cmn/objlink/${newObj.id}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Authorization': tokenLocal.token

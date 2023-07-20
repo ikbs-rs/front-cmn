@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
+import { classNames } from "primereact/utils";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
 import { CmnObjlinkService } from "../../service/model/CmnObjlinkService";
 import CmnObjlink from './cmnObjlink';
@@ -11,14 +13,16 @@ import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
 import './index.css';
 import { translations } from "../../configs/translations";
+import DateFunction from "../../utilities/DateFunction";
+
 
 export default function CmnObjlinkL(props) {
-  
-  const objName = "adm_objlink"
-  const selectedLanguage = localStorage.getItem('sl')||'en'
+
+  const objName = "cmn_objlink"
+  const selectedLanguage = localStorage.getItem('sl') || 'en'
   const emptyCmnObjlink = EmptyEntities[objName]
-  emptyCmnObjlink.roll2 = props.cmnObj.id
-  emptyCmnObjlink.roll1 = null
+  emptyCmnObjlink.obj2 = props.cmnObj.id
+  emptyCmnObjlink.objtp2 = props.cmnObj.tp
   const [showMyComponent, setShowMyComponent] = useState(true);
   const [cmnObjlinks, setCmnObjlinks] = useState([]);
   const [cmnObjlink, setCmnObjlink] = useState(emptyCmnObjlink);
@@ -29,7 +33,6 @@ export default function CmnObjlinkL(props) {
   const [visible, setVisible] = useState(false);
   const [objlinkTip, setObjlinkTip] = useState('');
   let i = 0
-
   const handleCancelClick = () => {
     props.setCmnObjlinkLVisible(false);
   };
@@ -40,8 +43,7 @@ export default function CmnObjlinkL(props) {
         ++i
         if (i < 2) {
           const cmnObjlinkService = new CmnObjlinkService();
-          const data = await cmnObjlinkService.getCmnObjlinkRoll(props.cmnObj.id);
-         
+          const data = await cmnObjlinkService.getLista(props.cmnObj.id);
           setCmnObjlinks(data);
           initFilters();
         }
@@ -58,7 +60,6 @@ export default function CmnObjlinkL(props) {
 
     let _cmnObjlinks = [...cmnObjlinks];
     let _cmnObjlink = { ...localObj.newObj.obj };
-
     //setSubmitted(true);
     if (localObj.newObj.objlinkTip === "CREATE") {
       _cmnObjlinks.push(_cmnObjlink);
@@ -114,11 +115,11 @@ export default function CmnObjlinkL(props) {
   const initFilters = () => {
     setFilters({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-      rcode: {
+      ocode: {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
-      rtext: {
+      otext: {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
@@ -150,7 +151,7 @@ export default function CmnObjlinkL(props) {
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
         <div className="flex-grow-1"></div>
-        <b>{translations[selectedLanguage].RollsList}</b>
+        <b>{translations[selectedLanguage].ObjlinkList}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -174,6 +175,61 @@ export default function CmnObjlinkL(props) {
     );
   };
 
+  const formatDateColumn = (rowData, field) => {
+    return DateFunction.formatDate(rowData[field]);
+  };
+
+  const onoffBodyTemplate = (rowData) => {
+    const valid = rowData.onoff == 1 ? true : false
+    return (
+      <i
+        className={classNames("pi", {
+          "text-green-500 pi-check-circle": valid,
+          "text-red-500 pi-times-circle": !valid
+        })}
+      ></i>
+    );
+  };
+  const hijerarhijaBodyTemplate = (rowData) => {
+    const valid = rowData.hijerarhija == 1 ? true : false
+    return (
+      <i
+        className={classNames("pi", {
+          "text-green-500 pi-check-circle": valid,
+          "text-red-500 pi-times-circle": !valid
+        })}
+      ></i>
+    );
+  };
+  const onoffFilterTemplate = (options) => {
+    return (
+      <div className="flex align-items-center gap-2">
+        <label htmlFor="verified-filter" className="font-bold">
+          {translations[selectedLanguage].On_off}
+        </label>
+        <TriStateCheckbox
+          inputId="verified-filter"
+          value={options.value}
+          onChange={(e) => options.filterCallback(e.value)}
+        />
+      </div>
+    );
+  };
+  const hijerarhijaFilterTemplate = (options) => {
+    return (
+      <div className="flex align-items-center gap-2">
+        <label htmlFor="verified-filter" className="font-bold">
+          {translations[selectedLanguage].Hijerarhija}
+        </label>
+        <TriStateCheckbox
+          inputId="verified-filter"
+          value={options.value}
+          onChange={(e) => options.filterCallback(e.value)}
+        />
+      </div>
+    );
+  };
+
   // <--- Dialog
   const setCmnObjlinkDialog = (cmnObjlink) => {
     setVisible(true)
@@ -185,7 +241,7 @@ export default function CmnObjlinkL(props) {
   const header = renderHeader();
   // heder za filter/>
 
-  const rollLinkTemplate = (rowData) => {
+  const objlinkTemplate = (rowData) => {
     return (
       <div className="flex flex-wrap gap-1">
 
@@ -210,7 +266,7 @@ export default function CmnObjlinkL(props) {
       <div className="col-12">
         <div className="card">
           <div className="p-fluid formgrid grid">
-          <div className="field col-12 md:col-6">
+            <div className="field col-12 md:col-6">
               <label htmlFor="code">{translations[selectedLanguage].Code}</label>
               <InputText id="code"
                 value={props.cmnObj.code}
@@ -252,37 +308,80 @@ export default function CmnObjlinkL(props) {
       >
         <Column
           //bodyClassName="text-center"
-          body={rollLinkTemplate}
+          body={objlinkTemplate}
           exportable={false}
           headerClassName="w-10rem"
           style={{ minWidth: '4rem' }}
         />
         <Column
-          field="ocode"
-          header={translations[selectedLanguage].Rollcode}
+          field="cobjtp1"
+          header={translations[selectedLanguage].CodeObjTp}
+          sortable
+          filter
+          style={{ width: "10%" }}
+        ></Column>
+        <Column
+          field="nobjtp1"
+          header={translations[selectedLanguage].TextObjTp}
           sortable
           filter
           style={{ width: "20%" }}
         ></Column>
         <Column
-          field="otext"
-          header={translations[selectedLanguage].Roll}
+          field="cobj1"
+          header={translations[selectedLanguage].CodeObj}
           sortable
           filter
-          style={{ width: "45%" }}
+          style={{ width: "10%" }}
         ></Column>
         <Column
-          field="link"
-          header={translations[selectedLanguage].Link}
+          field="nobj1"
+          header={translations[selectedLanguage].TextObj}
           sortable
           filter
-          style={{ width: "35%" }}
-        ></Column>        
+          style={{ width: "20%" }}
+        ></Column>
+        <Column
+          field="onoff"
+          header={translations[selectedLanguage].On_off}
+          sortable
+          filter
+          filterElement={onoffFilterTemplate}
+          style={{ width: "5%" }}
+          bodyClassName="text-center"
+          body={onoffBodyTemplate}
+        ></Column>
+        <Column
+          field="hijerarhija"
+          header={translations[selectedLanguage].Hijerarhija}
+          sortable
+          filter
+          filterElement={hijerarhijaFilterTemplate}
+          style={{ width: "5%" }}
+          bodyClassName="text-center"
+          body={hijerarhijaBodyTemplate}
+        ></Column>
+        <Column
+          field="begda"
+          header={translations[selectedLanguage].Begda}
+          sortable
+          filter
+          style={{ width: "10%" }}
+          body={(rowData) => formatDateColumn(rowData, "begda")}
+        ></Column>
+        <Column
+          field="endda"
+          header={translations[selectedLanguage].Endda}
+          sortable
+          filter
+          style={{ width: "10%" }}
+          body={(rowData) => formatDateColumn(rowData, "endda")}
+        ></Column>
       </DataTable>
       <Dialog
         header={translations[selectedLanguage].Objlink}
         visible={visible}
-        style={{ width: '70%' }}
+        style={{ width: '60%' }}
         onHide={() => {
           setVisible(false);
           setShowMyComponent(false);

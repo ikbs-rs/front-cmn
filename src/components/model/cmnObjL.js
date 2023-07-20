@@ -39,7 +39,7 @@ export default function CmnObjL(props) {
         ++i
         if (i<2) {  
         const cmnObjService = new CmnObjService();
-        const data = await cmnObjService.getCmnObjs();
+        const data = await cmnObjService.getLista();
         setCmnObjs(data);
         initFilters();
         }
@@ -299,15 +299,31 @@ export default function CmnObjL(props) {
           header={translations[selectedLanguage].Code}
           sortable
           filter
-          style={{ width: "25%" }}
+          style={{ width: "15%" }}
         ></Column>
         <Column
           field="textx"
           header={translations[selectedLanguage].Text}
           sortable
           filter
-          style={{ width: "60%" }}
-        ></Column>
+          style={{ width: "30%" }}
+        ></Column> 
+  {/*
+        <Column
+          field="ctp"
+          header={translations[selectedLanguage].Text}
+          sortable
+          filter
+          style={{ width: "15%" }}
+        ></Column>    
+  */}
+        <Column
+          field="ntp"
+          header={translations[selectedLanguage].ObjTp}
+          sortable
+          filter
+          style={{ width: "30%" }}
+        ></Column>              
         <Column
           field="valid"
           filterField="valid"
@@ -316,7 +332,7 @@ export default function CmnObjL(props) {
           sortable
           filter
           filterElement={validFilterTemplate}
-          style={{ width: "15%" }}
+          style={{ width: "10%" }}
           bodyClassName="text-center"
           body={validBodyTemplate}
         ></Column>
@@ -364,7 +380,7 @@ export default function CmnObjL(props) {
       <Dialog
         header={translations[selectedLanguage].ObjlinkLista}
         visible={cmnObjlinkLVisible}
-        style={{ width: '70%' }}
+        style={{ width: '90%' }}
         onHide={() => {
           setCmnObjlinkLVisible(false);
           setShowMyComponent(false);
