@@ -129,7 +129,7 @@ const CmnObj = (props) => {
         let val = ''
         if (type === "options") {
 
-            if (name = "tp") { 
+            if (name == "tp") { 
                 console.log( e.value.code, "****",  e.value.name)
                 setDdTpItem(e.value);
                 cmnObj.ctp = e.value.code
