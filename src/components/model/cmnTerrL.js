@@ -7,41 +7,48 @@ import { Button } from "primereact/button";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
-import './index.css';
-import { CmnObjService } from "../../service/model/CmnObjService";
-import CmnObj from './cmnObj';
+import { CmnTerrService } from "../../service/model/CmnTerrService";
+import CmnTerr from './cmnTerr';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
+import './index.css';
 import { translations } from "../../configs/translations";
-import CmnObjattsL from './cmnObjattsL';
-import CmnObjlinkL from './cmnObjlinkL';
+import DateFunction from "../../utilities/DateFunction";
+import CmnTerrattsL from './cmnTerrattsL';
+import CmnTerrlinkL from './cmnTerrlinkL';
 
-export default function CmnObjL(props) {
-  let i = 0
-  const objName = "cmn_obj"
-  const selectedLanguage = localStorage.getItem('sl')||'en'
-  const emptyCmnObj = EmptyEntities[objName]
+
+export default function CmnTerrL(props) {
+
+  const objName = "cmn_terr"
+  const selectedLanguage = localStorage.getItem('sl') || 'en'
+  const emptyCmnTerr = EmptyEntities[objName]
   const [showMyComponent, setShowMyComponent] = useState(true);
-  const [cmnObjs, setCmnObjs] = useState([]);
-  const [cmnObj, setCmnObj] = useState(emptyCmnObj);
+  const [cmnTerrs, setCmnTerrs] = useState([]);
+  const [cmnTerr, setCmnTerr] = useState(emptyCmnTerr);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
-  const [cmnObjattsLVisible, setCmnObjattsLVisible] = useState(false);
-  const [cmnObjlinkLVisible, setCmnObjlinkLVisible] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [objTip, setObjtpTip] = useState('');
+  const [terrTip, setTerTip] = useState('');
+  const [cmnTerrattsLVisible, setCmnTerrattsLVisible] = useState(false);
+  const [cmnTerrlinkLVisible, setCmnTerrlinkLVisible] = useState(false);
+  let i = 0
+  const handleCancelClick = () => {
+    props.setCmnTerrLVisible(false);
+  };
 
   useEffect(() => {
     async function fetchData() {
       try {
         ++i
-        if (i<2) {  
-        const cmnObjService = new CmnObjService();
-        const data = await cmnObjService.getLista();
-        setCmnObjs(data);
-        initFilters();
+        if (i < 2) {
+          const cmnTerrService = new CmnTerrService();
+          const data = await cmnTerrService.getLista();
+          setCmnTerrs(data);
+
+          initFilters();
         }
       } catch (error) {
         console.error(error);
@@ -54,39 +61,38 @@ export default function CmnObjL(props) {
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
 
-    let _cmnObjs = [...cmnObjs];
-    let _cmnObj = { ...localObj.newObj.obj };
-
+    let _cmnTerrs = [...cmnTerrs];
+    let _cmnTerr = { ...localObj.newObj.obj };
     //setSubmitted(true);
-    if (localObj.newObj.objTip === "CREATE") {
-      _cmnObjs.push(_cmnObj);
-    } else if (localObj.newObj.objTip === "UPDATE") {
+    if (localObj.newObj.terrTip === "CREATE") {
+      _cmnTerrs.push(_cmnTerr);
+    } else if (localObj.newObj.terrTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
-      _cmnObjs[index] = _cmnObj;
-    } else if ((localObj.newObj.objTip === "DELETE")) {
-      _cmnObjs = cmnObjs.filter((val) => val.id !== localObj.newObj.obj.id);
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnObj Delete', life: 3000 });
+      _cmnTerrs[index] = _cmnTerr;
+    } else if ((localObj.newObj.terrTip === "DELETE")) {
+      _cmnTerrs = cmnTerrs.filter((val) => val.id !== localObj.newObj.obj.id);
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnTerr Delete', life: 3000 });
     } else {
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnObj ?', life: 3000 });
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnTerr ?', life: 3000 });
     }
-    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.objTip}`, life: 3000 });
-    setCmnObjs(_cmnObjs);
-    setCmnObj(emptyCmnObj);
+    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.terrTip}`, life: 3000 });
+    setCmnTerrs(_cmnTerrs);
+    setCmnTerr(emptyCmnTerr);
   };
 
-  const handleCmnObjattsLDialogClose = (newObj) => {
+  const handleCmnTerrattsLDialogClose = (newObj) => {
     const localObj = { newObj };
   };
 
-  const handleCmnObjlinkLDialogClose = (newObj) => {
+  const handleCmnTerrlinkLDialogClose = (newObj) => {
     const localObj = { newObj };
-  };  
+  };
 
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < cmnObjs.length; i++) {
-      if (cmnObjs[i].id === id) {
+    for (let i = 0; i < cmnTerrs.length; i++) {
+      if (cmnTerrs[i].id === id) {
         index = i;
         break;
       }
@@ -96,22 +102,23 @@ export default function CmnObjL(props) {
   };
 
   const openNew = () => {
-    setCmnObjDialog(emptyCmnObj);
+    setCmnTerrDialog(emptyCmnTerr);
   };
 
-  const openObjAtt = () => {
-    setCmnObjattsLDialog();
+  const openParAtt = () => {
+    setCmnTerrattsLDialog();
   };
-  
-  const openObjLink = () => {
-    setCmnObjlinkLDialog();
-  };  
+
+  const openParLink = () => {
+    setCmnTerrlinkLDialog();
+  };
 
   const onRowSelect = (event) => {
+    //cmnTerr.begda = event.data.begda
     toast.current.show({
       severity: "info",
       summary: "Action Selected",
-      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
+      detail: `Id: ${event.data.id} Name: ${event.data.text}`,
       life: 3000,
     });
   };
@@ -120,7 +127,7 @@ export default function CmnObjL(props) {
     toast.current.show({
       severity: "warn",
       summary: "Action Unselected",
-      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
+      detail: `Id: ${event.data.id} Name: ${event.data.text}`,
       life: 3000,
     });
   };
@@ -128,15 +135,22 @@ export default function CmnObjL(props) {
   const initFilters = () => {
     setFilters({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-      code: {
+      ctp: {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
-      textx: {
+      ntp: {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
-      valid: { value: null, matchMode: FilterMatchMode.EQUALS },
+      endda: {
+        operator: FilterOperator.AND,
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+      },
+      begda: {
+        operator: FilterOperator.AND,
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+      }
     });
     setGlobalFilterValue("");
   };
@@ -158,17 +172,20 @@ export default function CmnObjL(props) {
   const renderHeader = () => {
     return (
       <div className="flex card-container">
+        <div className="flex flex-wrap gap-1" />
+        <Button label={translations[selectedLanguage].Cancel} icon="pi pi-times" onClick={handleCancelClick} text raised
+        />
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
         <div className="flex flex-wrap gap-1">
-          <Button label={translations[selectedLanguage].Attributes} icon="pi pi-table" onClick={openObjAtt} text raised disabled={!cmnObj} />
-        </div>
+          <Button label={translations[selectedLanguage].Attributes} icon="pi pi-table" onClick={openParAtt} text raised disabled={!cmnTerr} />
+        </div> 
         <div className="flex flex-wrap gap-1">
-          <Button label={translations[selectedLanguage].Links} icon="pi pi-sitemap" onClick={openObjLink} text raised disabled={!cmnObj} />
-        </div>        
-        <div className="flex-grow-1" />
-        <b>{translations[selectedLanguage].ObjList}</b>
+          <Button label={translations[selectedLanguage].Links} icon="pi pi-sitemap" onClick={openParLink} text raised disabled={!cmnTerr} />
+        </div>                
+        <div className="flex-grow-1"></div>
+        <b>{translations[selectedLanguage].TerrLista}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -192,56 +209,33 @@ export default function CmnObjL(props) {
     );
   };
 
-  const validBodyTemplate = (rowData) => {
-    const valid = rowData.valid == 1?true:false
-    return (
-      <i
-        className={classNames("pi", {
-          "text-green-500 pi-check-circle": valid,
-          "text-red-500 pi-times-circle": !valid
-        })}
-      ></i>
-    );
-  };
-
-  const validFilterTemplate = (options) => {
-    return (
-      <div className="flex align-items-center gap-2">
-        <label htmlFor="verified-filter" className="font-bold">
-        {translations[selectedLanguage].Valid}
-        </label>
-        <TriStateCheckbox
-          inputId="verified-filter"
-          value={options.value}
-          onChange={(e) => options.filterCallback(e.value)}
-        />
-      </div>
-    );
+  const formatDateColumn = (rowData, field) => {
+    return DateFunction.formatDate(rowData[field]);
   };
 
   // <--- Dialog
-  const setCmnObjDialog = (cmnObj) => {
+
+  const setCmnTerrattsLDialog = () => {
+    setShowMyComponent(true);
+    setCmnTerrattsLVisible(true);
+  } 
+
+  const setCmnTerrlinkLDialog = () => {
+    setShowMyComponent(true);
+    setCmnTerrlinkLVisible(true);
+  } 
+
+  const setCmnTerrDialog = (cmnTerr) => {
     setVisible(true)
-    setObjtpTip("CREATE")
-    setCmnObj({ ...cmnObj });
+    setTerTip("CREATE")
+    setCmnTerr({ ...cmnTerr });
   }
-
-  const setCmnObjattsLDialog = () => {
-    setShowMyComponent(true);
-    setCmnObjattsLVisible(true);
-
-  }  
-  const setCmnObjlinkLDialog = () => {
-    setShowMyComponent(true);
-    setCmnObjlinkLVisible(true);
-
-  }   
   //  Dialog --->
 
   const header = renderHeader();
   // heder za filter/>
 
-  const actionTemplate = (rowData) => {
+  const terrTemplate = (rowData) => {
     return (
       <div className="flex flex-wrap gap-1">
 
@@ -250,8 +244,8 @@ export default function CmnObjL(props) {
           icon="pi pi-pencil"
           style={{ width: '24px', height: '24px' }}
           onClick={() => {
-            setCmnObjDialog(rowData)
-            setObjtpTip("UPDATE")
+            setCmnTerrDialog(rowData)
+            setTerTip("UPDATE")
           }}
           text
           raised ></Button>
@@ -263,140 +257,130 @@ export default function CmnObjL(props) {
   return (
     <div className="card">
       <Toast ref={toast} />
+
       <DataTable
         dataKey="id"
         selectionMode="single"
-        selection={cmnObj}
+        selection={cmnTerr}
         loading={loading}
-        value={cmnObjs}
+        value={cmnTerrs}
         header={header}
         showGridlines
         removableSort
         filters={filters}
         scrollable
-        sortField="code"        
-        sortOrder={1}
-        scrollHeight="750px"
+        scrollHeight="550px"
         virtualScrollerOptions={{ itemSize: 46 }}
         tableStyle={{ minWidth: "50rem" }}
         metaKeySelection={false}
         paginator
         rows={10}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        onSelectionChange={(e) => setCmnObj(e.value)}
+        onSelectionChange={(e) => setCmnTerr(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
       >
         <Column
           //bodyClassName="text-center"
-          body={actionTemplate}
+          body={terrTemplate}
           exportable={false}
           headerClassName="w-10rem"
           style={{ minWidth: '4rem' }}
-        />        
+        />
         <Column
           field="code"
-          header={translations[selectedLanguage].Code}
+          header={translations[selectedLanguage].code}
           sortable
           filter
-          style={{ width: "15%" }}
-        ></Column>
-        <Column
-          field="textx"
-          header={translations[selectedLanguage].Text}
-          sortable
-          filter
-          style={{ width: "30%" }}
+          style={{ width: "20%" }}
         ></Column> 
-  {/*
         <Column
-          field="ctp"
-          header={translations[selectedLanguage].Text}
+          field="text"
+          header={translations[selectedLanguage].text}
           sortable
           filter
-          style={{ width: "15%" }}
-        ></Column>    
-  */}
+          style={{ width: "20%" }}
+        ></Column>                
         <Column
           field="ntp"
-          header={translations[selectedLanguage].ObjTp}
+          header={translations[selectedLanguage].Text}
           sortable
           filter
-          style={{ width: "30%" }}
-        ></Column>              
+          style={{ width: "35%" }}
+        ></Column>
         <Column
-          field="valid"
-          filterField="valid"
-          dataType="numeric"
-          header={translations[selectedLanguage].Valid}
+          field="postcode"
+          header={translations[selectedLanguage].postcode}
           sortable
           filter
-          filterElement={validFilterTemplate}
-          style={{ width: "10%" }}
-          bodyClassName="text-center"
-          body={validBodyTemplate}
+          style={{ width: "20%" }}
         ></Column>
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].Obj}
+        header={translations[selectedLanguage].Terr}
         visible={visible}
-        style={{ width: '70%' }}
+        style={{ width: '60%' }}
         onHide={() => {
           setVisible(false);
           setShowMyComponent(false);
         }}
       >
         {showMyComponent && (
-          <CmnObj
+          <CmnTerr
             parameter={"inputTextValue"}
-            cmnObj={cmnObj}
+            cmnTerr={cmnTerr}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
-            objTip={objTip}
+            terrTip={terrTip}
           />
         )}
+        <div className="p-dialog-header-icons" style={{ display: 'none' }}>
+          <button className="p-dialog-header-close p-link">
+            <span className="p-dialog-header-close-icon pi pi-times"></span>
+          </button>
+        </div>
       </Dialog>
       <Dialog
-        header={translations[selectedLanguage].ObjattsLista}
-        visible={cmnObjattsLVisible}
+        header={translations[selectedLanguage].TerrattsLista}
+        visible={cmnTerrattsLVisible}
         style={{ width: '70%' }}
         onHide={() => {
-          setCmnObjattsLVisible(false);
+          setCmnTerrattsLVisible(false);
           setShowMyComponent(false);
         }}
       >
         {showMyComponent && (
-          <CmnObjattsL
+          <CmnTerrattsL
             parameter={"inputTextValue"}
-            cmnObj={cmnObj}
-            handleCmnObjattsLDialogClose={handleCmnObjattsLDialogClose}
-            setCmnObjattsLVisible={setCmnObjattsLVisible}
+            cmnTerr={cmnTerr}
+            handleCmnTerrattsLDialogClose={handleCmnTerrattsLDialogClose}
+            setCmnTerrattsLVisible={setCmnTerrattsLVisible}
             dialog={true}
             lookUp={false}
           />
         )}
-      </Dialog> 
+      </Dialog>       
       <Dialog
-        header={translations[selectedLanguage].ObjlinkLista}
-        visible={cmnObjlinkLVisible}
-        style={{ width: '90%' }}
+        header={translations[selectedLanguage].TerrlinkLista}
+        visible={cmnTerrlinkLVisible}
+        style={{ width: '70%' }}
         onHide={() => {
-          setCmnObjlinkLVisible(false);
+          setCmnTerrlinkLVisible(false);
           setShowMyComponent(false);
         }}
       >
         {showMyComponent && (
-          <CmnObjlinkL
+          <CmnTerrlinkL
             parameter={"inputTextValue"}
-            cmnObj={cmnObj}
-            handleCmnObjlinkLDialogClose={handleCmnObjlinkLDialogClose}
-            setCmnObjlinkLVisible={setCmnObjlinkLVisible}
+            cmnTerr={cmnTerr}
+            handleCmnTerrlinkLDialogClose={handleCmnTerrlinkLDialogClose}
+            setCmnTerrlinkLVisible={setCmnTerrlinkLVisible}
             dialog={true}
             lookUp={false}
           />
         )}
-      </Dialog>      
+      </Dialog>        
     </div>
   );
 }

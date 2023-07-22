@@ -7,33 +7,38 @@ import { Button } from "primereact/button";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
-import { AdmDbParameterService } from "../../service/model/AdmDbParameterService";
-import DbParameter from './admDbParameter';
+import './index.css';
+import { CmnTerrtpService } from "../../service/model/CmnTerrtpService";
+import CmnTerrtp from './cmnTerrtp';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
-import './index.css';
+import { translations } from "../../configs/translations";
 
-
-export default function AdmDbParameterL(props) {
-  const objName = "adm_dbparameter"
-  const emptyAdmDbParameter = EmptyEntities[objName]
+export default function CmnTerrtpL(props) {
+  let i = 0
+  const objName = "cmn_terrtp"
+  const selectedLanguage = localStorage.getItem('sl')||'en'
+  const emptyCmnTerrtp = EmptyEntities[objName]
   const [showMyComponent, setShowMyComponent] = useState(true);
-  const [admDbParameters, setAdmDbParameters] = useState([]);
-  const [admDbParameter, setAdmDbParameter] = useState(emptyAdmDbParameter);
+  const [cmnTerrtps, setCmnTerrtps] = useState([]);
+  const [cmnTerrtp, setCmnTerrtp] = useState(emptyCmnTerrtp);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
-  const [dbParameterTip, setDbParameterTip] = useState('');
+  const [terrtpTip, setTerrtpTip] = useState('');
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const admDbParameterService = new AdmDbParameterService();
-        const data = await admDbParameterService.getAdmDbParameterV();
-        setAdmDbParameters(data);
+        ++i
+        if (i<2) {  
+        const cmnTerrtpService = new CmnTerrtpService();
+        const data = await cmnTerrtpService.getCmnTerrtps();
+        setCmnTerrtps(data);
         initFilters();
+        }
       } catch (error) {
         console.error(error);
         // Obrada greške ako je potrebna
@@ -45,31 +50,31 @@ export default function AdmDbParameterL(props) {
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
 
-    let _admDbParameters = [...admDbParameters];
-    let _admDbParameter = { ...localObj.newObj.obj };
+    let _cmnTerrtps = [...cmnTerrtps];
+    let _cmnTerrtp = { ...localObj.newObj.obj };
 
     //setSubmitted(true);
-    if (localObj.newObj.dbParameterTip === "CREATE") {
-      _admDbParameters.push(_admDbParameter);
-    } else if (localObj.newObj.dbParameterTip === "UPDATE") {
+    if (localObj.newObj.terrtpTip === "CREATE") {
+      _cmnTerrtps.push(_cmnTerrtp);
+    } else if (localObj.newObj.terrtpTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
-      _admDbParameters[index] = _admDbParameter;
-    } else if ((localObj.newObj.dbParameterTip === "DELETE")) {
-      _admDbParameters = admDbParameters.filter((val) => val.id !== localObj.newObj.obj.id);
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'AdmDbParameter Delete', life: 3000 });
+      _cmnTerrtps[index] = _cmnTerrtp;
+    } else if ((localObj.newObj.terrtpTip === "DELETE")) {
+      _cmnTerrtps = cmnTerrtps.filter((val) => val.id !== localObj.newObj.obj.id);
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnTerrtp Delete', life: 3000 });
     } else {
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'AdmDbParameter ?', life: 3000 });
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnTerrtp ?', life: 3000 });
     }
-    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.dbParameterTip}`, life: 3000 });
-    setAdmDbParameters(_admDbParameters);
-    setAdmDbParameter(emptyAdmDbParameter);
+    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.terrtpTip}`, life: 3000 });
+    setCmnTerrtps(_cmnTerrtps);
+    setCmnTerrtp(emptyCmnTerrtp);
   };
 
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < admDbParameters.length; i++) {
-      if (admDbParameters[i].id === id) {
+    for (let i = 0; i < cmnTerrtps.length; i++) {
+      if (cmnTerrtps[i].id === id) {
         index = i;
         break;
       }
@@ -79,14 +84,14 @@ export default function AdmDbParameterL(props) {
   };
 
   const openNew = () => {
-    setAdmDbParameterDialog(emptyAdmDbParameter);
+    setCmnTerrtpDialog(emptyCmnTerrtp);
   };
 
   const onRowSelect = (event) => {
     toast.current.show({
       severity: "info",
       summary: "Action Selected",
-      detail: `Id: ${event.data.id} Name: ${event.data.text}`,
+      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
       life: 3000,
     });
   };
@@ -95,7 +100,7 @@ export default function AdmDbParameterL(props) {
     toast.current.show({
       severity: "warn",
       summary: "Action Unselected",
-      detail: `Id: ${event.data.id} Name: ${event.data.text}`,
+      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
       life: 3000,
     });
   };
@@ -107,18 +112,11 @@ export default function AdmDbParameterL(props) {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
-      text: {
+      textx: {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
-      comment: {
-        operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-      },
-      version: {
-        operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-      },      
+      valid: { value: null, matchMode: FilterMatchMode.EQUALS },
     });
     setGlobalFilterValue("");
   };
@@ -141,10 +139,10 @@ export default function AdmDbParameterL(props) {
     return (
       <div className="flex card-container">
         <div className="flex flex-wrap gap-1">
-          <Button label="New" icon="pi pi-plus" severity="success" onClick={openNew} text raised />
+          <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
-        <div className="flex-grow-1"></div>
-        <b>Db parametri List</b>
+        <div className="flex-grow-1" />
+        <b>{translations[selectedLanguage].TerrtpList}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -152,13 +150,13 @@ export default function AdmDbParameterL(props) {
             <InputText
               value={globalFilterValue}
               onChange={onGlobalFilterChange}
-              placeholder="Keyword Search"
+              placeholder={translations[selectedLanguage].KeywordSearch}
             />
           </span>
           <Button
             type="button"
             icon="pi pi-filter-slash"
-            label="Clear"
+            label={translations[selectedLanguage].Clear}
             outlined
             onClick={clearFilter}
             text raised
@@ -168,18 +166,45 @@ export default function AdmDbParameterL(props) {
     );
   };
 
+  const validBodyTemplate = (rowData) => {
+    const valid = rowData.valid == 1?true:false
+    return (
+      <i
+        className={classNames("pi", {
+          "text-green-500 pi-check-circle": valid,
+          "text-red-500 pi-times-circle": !valid
+        })}
+      ></i>
+    );
+  };
+
+  const validFilterTemplate = (options) => {
+    return (
+      <div className="flex align-items-center gap-2">
+        <label htmlFor="verified-filter" className="font-bold">
+        {translations[selectedLanguage].Valid}
+        </label>
+        <TriStateCheckbox
+          inputId="verified-filter"
+          value={options.value}
+          onChange={(e) => options.filterCallback(e.value)}
+        />
+      </div>
+    );
+  };
+
   // <--- Dialog
-  const setAdmDbParameterDialog = (admDbParameter) => {
+  const setCmnTerrtpDialog = (cmnTerrtp) => {
     setVisible(true)
-    setDbParameterTip("CREATE")
-    setAdmDbParameter({ ...admDbParameter });
+    setTerrtpTip("CREATE")
+    setCmnTerrtp({ ...cmnTerrtp });
   }
   //  Dialog --->
 
   const header = renderHeader();
   // heder za filter/>
 
-  const dbParameterTemplate = (rowData) => {
+  const actionTemplate = (rowData) => {
     return (
       <div className="flex flex-wrap gap-1">
 
@@ -188,8 +213,8 @@ export default function AdmDbParameterL(props) {
           icon="pi pi-pencil"
           style={{ width: '24px', height: '24px' }}
           onClick={() => {
-            setAdmDbParameterDialog(rowData)
-            setDbParameterTip("UPDATE")
+            setCmnTerrtpDialog(rowData)
+            setTerrtpTip("UPDATE")
           }}
           text
           raised ></Button>
@@ -204,14 +229,16 @@ export default function AdmDbParameterL(props) {
       <DataTable
         dataKey="id"
         selectionMode="single"
-        selection={admDbParameter}
+        selection={cmnTerrtp}
         loading={loading}
-        value={admDbParameters}
+        value={cmnTerrtps}
         header={header}
         showGridlines
         removableSort
         filters={filters}
         scrollable
+        sortField="code"        
+        sortOrder={1}
         scrollHeight="750px"
         virtualScrollerOptions={{ itemSize: 46 }}
         tableStyle={{ minWidth: "50rem" }}
@@ -219,70 +246,63 @@ export default function AdmDbParameterL(props) {
         paginator
         rows={10}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        onSelectionChange={(e) => setAdmDbParameter(e.value)}
+        onSelectionChange={(e) => setCmnTerrtp(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
       >
         <Column
           //bodyClassName="text-center"
-          body={dbParameterTemplate}
+          body={actionTemplate}
           exportable={false}
           headerClassName="w-10rem"
           style={{ minWidth: '4rem' }}
         />        
         <Column
           field="code"
-          header="Code"
-          sortable
-          filter
-          style={{ width: "20%" }}
-        ></Column>
-        <Column
-          field="text"
-          header="Text"
-          sortable
-          filter
-          style={{ width: "50%" }}
-        ></Column>
-        <Column
-          field="comment"
-          header="Comment"
+          header={translations[selectedLanguage].Code}
           sortable
           filter
           style={{ width: "25%" }}
         ></Column>
         <Column
-          field="version"
-          header="Version"
+          field="textx"
+          header={translations[selectedLanguage].Text}
           sortable
           filter
-          style={{ width: "25%" }}
-        ></Column>        
+          style={{ width: "60%" }}
+        ></Column>
+        <Column
+          field="valid"
+          filterField="valid"
+          dataType="numeric"
+          header={translations[selectedLanguage].Valid}
+          sortable
+          filter
+          filterElement={validFilterTemplate}
+          style={{ width: "15%" }}
+          bodyClassName="text-center"
+          body={validBodyTemplate}
+        ></Column>
       </DataTable>
       <Dialog
-        header="DbParameter"
+        header={translations[selectedLanguage].Terrtp}
         visible={visible}
-        style={{ width: '70%' }}
+        style={{ width: '50%' }}
         onHide={() => {
           setVisible(false);
           setShowMyComponent(false);
         }}
       >
         {showMyComponent && (
-          <DbParameter
+          <CmnTerrtp
             parameter={"inputTextValue"}
-            admDbParameter={admDbParameter}
+            cmnTerrtp={cmnTerrtp}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
-            dbParameterTip={dbParameterTip}
+            terrtpTip={terrtpTip}
           />
         )}
-        <div className="p-dialog-header-icons" style={{ display: 'none' }}>
-          <button className="p-dialog-header-close p-link">
-            <span className="p-dialog-header-close-icon pi pi-times"></span>
-          </button>
-        </div>
       </Dialog>
     </div>
   );

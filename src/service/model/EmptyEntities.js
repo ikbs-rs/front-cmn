@@ -277,7 +277,7 @@ const EmptyEntities =
     "text": "",
     "short": "",
     "address": "",
-    "place": null,
+    "place": "",
     "postcode": "",
     "tel": "",
     "activity": "",
@@ -355,9 +355,9 @@ const EmptyEntities =
     "site": null,
     "par1": null,
     "par2": null,
-    "long": "",
+    "text": "",
     "begda": "",
-    "datumod2": ""
+    "endda": ""
   },
   "cmn_partp": {
     "id": null,
@@ -451,7 +451,6 @@ const EmptyEntities =
   "cmn_terrlink": {
     "id": null,
     "site": null,
-    "link": null,
     "terr1": null,
     "terr2": null,
     "text": "",

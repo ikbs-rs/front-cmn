@@ -1,39 +1,39 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { classNames } from 'primereact/utils';
-import { AdmRolllinkService } from "../../service/model/AdmRolllinkService";
+import { CmnTerrtpService } from "../../service/model/CmnTerrtpService";
 import './index.css';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
+import { Dropdown } from 'primereact/dropdown';
 import { Toast } from "primereact/toast";
 import DeleteDialog from '../dialog/DeleteDialog';
-import { Dropdown } from 'primereact/dropdown';
-import { AdmRollService } from "../../service/model/AdmRollService";
 import { translations } from "../../configs/translations";
 
-const AdmRolllink = (props) => {
+const CmnTerrtp = (props) => {
     const selectedLanguage = localStorage.getItem('sl')||'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
-    const [admRolllink, setAdmRolllink] = useState(props.admRolllink);
+    const [dropdownItem, setDropdownItem] = useState(null);
+    const [dropdownItems, setDropdownItems] = useState(null);
+    const [cmnTerrtp, setCmnTerrtp] = useState(props.cmnTerrtp);
     const [submitted, setSubmitted] = useState(false);
-    const [ddRollItem, setDdRollItem] = useState(null);
-    const [ddRollItems, setDdRollItems] = useState(null);
 
     const toast = useRef(null);
+    const items = [
+        { name: `${translations[selectedLanguage].Yes}`, code: '1' },
+        { name: `${translations[selectedLanguage].No}`, code: '0' }
+    ];
 
     useEffect(() => {
-        async function fetchData() {
-            try {
-                const admRollService = new AdmRollService();
-                const data = await admRollService.getAdmRollX();
-                const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
-                setDdRollItems(dataDD);
-                setDdRollItem(dataDD.find((item) => item.code === props.admRolllink.roll1) || null);
-            } catch (error) {
-                console.error(error);
-                // Obrada greške ako je potrebna
-            }
-        }
-        fetchData();
+        setDropdownItem(findDropdownItemByCode(props.cmnTerrtp.valid));
+    }, []);
+
+    const findDropdownItemByCode = (code) => {
+        return items.find((item) => item.code === code) || null;
+    };
+
+
+    useEffect(() => {
+        setDropdownItems(items);
     }, []);
 
     const handleCancelClick = () => {
@@ -42,11 +42,11 @@ const AdmRolllink = (props) => {
 
     const handleCreateClick = async () => {
         try {
-            setSubmitted(true);
-            const admRolllinkService = new AdmRolllinkService();
-            const data = await admRolllinkService.postAdmRolllink(admRolllink);
-            admRolllink.id = data
-            props.handleDialogClose({ obj: admRolllink, rollLinkTip: props.rollLinkTip });
+            setSubmitted(true);            
+                const cmnTerrtpService = new CmnTerrtpService();
+                const data = await cmnTerrtpService.postCmnTerrtp(cmnTerrtp);
+                cmnTerrtp.id = data
+                props.handleDialogClose({ obj: cmnTerrtp, terrtpTip: props.terrtpTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
@@ -61,9 +61,9 @@ const AdmRolllink = (props) => {
     const handleSaveClick = async () => {
         try {
             setSubmitted(true);
-            const admRolllinkService = new AdmRolllinkService();
-            await admRolllinkService.putAdmRolllink(admRolllink);
-            props.handleDialogClose({ obj: admRolllink, rollLinkTip: props.rollLinkTip });
+            const cmnTerrtpService = new CmnTerrtpService();
+            await cmnTerrtpService.putCmnTerrtp(cmnTerrtp);
+            props.handleDialogClose({ obj: cmnTerrtp, terrtpTip: props.terrtpTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
@@ -82,9 +82,9 @@ const AdmRolllink = (props) => {
     const handleDeleteClick = async () => {
         try {
             setSubmitted(true);
-            const admRolllinkService = new AdmRolllinkService();
-            await admRolllinkService.deleteAdmRolllink(admRolllink);
-            props.handleDialogClose({ obj: admRolllink, rollLinkTip: 'DELETE' });
+            const cmnTerrtpService = new CmnTerrtpService();
+            await cmnTerrtpService.deleteCmnTerrtp(cmnTerrtp);
+            props.handleDialogClose({ obj: cmnTerrtp, terrtpTip: 'DELETE' });
             props.setVisible(false);
             hideDeleteDialog();
         } catch (err) {
@@ -100,18 +100,17 @@ const AdmRolllink = (props) => {
     const onInputChange = (e, type, name) => {
         let val = ''
         if (type === "options") {
-            setDdRollItem(e.value);
-            admRolllink.otext= e.value.name
-            admRolllink.ocode= e.value.code
+            setDropdownItem(e.value);
             val = (e.target && e.target.value && e.target.value.code) || '';
         } else {
             val = (e.target && e.target.value) || '';
         }
 
-        let _admRolllink = { ...admRolllink };
-        _admRolllink[`${name}`] = val;
+        let _cmnTerrtp = { ...cmnTerrtp };
+        _cmnTerrtp[`${name}`] = val;
+        if (name===`textx`) _cmnTerrtp[`text`] = val
 
-        setAdmRolllink(_admRolllink);
+        setCmnTerrtp(_cmnTerrtp);
     };
 
     const hideDeleteDialog = () => {
@@ -122,49 +121,40 @@ const AdmRolllink = (props) => {
         <div className="grid">
             <Toast ref={toast} />
             <div className="col-12">
-            <div className="card">
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-5">
-                            <label htmlFor="code">{translations[selectedLanguage].Code}</label>
-                            <InputText id="code"
-                                value={props.admRoll.code}
-                                disabled={true}
-                            />
-                        </div>
-                        <div className="field col-12 md:col-7">
-                            <label htmlFor="text">{translations[selectedLanguage].Text}</label>
-                            <InputText
-                                id="textx"
-                                value={props.admRoll.textx}
-                                disabled={true}
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="col-12">
                 <div className="card">
                     <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-6">
-                            <label htmlFor="roll1">{translations[selectedLanguage].Roll} *</label>
-                            <Dropdown id="roll1"
-                                value={ddRollItem}
-                                options={ddRollItems}
-                                onChange={(e) => onInputChange(e, "options", 'roll1')}
+                        <div className="field col-12 md:col-7">
+                            <label htmlFor="code">{translations[selectedLanguage].Code}</label>
+                            <InputText id="code" autoFocus
+                                value={cmnTerrtp.code} onChange={(e) => onInputChange(e, "text", 'code')}
+                                required
+                                className={classNames({ 'p-invalid': submitted && !cmnTerrtp.code })}
+                            />
+                            {submitted && !cmnTerrtp.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>
+                        <div className="field col-12 md:col-12">
+                            <label htmlFor="textx">{translations[selectedLanguage].Text}</label>
+                            <InputText
+                                id="textx"
+                                value={cmnTerrtp.textx} onChange={(e) => onInputChange(e, "text", 'textx')}
+                                required
+                                className={classNames({ 'p-invalid': submitted && !cmnTerrtp.textx })}
+                            />
+                            {submitted && !cmnTerrtp.textx && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>                       
+                        <div className="field col-12 md:col-4">
+                            <label htmlFor="valid">{translations[selectedLanguage].Valid}</label>
+                            <Dropdown id="valid"
+                                value={dropdownItem}
+                                options={dropdownItems}
+                                onChange={(e) => onInputChange(e, "options", 'valid')}
                                 required
                                 optionLabel="name"
                                 placeholder="Select One"
-                                className={classNames({ 'p-invalid': submitted && !admRolllink.roll1 })}
+                                className={classNames({ 'p-invalid': submitted && !cmnTerrtp.valid })}
                             />
-                            {submitted && !admRolllink.roll1 && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
-                        </div>
-                        <div className="field col-12 md:col-12">
-                            <label htmlFor="link">{translations[selectedLanguage].Link}</label>
-                            <InputText
-                                id="link"
-                                value={admRolllink.link} onChange={(e) => onInputChange(e, "text", 'link')}
-                            />
-                        </div>                         
+                            {submitted && !cmnTerrtp.valid && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>                        
                     </div>
 
                     <div className="flex flex-wrap gap-1">
@@ -179,7 +169,7 @@ const AdmRolllink = (props) => {
                         ) : null}
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
-                            {(props.rollLinkTip === 'CREATE') ? (
+                            {(props.terrtpTip === 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Create}
                                     icon="pi pi-check"
@@ -188,7 +178,7 @@ const AdmRolllink = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.rollLinkTip !== 'CREATE') ? (
+                            {(props.terrtpTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Delete}
                                     icon="pi pi-trash"
@@ -196,8 +186,8 @@ const AdmRolllink = (props) => {
                                     className="p-button-outlined p-button-danger"
                                     outlined
                                 />
-                            ) : null}
-                            {(props.rollLinkTip !== 'CREATE') ? (
+                            ) : null}                            
+                            {(props.terrtpTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Save}
                                     icon="pi pi-check"
@@ -213,7 +203,7 @@ const AdmRolllink = (props) => {
             <DeleteDialog
                 visible={deleteDialogVisible}
                 inAction="delete"
-                item={admRolllink.roll1}
+                item={cmnTerrtp.text}
                 onHide={hideDeleteDialog}
                 onDelete={handleDeleteClick}
             />
@@ -221,4 +211,4 @@ const AdmRolllink = (props) => {
     );
 };
 
-export default AdmRolllink;
+export default CmnTerrtp;

@@ -1,44 +1,44 @@
 import React, { useState, useEffect, useRef } from "react";
-import { DataTable } from "primereact/datatable";
 import { classNames } from "primereact/utils";
+import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
-import { AdmUserService } from "../../service/model/AdmUserService";
-import AdmUser from './admUser';
-import AdmUserPermissL from './admUserPermissL';
+import './index.css';
+import { CmnParattService } from "../../service/model/CmnParattService";
+import CmnParatt from './cmnParatt';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
-import './index.css';
 import { translations } from "../../configs/translations";
 
-
-export default function AdmUserL(props) {
-  const objName = "adm_user"
+export default function CmnParattL(props) {
+  let i = 0
+  const objName = "cmn_paratt"
   const selectedLanguage = localStorage.getItem('sl')||'en'
-  const emptyAdmUser = EmptyEntities[objName]
+  const emptyCmnParatt = EmptyEntities[objName]
   const [showMyComponent, setShowMyComponent] = useState(true);
-  const [admUsers, setAdmUsers] = useState([]);
-  const [admUser, setAdmUser] = useState(emptyAdmUser);
+  const [cmnParatts, setCmnParatts] = useState([]);
+  const [cmnParatt, setCmnParatt] = useState(emptyCmnParatt);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
-  const [admUserPermissLVisible, setAdmUserPermissLVisible] = useState(false);
-  const [userTip, setUserTip] = useState('');
+  const [parattTip, setParattTip] = useState('');
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const admUserService = new AdmUserService();
-        const data = await admUserService.getAdmUserV();
-        setAdmUsers(data);
+        ++i
+        if (i<2) {  
+        const cmnParattService = new CmnParattService();
+        const data = await cmnParattService.getCmnParatts();
+        setCmnParatts(data);
         initFilters();
-        setLoading(false)
+        }
       } catch (error) {
         console.error(error);
         // Obrada greške ako je potrebna
@@ -50,35 +50,31 @@ export default function AdmUserL(props) {
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
 
-    let _admUsers = [...admUsers];
-    let _admUser = { ...localObj.newObj.obj };
+    let _cmnParatts = [...cmnParatts];
+    let _cmnParatt = { ...localObj.newObj.obj };
 
     //setSubmitted(true);
-    if (localObj.newObj.userTip === "CREATE") {
-      _admUsers.push(_admUser);
-    } else if (localObj.newObj.userTip === "UPDATE") {
+    if (localObj.newObj.parattTip === "CREATE") {
+      _cmnParatts.push(_cmnParatt);
+    } else if (localObj.newObj.parattTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
-      _admUsers[index] = _admUser;
-    } else if ((localObj.newObj.userTip === "DELETE")) {
-      _admUsers = admUsers.filter((val) => val.id !== localObj.newObj.obj.id);
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'AdmUser Delete', life: 3000 });
+      _cmnParatts[index] = _cmnParatt;
+    } else if ((localObj.newObj.parattTip === "DELETE")) {
+      _cmnParatts = cmnParatts.filter((val) => val.id !== localObj.newObj.obj.id);
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnParatt Delete', life: 3000 });
     } else {
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'AdmUser ?', life: 3000 });
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnParatt ?', life: 3000 });
     }
-    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.userTip}`, life: 3000 });
-    setAdmUsers(_admUsers);
-    setAdmUser(emptyAdmUser);
-  };
-
-  const handleAdmPermissLDialogClose = (newObj) => {
-    const localObj = { newObj };
+    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.parattTip}`, life: 3000 });
+    setCmnParatts(_cmnParatts);
+    setCmnParatt(emptyCmnParatt);
   };
 
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < admUsers.length; i++) {
-      if (admUsers[i].id === id) {
+    for (let i = 0; i < cmnParatts.length; i++) {
+      if (cmnParatts[i].id === id) {
         index = i;
         break;
       }
@@ -88,52 +84,38 @@ export default function AdmUserL(props) {
   };
 
   const openNew = () => {
-    setAdmUserDialog(emptyAdmUser);
-  };
-
-  const openUserRoll = () => {
-    setAdmUserPermissLDialog();
+    setCmnParattDialog(emptyCmnParatt);
   };
 
   const onRowSelect = (event) => {
-    setAdmUser(event.data)
+    toast.current.show({
+      severity: "info",
+      summary: "Action Selected",
+      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
+      life: 3000,
+    });
   };
 
   const onRowUnselect = (event) => {
-    setAdmUser(emptyAdmUser)
+    toast.current.show({
+      severity: "warn",
+      summary: "Action Unselected",
+      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
+      life: 3000,
+    });
   };
   // <heder za filter
   const initFilters = () => {
     setFilters({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-      username: {
+      code: {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
-      firstname: {
+      textx: {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
-      lastname: {
-        operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-      },
-      mail: {
-        operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-      },
-      gtext: {
-        operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-      },
-      tip: {
-        operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-      },
-      created_at: {
-        operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-      },      
       valid: { value: null, matchMode: FilterMatchMode.EQUALS },
     });
     setGlobalFilterValue("");
@@ -159,11 +141,8 @@ export default function AdmUserL(props) {
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
-        <div className="flex flex-wrap gap-1">
-          <Button label={translations[selectedLanguage].Roll} icon="pi pi-video"  onClick={openUserRoll} text raised disabled={!admUser}/>
-        </div>        
         <div className="flex-grow-1" />
-        <b>{translations[selectedLanguage].UsersList}</b>
+        <b>{translations[selectedLanguage].ParattList}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -171,7 +150,7 @@ export default function AdmUserL(props) {
             <InputText
               value={globalFilterValue}
               onChange={onGlobalFilterChange}
-              placeholder="Keyword Search"
+              placeholder={translations[selectedLanguage].KeywordSearch}
             />
           </span>
           <Button
@@ -212,26 +191,20 @@ export default function AdmUserL(props) {
         />
       </div>
     );
-  };  
+  };
+
+  // <--- Dialog
+  const setCmnParattDialog = (cmnParatt) => {
+    setVisible(true)
+    setParattTip("CREATE")
+    setCmnParatt({ ...cmnParatt });
+  }
+  //  Dialog --->
 
   const header = renderHeader();
   // heder za filter/>
 
-  // <--- Dialog
-  const setAdmUserDialog = (newAdmUser) => {
-    setVisible(true)
-    setUserTip("CREATE")
-    setAdmUser({ ...newAdmUser });
-  }
-
-  const setAdmUserPermissLDialog = () => {
-    setShowMyComponent(true);
-    setAdmUserPermissLVisible(true);
-
-  }  
-  //  Dialog --->
-
-  const userTemplate = (rowData) => {
+  const actionTemplate = (rowData) => {
     return (
       <div className="flex flex-wrap gap-1">
 
@@ -240,8 +213,8 @@ export default function AdmUserL(props) {
           icon="pi pi-pencil"
           style={{ width: '24px', height: '24px' }}
           onClick={() => {
-            setAdmUserDialog(rowData)
-            setUserTip("UPDATE")
+            setCmnParattDialog(rowData)
+            setParattTip("UPDATE")
           }}
           text
           raised ></Button>
@@ -256,14 +229,16 @@ export default function AdmUserL(props) {
       <DataTable
         dataKey="id"
         selectionMode="single"
-        selection={admUser}
+        selection={cmnParatt}
         loading={loading}
-        value={admUsers}
+        value={cmnParatts}
         header={header}
         showGridlines
         removableSort
         filters={filters}
         scrollable
+        sortField="code"        
+        sortOrder={1}
         scrollHeight="750px"
         virtualScrollerOptions={{ itemSize: 46 }}
         tableStyle={{ minWidth: "50rem" }}
@@ -271,59 +246,31 @@ export default function AdmUserL(props) {
         paginator
         rows={10}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        onSelectionChange={(e) => setAdmUser(e.value)}
+        onSelectionChange={(e) => setCmnParatt(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
       >
         <Column
           //bodyClassName="text-center"
-          body={userTemplate}
+          body={actionTemplate}
           exportable={false}
           headerClassName="w-10rem"
           style={{ minWidth: '4rem' }}
         />        
         <Column
-          field="username"
-          header={translations[selectedLanguage].Username}
+          field="code"
+          header={translations[selectedLanguage].Code}
           sortable
           filter
-          style={{ width: "10%" }}
+          style={{ width: "25%" }}
         ></Column>
         <Column
-          field="firstname"
-          header={translations[selectedLanguage].FirstName}
+          field="textx"
+          header={translations[selectedLanguage].Text}
           sortable
           filter
-          style={{ width: "15%" }}
-        ></Column>   
-        <Column
-          field="lastname"
-          header={translations[selectedLanguage].LastName}
-          sortable
-          filter
-          style={{ width: "20%" }}
-        ></Column>              
-        <Column
-          field="mail"
-          header={translations[selectedLanguage].Mail}
-          sortable
-          filter
-          style={{ width: "15%" }}
+          style={{ width: "60%" }}
         ></Column>
-        <Column
-          field="gtext"
-          header={translations[selectedLanguage].Group}
-          sortable
-          filter
-          style={{ width: "30%" }}
-        ></Column> 
-        <Column
-          field="tip"
-          header={translations[selectedLanguage].Type}
-          sortable
-          filter
-          style={{ width: "5%" }}
-        ></Column>                       
         <Column
           field="valid"
           filterField="valid"
@@ -335,48 +282,28 @@ export default function AdmUserL(props) {
           style={{ width: "15%" }}
           bodyClassName="text-center"
           body={validBodyTemplate}
-        ></Column>        
+        ></Column>
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].User}
+        header={translations[selectedLanguage].Paratt}
         visible={visible}
-        style={{ width: '70%' }}
+        style={{ width: '50%' }}
         onHide={() => {
           setVisible(false);
           setShowMyComponent(false);
         }}
       >
         {showMyComponent && (
-          <AdmUser
+          <CmnParatt
             parameter={"inputTextValue"}
-            admUser={admUser}
+            cmnParatt={cmnParatt}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
-            userTip={userTip}
+            parattTip={parattTip}
           />
         )}
       </Dialog>
-      <Dialog
-        header={translations[selectedLanguage].Userpermiss}
-        visible={admUserPermissLVisible}
-        style={{ width: '70%' }}
-        onHide={() => {
-          setAdmUserPermissLVisible(false);
-          setShowMyComponent(false);
-        }}
-      >
-        {showMyComponent && (
-          <AdmUserPermissL
-            parameter={"inputTextValue"}
-            admUser={admUser}
-            handleAdmPermissLDialogClose={handleAdmPermissLDialogClose}
-            setAdmUserPermissLVisible={setAdmUserPermissLVisible}
-            dialog={true}
-            lookUp={false}
-          />
-        )}
-      </Dialog>      
     </div>
   );
 }

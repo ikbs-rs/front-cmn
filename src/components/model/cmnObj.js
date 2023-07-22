@@ -14,7 +14,7 @@ import Token from "../../utilities/Token";
 
 const CmnObj = (props) => {
     console.log(props)
-    const selectedLanguage = localStorage.getItem('sl')||'en'
+    const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [dropdownItem, setDropdownItem] = useState(null);
     const [dropdownItems, setDropdownItems] = useState(null);
@@ -70,11 +70,11 @@ const CmnObj = (props) => {
 
     const handleCreateClick = async () => {
         try {
-            setSubmitted(true);            
-                const cmnObjService = new CmnObjService();
-                const data = await cmnObjService.postCmnObj(cmnObj);
-                cmnObj.id = data
-                props.handleDialogClose({ obj: cmnObj, objTip: props.objTip });
+            setSubmitted(true);
+            const cmnObjService = new CmnObjService();
+            const data = await cmnObjService.postCmnObj(cmnObj);
+            cmnObj.id = data
+            props.handleDialogClose({ obj: cmnObj, objTip: props.objTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
@@ -129,22 +129,22 @@ const CmnObj = (props) => {
         let val = ''
         if (type === "options") {
 
-            if (name == "tp") { 
-                console.log( e.value.code, "****",  e.value.name)
+            if (name == "tp") {
+                console.log(e.value.code, "****", e.value.name)
                 setDdTpItem(e.value);
                 cmnObj.ctp = e.value.code
                 cmnObj.ntp = e.value.name
             } else {
                 setDropdownItem(e.value);
             }
-            val = (e.target && e.target.value && e.target.value.code) || '';        
+            val = (e.target && e.target.value && e.target.value.code) || '';
         } else {
             val = (e.target && e.target.value) || '';
         }
 
         let _cmnObj = { ...cmnObj };
         _cmnObj[`${name}`] = val;
-        if (name===`textx`) _cmnObj[`text`] = val
+        if (name === `textx`) _cmnObj[`text`] = val
 
         setCmnObj(_cmnObj);
     };
@@ -177,7 +177,7 @@ const CmnObj = (props) => {
                                 className={classNames({ 'p-invalid': submitted && !cmnObj.textx })}
                             />
                             {submitted && !cmnObj.textx && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
-                        </div> 
+                        </div>
                         <div className="field col-12 md:col-8">
                             <label htmlFor="tp">{translations[selectedLanguage].ObjtpText} *</label>
                             <Dropdown id="tp"
@@ -190,7 +190,7 @@ const CmnObj = (props) => {
                                 className={classNames({ 'p-invalid': submitted && !cmnObj.tp })}
                             />
                             {submitted && !cmnObj.tp && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
-                        </div>                                              
+                        </div>
                         <div className="field col-12 md:col-5">
                             <label htmlFor="valid">{translations[selectedLanguage].Valid}</label>
                             <Dropdown id="valid"
@@ -203,7 +203,7 @@ const CmnObj = (props) => {
                                 className={classNames({ 'p-invalid': submitted && !cmnObj.valid })}
                             />
                             {submitted && !cmnObj.valid && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
-                        </div>                        
+                        </div>
                     </div>
 
                     <div className="flex flex-wrap gap-1">
@@ -235,7 +235,7 @@ const CmnObj = (props) => {
                                     className="p-button-outlined p-button-danger"
                                     outlined
                                 />
-                            ) : null}                            
+                            ) : null}
                             {(props.objTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Save}

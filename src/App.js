@@ -9,7 +9,7 @@ import AppConfig from './AppConfig';
 import AppMenu from './AppMenu';
 import AppRightMenu from './AppRightMenu';
 
-import UserGrp from './components/model/admUserGrpL';
+import Um from './components/model/cmnUmL';
 import LocTP from './components/model/cmnLoctpL';
 import ObjTp from './components/model/cmnObjtpL';
 import Obj from './components/model/cmnObjL';
@@ -17,13 +17,13 @@ import ObjTree from './components/model/cmnObjTreeL';
 import ObjAtt from './components/model/cmnObjattL';
 import ObjAttTp from './components/model/cmnObjatttpL';
 import Link from './components/model/cmnLinkL';
-import User from './components/model/cmnObjattL';
-import Roll from './components/model/cmnObjattL';
+import Partp from './components/model/cmnPartpL';
+import Par from './components/model/cmnParL';
+import Paratt from './components/model/cmnParattL';
+import Terrtp from './components/model/cmnTerrtpL';
+import Terr from './components/model/cmnTerrL';
+import Terratt from './components/model/cmnTerrattL';
 
-import DbParameter from './components/model/admDbParameterL';
-import Message from './components/model/admMessageL';
-import DbmsErr from './components/model/admDbmsErrL';
-import IconsDemo from './utilities/IconsDemo';
 import EmptyPage from './pages/EmptyPage';
 
 import PrimeReact from 'primereact/api';
@@ -73,23 +73,22 @@ const App = () => {
                     label: translations[selectedLanguage].Business_partners_administration,
                     icon: 'pi pi-fw pi-bars',
                     items: [
-                        { label: translations[selectedLanguage].Type_partners, icon: 'pi pi-fw pi-calendar', to: '/usergrp' },
-                        { label: translations[selectedLanguage].Business_partners, icon: 'pi pi-fw pi-calendar', to: '/action'  },
-                        { label: translations[selectedLanguage].Properties_partners, icon: 'pi pi-fw pi-calendar' , to: '/roll'},
-                        { label: translations[selectedLanguage].Actions, icon: 'pi pi-fw pi-calendar' , to: '/roll'}
+                        { label: translations[selectedLanguage].Type_partners, icon: 'pi pi-fw pi-calendar', to: '/partp' },
+                        { label: translations[selectedLanguage].Business_partners, icon: 'pi pi-fw pi-calendar', to: '/par'  },
+                        { label: translations[selectedLanguage].Properties_partners, icon: 'pi pi-fw pi-calendar' , to: '/paratt'},
                     ]
                 },
                 {
                     label: translations[selectedLanguage].Territorial_administration,
                     icon: 'pi pi-fw pi-bars',
                     items: [
-                        { label: translations[selectedLanguage].Type_of_territory, icon: 'pi pi-fw pi-calendar', to: '/usergrp' },
-                        { label: translations[selectedLanguage].Territory, icon: 'pi pi-fw pi-calendar', to: '/action'  },
-                        { label: translations[selectedLanguage].Properties_territory, icon: 'pi pi-fw pi-calendar' , to: '/roll'},
-                        { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/roll'}
+                        { label: translations[selectedLanguage].Type_of_territory, icon: 'pi pi-fw pi-calendar', to: '/terrtp' },
+                        { label: translations[selectedLanguage].Territory, icon: 'pi pi-fw pi-calendar', to: '/terr'  },
+                        { label: translations[selectedLanguage].Properties_territory, icon: 'pi pi-fw pi-table' , to: '/terratt'}
+                       // { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/terrtp'}
                     ]
                 },
-                {
+              /*  {
                     label: translations[selectedLanguage].Location_administration,
                     icon: 'pi pi-fw pi-bars',
                     items: [
@@ -98,21 +97,20 @@ const App = () => {
                         { label: translations[selectedLanguage].Properties_location, icon: 'pi pi-fw pi-calendar' , to: '/locatt'},
                         { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/loclinktp'}
                     ]
-                },
+                },*/
                 {
                     label: translations[selectedLanguage].Currency_administration,
                     icon: 'pi pi-fw pi-bars',
                     items: [
-                        { label: translations[selectedLanguage].Currency, icon: 'pi pi-fw pi-calendar' , to: '/roll'},
-                        { label: translations[selectedLanguage].Exchange_rate, icon: 'pi pi-fw pi-calendar' , to: '/roll'}
+                        { label: translations[selectedLanguage].Currency, icon: 'pi pi-fw pi-calendar' , to: '/curr'},
                     ]
                 },
                 {
                     label: translations[selectedLanguage].Tax_system,
                     icon: 'pi pi-fw pi-bars',
                     items: [
-                        { label: translations[selectedLanguage].Tariff_groups, icon: 'pi pi-fw pi-calendar' , to: '/roll'},
-                        { label: translations[selectedLanguage].Taxes, icon: 'pi pi-fw pi-calendar' , to: '/roll'}
+                        { label: translations[selectedLanguage].Tariff_groups, icon: 'pi pi-fw pi-calendar' , to: '/tgp'},
+                        { label: translations[selectedLanguage].Taxes, icon: 'pi pi-fw pi-calendar' , to: '/tax'}
                     ]
                 },
                 {
@@ -131,9 +129,9 @@ const App = () => {
                     label: translations[selectedLanguage].Other,
                     icon: 'pi pi-prime',
                     items: [
-                        { label: translations[selectedLanguage].Program_modules, icon: 'pi pi-database', to: '/dbparameter' },
-                        { label: translations[selectedLanguage].Menu_administration, icon: 'pi pi-fw pi-clone', to: '/message' },
-                        { label: translations[selectedLanguage].Units_of_measurement, icon: 'pi pi-fw pi-clone', to: '/message' },
+                        { label: translations[selectedLanguage].Program_modules, icon: 'pi pi-database', to: '/module' },
+                  //      { label: translations[selectedLanguage].Menu_administration, icon: 'pi pi-fw pi-clone', to: '/menu' },
+                        { label: translations[selectedLanguage].Units_of_measurement, icon: 'pi pi-fw pi-clone', to: '/um' },
                     ]
                 }
             ]
@@ -453,19 +451,20 @@ const App = () => {
                 <div className="layout-content">
                     <Routes>
                         <Route path="/" element={<EmptyPage />} />
-                        <Route path="/usergrp" element={<UserGrp />} />
-                        <Route path="/user" element={<User />} />
-                        <Route path="/roll" element={<Roll />} />
-                        <Route path="/action" element={<UserGrp />} />
-                        <Route path="/dbparameter" element={<DbParameter />} />
-                        <Route path="/message" element={<Message />} />
-                        <Route path="/dbmserr" element={<DbmsErr />} />
-                        <Route path="/icons" element={<IconsDemo />} />
+                        <Route path="/um" element={<Um />} />
+                        <Route path="/partp" element={<Partp />} />
+                        <Route path="/par" element={<Par />} />
+                        <Route path="/paratt" element={<Paratt />} />
+                        <Route path="/terrtp" element={<Terrtp />} />
+                        <Route path="/terr" element={<Terr />} />
+                        <Route path="/terratt" element={<Terratt />} />
+
+
                         
                         <Route path="/loctp" element={<LocTP />} />
-                        <Route path="/loc" element={<UserGrp />} />
-                        <Route path="/locatt" element={<UserGrp />} />
-                        <Route path="/loclinktp" element={<UserGrp />} />
+                        <Route path="/loc" element={<Um />} />
+                        <Route path="/locatt" element={<Um />} />
+                        <Route path="/loclinktp" element={<Um />} />
 
                         <Route path="/objtp" element={<ObjTp />} />
                         <Route path="/obj" element={<Obj />} />

@@ -2,9 +2,10 @@ import axios from 'axios';
 import env from "../../configs/env"
 import Token from "../../utilities/Token";
 
-export class AdmUserService {
-  async getAdmUserV() {
-    const url = `${env.ADM_BACK_URL}/adm/user_v`;
+export class CmnPartpService {
+  async getCmnPartps() {
+    const selectedLanguage = localStorage.getItem('sl') || 'en'
+    const url = `${env.CMN_BACK_URL}/cmn/x/partp/?sl=${selectedLanguage}`;
     const tokenLocal = await Token.getTokensLS();
     const headers = {
       Authorization: tokenLocal.token
@@ -19,44 +20,41 @@ export class AdmUserService {
     }
   }
 
-  async getAdmUser(objId) {
-    const url = `${env.ADM_BACK_URL}/adm/user/${objId}`;
+  async getCmnPartp(objId) {
+    const selectedLanguage = localStorage.getItem('sl') || 'en'
+    const url = `${env.CMN_BACK_URL}/cmn/x/partp/${objId}/?sl=${selectedLanguage}`;
     const tokenLocal = await Token.getTokensLS();
     const headers = {
       Authorization: tokenLocal.token
     };
-
+    
     try {
       const response = await axios.get(url, { headers });
-      return response.data.item;
+      return response.data.items;
     } catch (error) {
       console.error(error);
       throw error;
     }
-  }  
+  }
 
-  async postAdmUser(newObj) {
+
+  async postCmnPartp(newObj) {
     try {
-      if ((newObj.username.trim() === '' || !newObj.username)
-        || (newObj.admin.trim() === '' || !newObj.admin)
-        || (newObj.mail.trim() === '' || !newObj.mail)
-        || (newObj.usergrp.trim() === '' || !newObj.usergrp)
-        || (newObj.valid.trim() === '' || !newObj.valid)
-        ) {
+      const selectedLanguage = localStorage.getItem('sl') || 'en'
+      if (newObj.code.trim() === '' || newObj.text.trim() === '' || newObj.valid === null) {
         throw new Error(
           "Items must be filled!"
         );
       }
-      const url = `${env.ADM_BACK_URL}/adm/user`;
+      const url = `${env.CMN_BACK_URL}/cmn/x/partp/?sl=${selectedLanguage}`;
       const tokenLocal = await Token.getTokensLS();
       const headers = {
         'Content-Type': 'application/json',
         'Authorization': tokenLocal.token
       };
       const jsonObj = JSON.stringify(newObj)
-
-
       const response = await axios.post(url, jsonObj, { headers });
+      //console.log("**************"  , response, "****************")
       return response.data.items;
     } catch (error) {
       console.error(error);
@@ -65,19 +63,15 @@ export class AdmUserService {
 
   }
 
-  async putAdmUser(newObj) {
+  async putCmnPartp(newObj) {
     try {
-      if ((newObj.username == null || !newObj.username)
-        || (newObj.admin.trim() === '' || !newObj.admin)
-        || (newObj.mail.trim() === '' || !newObj.mail)
-        || (newObj.usergrp.trim() === '' || !newObj.usergrp)
-        || (newObj.valid.trim() === '' || !newObj.valid)
-        ) {
+      const selectedLanguage = localStorage.getItem('sl') || 'en'
+      if (newObj.code.trim() === '' || newObj.text.trim() === '' || newObj.valid === null) {
         throw new Error(
           "Items must be filled!"
         );
       }
-      const url = `${env.ADM_BACK_URL}/adm/user`;
+      const url = `${env.CMN_BACK_URL}/cmn/x/partp/?sl=${selectedLanguage}`;
       const tokenLocal = await Token.getTokensLS();
       const headers = {
         'Content-Type': 'application/json',
@@ -85,6 +79,7 @@ export class AdmUserService {
       };
       const jsonObj = JSON.stringify(newObj)
       const response = await axios.put(url, jsonObj, { headers });
+      //console.log("**************"  , response, "****************")
       return response.data.items;
     } catch (error) {
       console.error(error);
@@ -93,14 +88,14 @@ export class AdmUserService {
 
   }
 
-  async deleteAdmUser(newObj) {
-    const url = `${env.ADM_BACK_URL}/adm/user/${newObj.id}`;
-    const tokenLocal = await Token.getTokensLS();
-    const headers = {
-      'Authorization': tokenLocal.token
-    };
-
+  async deleteCmnPartp(newObj) {
     try {
+      const url = `${env.CMN_BACK_URL}/cmn/x/partp/${newObj.id}`;
+      const tokenLocal = await Token.getTokensLS();
+      const headers = {
+        'Authorization': tokenLocal.token
+      };
+
       const response = await axios.delete(url, { headers });
       return response.data.items;
     } catch (error) {

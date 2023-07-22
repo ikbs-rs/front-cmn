@@ -1,38 +1,39 @@
 import React, { useState, useEffect, useRef } from "react";
+import { classNames } from "primereact/utils";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
-import { AdmRolllinkService } from "../../service/model/AdmRolllinkService";
-import AdmRolllink from './admRolllink';
+import { CmnParattsService } from "../../service/model/CmnParattsService";
+import CmnParatts from './cmnParatts';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
 import './index.css';
 import { translations } from "../../configs/translations";
+import DateFunction from "../../utilities/DateFunction";
 
 
-export default function AdmRolllinkL(props) {
-  
-  const objName = "adm_rolllink"
+export default function CmnParattsL(props) {
+
+  const objName = "cmn_paratts"
   const selectedLanguage = localStorage.getItem('sl')||'en'
-  const emptyAdmRolllink = EmptyEntities[objName]
-  emptyAdmRolllink.roll2 = props.admRoll.id
-  emptyAdmRolllink.roll1 = null
+  const emptyCmnParatts = EmptyEntities[objName]
+  emptyCmnParatts.par = props.cmnPar.id
   const [showMyComponent, setShowMyComponent] = useState(true);
-  const [admRolllinks, setAdmRolllinks] = useState([]);
-  const [admRolllink, setAdmRolllink] = useState(emptyAdmRolllink);
+  const [cmnParattss, setCmnParattss] = useState([]);
+  const [cmnParatts, setCmnParatts] = useState(emptyCmnParatts);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
-  const [rollLinkTip, setRolllinkTip] = useState('');
+  const [parattsTip, setParattsTip] = useState('');
   let i = 0
-
   const handleCancelClick = () => {
-    props.setAdmRolllinkLVisible(false);
+    props.setCmnParattsLVisible(false);
   };
 
   useEffect(() => {
@@ -40,10 +41,10 @@ export default function AdmRolllinkL(props) {
       try {
         ++i
         if (i < 2) {
-          const admRolllinkService = new AdmRolllinkService();
-          const data = await admRolllinkService.getAdmRolllinkRoll(props.admRoll.id);
-         
-          setAdmRolllinks(data);
+          const cmnParattsService = new CmnParattsService();
+          const data = await cmnParattsService.getLista(props.cmnPar.id);
+          setCmnParattss(data);
+
           initFilters();
         }
       } catch (error) {
@@ -57,31 +58,30 @@ export default function AdmRolllinkL(props) {
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
 
-    let _admRolllinks = [...admRolllinks];
-    let _admRolllink = { ...localObj.newObj.obj };
-
+    let _cmnParattss = [...cmnParattss];
+    let _cmnParatts = { ...localObj.newObj.obj };
     //setSubmitted(true);
-    if (localObj.newObj.rollLinkTip === "CREATE") {
-      _admRolllinks.push(_admRolllink);
-    } else if (localObj.newObj.rollLinkTip === "UPDATE") {
+    if (localObj.newObj.parattsTip === "CREATE") {
+      _cmnParattss.push(_cmnParatts);
+    } else if (localObj.newObj.parattsTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
-      _admRolllinks[index] = _admRolllink;
-    } else if ((localObj.newObj.rollLinkTip === "DELETE")) {
-      _admRolllinks = admRolllinks.filter((val) => val.id !== localObj.newObj.obj.id);
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'AdmRolllink Delete', life: 3000 });
+      _cmnParattss[index] = _cmnParatts;
+    } else if ((localObj.newObj.parattsTip === "DELETE")) {
+      _cmnParattss = cmnParattss.filter((val) => val.id !== localObj.newObj.obj.id);
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnParatts Delete', life: 3000 });
     } else {
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'AdmRolllink ?', life: 3000 });
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnParatts ?', life: 3000 });
     }
-    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.rollLinkTip}`, life: 3000 });
-    setAdmRolllinks(_admRolllinks);
-    setAdmRolllink(emptyAdmRolllink);
+    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.parattsTip}`, life: 3000 });
+    setCmnParattss(_cmnParattss);
+    setCmnParatts(emptyCmnParatts);
   };
 
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < admRolllinks.length; i++) {
-      if (admRolllinks[i].id === id) {
+    for (let i = 0; i < cmnParattss.length; i++) {
+      if (cmnParattss[i].id === id) {
         index = i;
         break;
       }
@@ -91,10 +91,11 @@ export default function AdmRolllinkL(props) {
   };
 
   const openNew = () => {
-    setAdmRolllinkDialog(emptyAdmRolllink);
+    setCmnParattsDialog(emptyCmnParatts);
   };
 
   const onRowSelect = (event) => {
+    //cmnParatts.begda = event.data.begda
     toast.current.show({
       severity: "info",
       summary: "Action Selected",
@@ -115,14 +116,22 @@ export default function AdmRolllinkL(props) {
   const initFilters = () => {
     setFilters({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-      rcode: {
+      ctp: {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
-      rtext: {
+      ntp: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],       
       },
+      endda: {
+        operator: FilterOperator.AND,
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],       
+      },
+      begda: {
+        operator: FilterOperator.AND,
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],       
+      }      
     });
     setGlobalFilterValue("");
   };
@@ -151,7 +160,7 @@ export default function AdmRolllinkL(props) {
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
         <div className="flex-grow-1"></div>
-        <b>{translations[selectedLanguage].RollsList}</b>
+        <b>{translations[selectedLanguage].ParattsList}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -175,18 +184,22 @@ export default function AdmRolllinkL(props) {
     );
   };
 
+  const formatDateColumn = (rowData, field) => {
+    return DateFunction.formatDate(rowData[field]);
+  };
+
   // <--- Dialog
-  const setAdmRolllinkDialog = (admRolllink) => {
+  const setCmnParattsDialog = (cmnParatts) => {
     setVisible(true)
-    setRolllinkTip("CREATE")
-    setAdmRolllink({ ...admRolllink });
+    setParattsTip("CREATE")
+    setCmnParatts({ ...cmnParatts });
   }
   //  Dialog --->
 
   const header = renderHeader();
   // heder za filter/>
 
-  const rollLinkTemplate = (rowData) => {
+  const parattsTemplate = (rowData) => {
     return (
       <div className="flex flex-wrap gap-1">
 
@@ -195,8 +208,8 @@ export default function AdmRolllinkL(props) {
           icon="pi pi-pencil"
           style={{ width: '24px', height: '24px' }}
           onClick={() => {
-            setAdmRolllinkDialog(rowData)
-            setRolllinkTip("UPDATE")
+            setCmnParattsDialog(rowData)
+            setParattsTip("UPDATE")
           }}
           text
           raised ></Button>
@@ -211,10 +224,10 @@ export default function AdmRolllinkL(props) {
       <div className="col-12">
         <div className="card">
           <div className="p-fluid formgrid grid">
-          <div className="field col-12 md:col-6">
+            <div className="field col-12 md:col-6">
               <label htmlFor="code">{translations[selectedLanguage].Code}</label>
               <InputText id="code"
-                value={props.admRoll.code}
+                value={props.cmnPar.code}
                 disabled={true}
               />
             </div>
@@ -222,19 +235,19 @@ export default function AdmRolllinkL(props) {
               <label htmlFor="text">{translations[selectedLanguage].Text}</label>
               <InputText
                 id="text"
-                value={props.admRoll.textx}
+                value={props.cmnPar.textx}
                 disabled={true}
               />
-            </div>
+            </div>           
           </div>
         </div>
       </div>
       <DataTable
         dataKey="id"
         selectionMode="single"
-        selection={admRolllink}
+        selection={cmnParatts}
         loading={loading}
-        value={admRolllinks}
+        value={cmnParattss}
         header={header}
         showGridlines
         removableSort
@@ -247,57 +260,73 @@ export default function AdmRolllinkL(props) {
         paginator
         rows={10}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        onSelectionChange={(e) => setAdmRolllink(e.value)}
+        onSelectionChange={(e) => setCmnParatts(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
       >
         <Column
           //bodyClassName="text-center"
-          body={rollLinkTemplate}
+          body={parattsTemplate}
           exportable={false}
           headerClassName="w-10rem"
           style={{ minWidth: '4rem' }}
         />
         <Column
-          field="ocode"
-          header={translations[selectedLanguage].Rollcode}
+          field="ctp"
+          header={translations[selectedLanguage].Code}
           sortable
           filter
-          style={{ width: "20%" }}
+          style={{ width: "15%" }}
         ></Column>
         <Column
-          field="otext"
-          header={translations[selectedLanguage].Roll}
-          sortable
-          filter
-          style={{ width: "45%" }}
-        ></Column>
-        <Column
-          field="link"
-          header={translations[selectedLanguage].Link}
+          field="ntp"
+          header={translations[selectedLanguage].Text}
           sortable
           filter
           style={{ width: "35%" }}
+        ></Column>
+        <Column
+          field="text"
+          header={translations[selectedLanguage].Value}
+          sortable
+          filter
+          style={{ width: "20%" }}
         ></Column>        
+        <Column
+          field="begda"
+          header={translations[selectedLanguage].Begda}
+          sortable
+          filter
+          style={{ width: "10%" }}
+          body={(rowData) => formatDateColumn(rowData, "begda")}
+        ></Column>  
+        <Column
+          field="endda"
+          header={translations[selectedLanguage].Endda}
+          sortable
+          filter
+          style={{ width: "10%" }}
+          body={(rowData) => formatDateColumn(rowData, "endda")}
+        ></Column>         
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].Rolllink}
+        header={translations[selectedLanguage].Link}
         visible={visible}
-        style={{ width: '70%' }}
+        style={{ width: '60%' }}
         onHide={() => {
           setVisible(false);
           setShowMyComponent(false);
         }}
       >
         {showMyComponent && (
-          <AdmRolllink
+          <CmnParatts
             parameter={"inputTextValue"}
-            admRolllink={admRolllink}
-            admRoll={props.admRoll}
+            cmnParatts={cmnParatts}
+            cmnPar={props.cmnPar}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
-            rollLinkTip={rollLinkTip}
+            parattsTip={parattsTip}
           />
         )}
         <div className="p-dialog-header-icons" style={{ display: 'none' }}>

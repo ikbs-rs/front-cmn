@@ -2,45 +2,28 @@ import axios from 'axios';
 import env from "../../configs/env"
 import Token from "../../utilities/Token";
 
-export class AdmRollactService {
+export class CmnTerrattsService {
 
-    async getARollActRoll(objId) {
+    async getLista(objId) {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.ADM_BACK_URL}/adm/rollact/getallouter/roll/${objId}/?sl=${selectedLanguage}&outer=adm_action&outerKey=action`;
+        const url = `${env.CMN_BACK_URL}/cmn/x/terratts/_v/lista/?stm=cmn_terratts_v&objid=${objId}&sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
-            Authorization: tokenLocal.token
+          Authorization: tokenLocal.token
         };
-
+    
         try {
-            const response = await axios.get(url, { headers });
-            return response.data.item;
+          const response = await axios.get(url, { headers });
+          return response.data.item;
         } catch (error) {
-            console.error(error);
-            throw error;
+          console.error(error);
+          throw error;
         }
-    }
+      }
 
-    async getAdmRollActs() {
+    async getCmnTerrattss() {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.ADM_BACK_URL}/adm/rollact/?sl=${selectedLanguage}`;
-        const tokenLocal = await Token.getTokensLS();
-        const headers = {
-            Authorization: tokenLocal.token
-        };
-
-        try {
-            const response = await axios.get(url, { headers });
-            return response.data.items;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    }
-
-    async getAdmRollAct(objId) {
-        const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.ADM_BACK_URL}/adm/rollact/${objId}/?sl=${selectedLanguage}`;
+        const url = `${env.CMN_BACK_URL}/cmn/x/terratts/?sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
             Authorization: tokenLocal.token
@@ -55,8 +38,25 @@ export class AdmRollactService {
         }
     }
 
+    async getCmnTerratts(objId) {
+        const selectedLanguage = localStorage.getItem('sl') || 'en'
+        const url = `${env.CMN_BACK_URL}/cmn/x/terratts/${objId}/?sl=${selectedLanguage}`;
+        const tokenLocal = await Token.getTokensLS();
+        const headers = {
+            Authorization: tokenLocal.token
+        };
 
-    async postAdmRollAct(newObj) {
+        try {
+            const response = await axios.get(url, { headers });
+            return response.data.items;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+
+    async postCmnTerratts(newObj) {
         try {
             const selectedLanguage = localStorage.getItem('sl') || 'en'
             if (newObj.action === null || newObj.roll === null) {
@@ -64,14 +64,14 @@ export class AdmRollactService {
                     "Items must be filled!"
                 );
             }
-            const url = `${env.ADM_BACK_URL}/adm/rollact/?sl=${selectedLanguage}`;
+            const url = `${env.CMN_BACK_URL}/cmn/x/terratts/?sl=${selectedLanguage}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': tokenLocal.token
             };
             const jsonObj = JSON.stringify(newObj)
-
+console.log("*-*-*-*-*", url, newObj, jsonObj)
             const response = await axios.post(url, jsonObj, { headers });
             return response.data.items;
         } catch (error) {
@@ -80,7 +80,7 @@ export class AdmRollactService {
         }
     }
 
-    async putAdmRollAct(newObj) {
+    async putCmnTerratts(newObj) {
         try {
             const selectedLanguage = localStorage.getItem('sl') || 'en'
             if (newObj.action === null || newObj.roll === null)  {
@@ -88,7 +88,7 @@ export class AdmRollactService {
                     "Items must be filled!"
                 );
             }
-            const url = `${env.ADM_BACK_URL}/adm/rollact/?sl=${selectedLanguage}`;
+            const url = `${env.CMN_BACK_URL}/cmn/x/terratts/?sl=${selectedLanguage}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Content-Type': 'application/json',
@@ -105,9 +105,9 @@ export class AdmRollactService {
 
     }
 
-    async deleteAdmRollAct(newObj) {
+    async deleteCmnTerratts(newObj) {
         try {
-            const url = `${env.ADM_BACK_URL}/adm/rollact/${newObj.id}`;
+            const url = `${env.CMN_BACK_URL}/cmn/x/terratts/${newObj.id}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Authorization': tokenLocal.token

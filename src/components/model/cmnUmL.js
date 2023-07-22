@@ -7,32 +7,38 @@ import { Button } from "primereact/button";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
-import { AdmActionService } from "../../service/model/AdmActionService";
-import AdmAkcija from './admAction';
+import './index.css';
+import { CmnUmService } from "../../service/model/CmnUmService";
+import CmnUm from './cmnUm';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
+import { translations } from "../../configs/translations";
 
-
-export default function AdmActionL() {
-  const objName = "adm_action"
-  const emptyAdmAction = EmptyEntities[objName]
+export default function CmnUmL(props) {
+  let i = 0
+  const objName = "cmn_um"
+  const selectedLanguage = localStorage.getItem('sl')||'en'
+  const emptyCmnUm = EmptyEntities[objName]
   const [showMyComponent, setShowMyComponent] = useState(true);
-  const [admActions, setAdmActions] = useState([]);
-  const [admAction, setAdmAction] = useState(emptyAdmAction);
+  const [cmnUms, setCmnUms] = useState([]);
+  const [cmnUm, setCmnUm] = useState(emptyCmnUm);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
-  const [actionTip, setActionTip] = useState('');
+  const [umTip, setUmTip] = useState('');
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const admActionService = new AdmActionService();
-        const data = await admActionService.getAdmActionV();
-        setAdmActions(data);
+        ++i
+        if (i<2) {  
+        const cmnUmService = new CmnUmService();
+        const data = await cmnUmService.getCmnUms();
+        setCmnUms(data);
         initFilters();
+        }
       } catch (error) {
         console.error(error);
         // Obrada greške ako je potrebna
@@ -44,31 +50,31 @@ export default function AdmActionL() {
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
 
-    let _admActions = [...admActions];
-    let _admAction = { ...localObj.newObj.obj };
+    let _cmnUms = [...cmnUms];
+    let _cmnUm = { ...localObj.newObj.obj };
 
     //setSubmitted(true);
-    if (localObj.newObj.actionTip === "CREATE") {
-      _admActions.push(_admAction);
-    } else if (localObj.newObj.actionTip === "UPDATE") {
+    if (localObj.newObj.umTip === "CREATE") {
+      _cmnUms.push(_cmnUm);
+    } else if (localObj.newObj.umTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
-      _admActions[index] = _admAction;
-    } else if ((localObj.newObj.actionTip === "DELETE")) {
-      _admActions = admActions.filter((val) => val.id !== localObj.newObj.obj.id);
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'AdmAction Delete', life: 3000 });
+      _cmnUms[index] = _cmnUm;
+    } else if ((localObj.newObj.umTip === "DELETE")) {
+      _cmnUms = cmnUms.filter((val) => val.id !== localObj.newObj.obj.id);
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnUm Delete', life: 3000 });
     } else {
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'AdmAction ?', life: 3000 });
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnUm ?', life: 3000 });
     }
-    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.actionTip}`, life: 3000 });
-    setAdmActions(_admActions);
-    setAdmAction(emptyAdmAction);
+    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.umTip}`, life: 3000 });
+    setCmnUms(_cmnUms);
+    setCmnUm(emptyCmnUm);
   };
 
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < admActions.length; i++) {
-      if (admActions[i].id === id) {
+    for (let i = 0; i < cmnUms.length; i++) {
+      if (cmnUms[i].id === id) {
         index = i;
         break;
       }
@@ -78,14 +84,14 @@ export default function AdmActionL() {
   };
 
   const openNew = () => {
-    setAdmActionDialog(emptyAdmAction);
+    setCmnUmDialog(emptyCmnUm);
   };
 
   const onRowSelect = (event) => {
     toast.current.show({
       severity: "info",
       summary: "Action Selected",
-      detail: `Id: ${event.data.id} Name: ${event.data.text}`,
+      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
       life: 3000,
     });
   };
@@ -94,7 +100,7 @@ export default function AdmActionL() {
     toast.current.show({
       severity: "warn",
       summary: "Action Unselected",
-      detail: `Id: ${event.data.id} Name: ${event.data.text}`,
+      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
       life: 3000,
     });
   };
@@ -106,7 +112,7 @@ export default function AdmActionL() {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
-      text: {
+      textx: {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
@@ -133,10 +139,10 @@ export default function AdmActionL() {
     return (
       <div className="flex card-container">
         <div className="flex flex-wrap gap-1">
-          <Button label="New" icon="pi pi-plus" severity="success" onClick={openNew} text raised />
+          <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
         <div className="flex-grow-1" />
-        <b>Action List</b>
+        <b>{translations[selectedLanguage].UmList}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -144,13 +150,13 @@ export default function AdmActionL() {
             <InputText
               value={globalFilterValue}
               onChange={onGlobalFilterChange}
-              placeholder="Keyword Search"
+              placeholder={translations[selectedLanguage].KeywordSearch}
             />
           </span>
           <Button
             type="button"
             icon="pi pi-filter-slash"
-            label="Clear"
+            label={translations[selectedLanguage].Clear}
             outlined
             onClick={clearFilter}
             text raised
@@ -161,11 +167,12 @@ export default function AdmActionL() {
   };
 
   const validBodyTemplate = (rowData) => {
+    const valid = rowData.valid == 1?true:false
     return (
       <i
         className={classNames("pi", {
-          "text-green-500 pi-check-circle": rowData.valid,
-          "text-red-500 pi-times-circle": !rowData.valid,
+          "text-green-500 pi-check-circle": valid,
+          "text-red-500 pi-times-circle": !valid
         })}
       ></i>
     );
@@ -175,7 +182,7 @@ export default function AdmActionL() {
     return (
       <div className="flex align-items-center gap-2">
         <label htmlFor="verified-filter" className="font-bold">
-          Valid
+        {translations[selectedLanguage].Valid}
         </label>
         <TriStateCheckbox
           inputId="verified-filter"
@@ -187,11 +194,10 @@ export default function AdmActionL() {
   };
 
   // <--- Dialog
-  const setAdmActionDialog = (admAction) => {
-    console.log("editData", admAction)
+  const setCmnUmDialog = (cmnUm) => {
     setVisible(true)
-    setActionTip("CREATE")
-    setAdmAction({ ...admAction });
+    setUmTip("CREATE")
+    setCmnUm({ ...cmnUm });
   }
   //  Dialog --->
 
@@ -207,8 +213,8 @@ export default function AdmActionL() {
           icon="pi pi-pencil"
           style={{ width: '24px', height: '24px' }}
           onClick={() => {
-            setAdmActionDialog(rowData)
-            setActionTip("UPDATE")
+            setCmnUmDialog(rowData)
+            setUmTip("UPDATE")
           }}
           text
           raised ></Button>
@@ -223,14 +229,16 @@ export default function AdmActionL() {
       <DataTable
         dataKey="id"
         selectionMode="single"
-        selection={admAction}
+        selection={cmnUm}
         loading={loading}
-        value={admActions}
+        value={cmnUms}
         header={header}
         showGridlines
         removableSort
         filters={filters}
         scrollable
+        sortField="code"        
+        sortOrder={1}
         scrollHeight="750px"
         virtualScrollerOptions={{ itemSize: 46 }}
         tableStyle={{ minWidth: "50rem" }}
@@ -238,20 +246,27 @@ export default function AdmActionL() {
         paginator
         rows={10}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        onSelectionChange={(e) => setAdmAction(e.value)}
+        onSelectionChange={(e) => setCmnUm(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
       >
         <Column
+          //bodyClassName="text-center"
+          body={actionTemplate}
+          exportable={false}
+          headerClassName="w-10rem"
+          style={{ minWidth: '4rem' }}
+        />        
+        <Column
           field="code"
-          header="Code"
+          header={translations[selectedLanguage].Code}
           sortable
           filter
           style={{ width: "25%" }}
         ></Column>
         <Column
-          field="text"
-          header="Text"
+          field="textx"
+          header={translations[selectedLanguage].Text}
           sortable
           filter
           style={{ width: "60%" }}
@@ -260,7 +275,7 @@ export default function AdmActionL() {
           field="valid"
           filterField="valid"
           dataType="numeric"
-          header="Valid"
+          header={translations[selectedLanguage].Valid}
           sortable
           filter
           filterElement={validFilterTemplate}
@@ -268,38 +283,26 @@ export default function AdmActionL() {
           bodyClassName="text-center"
           body={validBodyTemplate}
         ></Column>
-        <Column
-          //bodyClassName="text-center"
-          body={actionTemplate}
-          exportable={false}
-          headerClassName="w-10rem"
-          style={{ minWidth: '4rem' }}
-        />
       </DataTable>
       <Dialog
-        header="Action"
+        header={translations[selectedLanguage].Um}
         visible={visible}
-        style={{ width: '70%' }}
+        style={{ width: '50%' }}
         onHide={() => {
           setVisible(false);
           setShowMyComponent(false);
         }}
       >
         {showMyComponent && (
-          <AdmAkcija
+          <CmnUm
             parameter={"inputTextValue"}
-            admAction={admAction}
+            cmnUm={cmnUm}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
-            actionTip={actionTip}
+            umTip={umTip}
           />
         )}
-        <div className="p-dialog-header-icons" style={{ display: 'none' }}>
-          <button className="p-dialog-header-close p-link">
-            <span className="p-dialog-header-close-icon pi pi-times"></span>
-          </button>
-        </div>
       </Dialog>
     </div>
   );
