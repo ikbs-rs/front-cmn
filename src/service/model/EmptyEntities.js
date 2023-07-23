@@ -5,7 +5,7 @@ const EmptyEntities =
     "site": null,
     "code": "",
     "text": "",
-    "tp": "",
+    "tp": "1",
     "country": null,
     "begda": "",
     "endda": ""
@@ -18,7 +18,7 @@ const EmptyEntities =
     "begda": "",
     "endda": "",
     "rate": null,
-    "parity": null
+    "parity": "1"
   },
   "cmn_currx": {
     "id": null,
@@ -436,7 +436,7 @@ const EmptyEntities =
     "site": null,
     "loc": null,
     "att": null,
-    "long": "",
+    "text": "",
     "begda": "",
     "endda": ""
   },

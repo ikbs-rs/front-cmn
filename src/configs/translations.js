@@ -403,9 +403,18 @@ export const translations = {
         Terratts: "Особине територије",
         TerrattsList: "Особине територије Листа",
         Terrlink: "Повезана територија",
-        TerrlinkLista: "Повезне територије Листа",
+        TerrlinkList: "Повезне територије Листа",
         Terratt: "Особинa територије",
         TerrattList: "Особина територије Листа",
+        country: "Држава",
+        parity: "Паритет",
+        rate: "Однос",
+        Ratecurr: "Курс",
+        Curr: "Валута",
+        CurrLista: "Листа валута",
+        CurrRateLista: "Курс валута Листа",
+        TgpList: "Тарифна група Листа",
+        Tgp: "Тарифна групе",
     }
   };
   

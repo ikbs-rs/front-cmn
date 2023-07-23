@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { classNames } from 'primereact/utils';
-import { CmnObjService } from "../../service/model/CmnObjService";
+import { CmnTgpService } from "../../service/model/CmnTgpService";
+import { CmnTerrService } from "../../service/model/CmnTerrService";
 import './index.css';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -12,16 +13,18 @@ import env from "../../configs/env"
 import axios from 'axios';
 import Token from "../../utilities/Token";
 
-const CmnObj = (props) => {
+const CmnTgp = (props) => {
     console.log(props)
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [dropdownItem, setDropdownItem] = useState(null);
     const [dropdownItems, setDropdownItems] = useState(null);
-    const [cmnObj, setCmnObj] = useState(props.cmnObj);
-    const [ddTpItem, setDdTpItem] = useState(null);
-    const [ddTpItems, setDdTpItems] = useState(null);
+    const [cmnTgp, setCmnTgp] = useState(props.cmnTgp);
+    const [ddTerrItem, setDdTerrItem] = useState(null);
+    const [ddTerrItems, setDdTerrItems] = useState(null);
     const [submitted, setSubmitted] = useState(false);
+    const [cmnTerrItem, setCmnTerrItem] = useState(null);
+    const [cmnTerrItems, setCmnTerrItems] = useState(null);
 
     const toast = useRef(null);
     const items = [
@@ -30,24 +33,32 @@ const CmnObj = (props) => {
     ];
 
     useEffect(() => {
-        setDropdownItem(findDropdownItemByCode(props.cmnObj.valid));
+        setDropdownItem(findDropdownItemByCode(props.cmnTgp.valid));
     }, []);
 
     useEffect(() => {
         async function fetchData() {
             try {
-                const url = `${env.CMN_BACK_URL}/cmn/x/objtp/?sl=${selectedLanguage}`;
-                const tokenLocal = await Token.getTokensLS();
-                const headers = {
-                    Authorization: tokenLocal.token
-                };
+                try {
+                    const cmnTerrService = new CmnTerrService();
+                    const data = await cmnTerrService.getCmnTerrs();
 
-                const response = await axios.get(url, { headers });
-                const data = response.data.items;
-                const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
-                setDdTpItems(dataDD);
-                setDdTpItem(dataDD.find((item) => item.code === props.cmnObj.tp) || null);
-                
+                    setCmnTerrItems(data)
+                    //console.log("******************", cmnCurrItem)
+                    const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
+                    setDdTerrItems(dataDD);
+                    setDdTerrItem(dataDD.find((item) => item.code === props.cmnTgp.country) || null);
+                    if (props.cmnTerr.country) {
+                        const foundItem = data.find((item) => item.id === props.cmnTgp.country);
+                        setCmnTerrItem(foundItem || null);
+                        cmnTgp.ccountry = foundItem.code
+                        cmnTgp.ncountry = foundItem.textx
+                    }
+
+                } catch (error) {
+                    console.error(error);
+                    // Obrada greške ako je potrebna
+                }
             } catch (error) {
                 console.error(error);
                 // Obrada greške ako je potrebna
@@ -72,10 +83,10 @@ const CmnObj = (props) => {
     const handleCreateClick = async () => {
         try {
             setSubmitted(true);
-            const cmnObjService = new CmnObjService();
-            const data = await cmnObjService.postCmnObj(cmnObj);
-            cmnObj.id = data
-            props.handleDialogClose({ obj: cmnObj, objTip: props.objTip });
+            const cmnTgpService = new CmnTgpService();
+            const data = await cmnTgpService.postCmnTgp(cmnTgp);
+            cmnTgp.id = data
+            props.handleDialogClose({ obj: cmnTgp, tgpTip: props.tgpTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
@@ -90,9 +101,9 @@ const CmnObj = (props) => {
     const handleSaveClick = async () => {
         try {
             setSubmitted(true);
-            const cmnObjService = new CmnObjService();
-            await cmnObjService.putCmnObj(cmnObj);
-            props.handleDialogClose({ obj: cmnObj, objTip: props.objTip });
+            const cmnTgpService = new CmnTgpService();
+            await cmnTgpService.putCmnTgp(cmnTgp);
+            props.handleDialogClose({ obj: cmnTgp, tgpTip: props.tgpTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
@@ -111,9 +122,9 @@ const CmnObj = (props) => {
     const handleDeleteClick = async () => {
         try {
             setSubmitted(true);
-            const cmnObjService = new CmnObjService();
-            await cmnObjService.deleteCmnObj(cmnObj);
-            props.handleDialogClose({ obj: cmnObj, objTip: 'DELETE' });
+            const cmnTgpService = new CmnTgpService();
+            await cmnTgpService.deleteCmnTgp(cmnTgp);
+            props.handleDialogClose({ obj: cmnTgp, tgpTip: 'DELETE' });
             props.setVisible(false);
             hideDeleteDialog();
         } catch (err) {
@@ -129,25 +140,25 @@ const CmnObj = (props) => {
     const onInputChange = (e, type, name) => {
         let val = ''
         if (type === "options") {
-
-            if (name == "tp") {
-                console.log(e.value.code, "****", e.value.name)
-                setDdTpItem(e.value);
-                cmnObj.ctp = e.value.code
-                cmnObj.ntp = e.value.name
+            val = (e.target && e.target.value && e.target.value.code) || '';
+            if (name == "country") {
+                setDdTerrItem(e.value);
+                const foundItem = cmnTerrItems.find((item) => item.id === val);
+                setCmnTerrItem(foundItem)
+                cmnTgp.ncountry = e.value.name
+                cmnTgp.ccountry = foundItem.code
             } else {
                 setDropdownItem(e.value);
             }
-            val = (e.target && e.target.value && e.target.value.code) || '';
         } else {
             val = (e.target && e.target.value) || '';
         }
 
-        let _cmnObj = { ...cmnObj };
-        _cmnObj[`${name}`] = val;
-        if (name === `textx`) _cmnObj[`text`] = val
+        let _cmnTgp = { ...cmnTgp };
+        _cmnTgp[`${name}`] = val;
+        if (name === `textx`) _cmnTgp[`text`] = val
 
-        setCmnObj(_cmnObj);
+        setCmnTgp(_cmnTgp);
     };
 
     const hideDeleteDialog = () => {
@@ -163,34 +174,34 @@ const CmnObj = (props) => {
                         <div className="field col-12 md:col-7">
                             <label htmlFor="code">{translations[selectedLanguage].Code}</label>
                             <InputText id="code" autoFocus
-                                value={cmnObj.code} onChange={(e) => onInputChange(e, "text", 'code')}
+                                value={cmnTgp.code} onChange={(e) => onInputChange(e, "text", 'code')}
                                 required
-                                className={classNames({ 'p-invalid': submitted && !cmnObj.code })}
+                                className={classNames({ 'p-invalid': submitted && !cmnTgp.code })}
                             />
-                            {submitted && !cmnObj.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnTgp.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
                         <div className="field col-12 md:col-9">
                             <label htmlFor="textx">{translations[selectedLanguage].Text}</label>
                             <InputText
                                 id="textx"
-                                value={cmnObj.textx} onChange={(e) => onInputChange(e, "text", 'textx')}
+                                value={cmnTgp.textx} onChange={(e) => onInputChange(e, "text", 'textx')}
                                 required
-                                className={classNames({ 'p-invalid': submitted && !cmnObj.textx })}
+                                className={classNames({ 'p-invalid': submitted && !cmnTgp.textx })}
                             />
-                            {submitted && !cmnObj.textx && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnTgp.textx && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
                         <div className="field col-12 md:col-8">
-                            <label htmlFor="tp">{translations[selectedLanguage].ObjtpText} *</label>
-                            <Dropdown id="tp"
-                                value={ddTpItem}
-                                options={ddTpItems}
-                                onChange={(e) => onInputChange(e, "options", 'tp')}
+                            <label htmlFor="country">{translations[selectedLanguage].country} *</label>
+                            <Dropdown id="country"
+                                value={ddTerrItem}
+                                options={ddTerrItems}
+                                onChange={(e) => onInputChange(e, "options", 'country')}
                                 required
                                 optionLabel="name"
                                 placeholder="Select One"
-                                className={classNames({ 'p-invalid': submitted && !cmnObj.tp })}
+                                className={classNames({ 'p-invalid': submitted && !cmnTgp.country })}
                             />
-                            {submitted && !cmnObj.tp && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnTgp.country && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
                         <div className="field col-12 md:col-5">
                             <label htmlFor="valid">{translations[selectedLanguage].Valid}</label>
@@ -201,9 +212,9 @@ const CmnObj = (props) => {
                                 required
                                 optionLabel="name"
                                 placeholder="Select One"
-                                className={classNames({ 'p-invalid': submitted && !cmnObj.valid })}
+                                className={classNames({ 'p-invalid': submitted && !cmnTgp.valid })}
                             />
-                            {submitted && !cmnObj.valid && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnTgp.valid && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
                     </div>
 
@@ -219,7 +230,7 @@ const CmnObj = (props) => {
                         ) : null}
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
-                            {(props.objTip === 'CREATE') ? (
+                            {(props.tgpTip === 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Create}
                                     icon="pi pi-check"
@@ -228,7 +239,7 @@ const CmnObj = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.objTip !== 'CREATE') ? (
+                            {(props.tgpTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Delete}
                                     icon="pi pi-trash"
@@ -237,7 +248,7 @@ const CmnObj = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.objTip !== 'CREATE') ? (
+                            {(props.tgpTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Save}
                                     icon="pi pi-check"
@@ -253,7 +264,7 @@ const CmnObj = (props) => {
             <DeleteDialog
                 visible={deleteDialogVisible}
                 inAction="delete"
-                item={cmnObj.text}
+                item={cmnTgp.text}
                 onHide={hideDeleteDialog}
                 onDelete={handleDeleteClick}
             />
@@ -261,4 +272,4 @@ const CmnObj = (props) => {
     );
 };
 
-export default CmnObj;
+export default CmnTgp;

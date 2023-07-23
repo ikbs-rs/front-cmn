@@ -23,6 +23,8 @@ import Paratt from './components/model/cmnParattL';
 import Terrtp from './components/model/cmnTerrtpL';
 import Terr from './components/model/cmnTerrL';
 import Terratt from './components/model/cmnTerrattL';
+import Curr from './components/model/cmnCurrL';
+import Tgp from './components/model/cmnTgpL';
 
 import EmptyPage from './pages/EmptyPage';
 
@@ -458,7 +460,8 @@ const App = () => {
                         <Route path="/terrtp" element={<Terrtp />} />
                         <Route path="/terr" element={<Terr />} />
                         <Route path="/terratt" element={<Terratt />} />
-
+                        <Route path="/curr" element={<Curr />} />
+                        <Route path="/tgp" element={<Tgp />} />
 
                         
                         <Route path="/loctp" element={<LocTP />} />

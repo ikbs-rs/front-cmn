@@ -7,44 +7,36 @@ import { Button } from "primereact/button";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
-import { CmnTerrattsService } from "../../service/model/CmnTerrattsService";
-import CmnTerratts from './cmnTerratts';
+import './index.css';
+import { CmnTerrattService } from "../../service/model/CmnTerrattService";
+import CmnTerratt from './cmnTerratt';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
-import './index.css';
 import { translations } from "../../configs/translations";
-import DateFunction from "../../utilities/DateFunction";
 
-
-export default function CmnTerrattsL(props) {
-
-  const objName = "cmn_terratts"
-  const selectedLanguage = localStorage.getItem('sl')||'en'
-  const emptyCmnTerratts = EmptyEntities[objName]
-  emptyCmnTerratts.loc = props.cmnTerr.id
+export default function CmnTerrattL(props) {
+  let i = 0
+  const objName = "cmn_terratt"
+  const selectedLanguage = localStorage.getItem('sl') || 'en'
+  const emptyCmnTerratt = EmptyEntities[objName]
   const [showMyComponent, setShowMyComponent] = useState(true);
-  const [cmnTerrattss, setCmnTerrattss] = useState([]);
-  const [cmnTerratts, setCmnTerratts] = useState(emptyCmnTerratts);
+  const [cmnTerratts, setCmnTerratts] = useState([]);
+  const [cmnTerratt, setCmnTerratt] = useState(emptyCmnTerratt);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
-  const [terrattsTip, setTerrattsTip] = useState('');
-  let i = 0
-  const handleCancelClick = () => {
-    props.setCmnTerrattsLVisible(false);
-  };
+  const [terrattTip, setTerrattTip] = useState('');
 
   useEffect(() => {
     async function fetchData() {
       try {
         ++i
         if (i < 2) {
-          const cmnTerrattsService = new CmnTerrattsService();
-          const data = await cmnTerrattsService.getLista(props.cmnTerr.id);
-          setCmnTerrattss(data);
-
+          const cmnTerrattService = new CmnTerrattService();
+          const data = await cmnTerrattService.getCmnTerratts();
+          setCmnTerratts(data);
           initFilters();
         }
       } catch (error) {
@@ -58,30 +50,31 @@ export default function CmnTerrattsL(props) {
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
 
-    let _cmnTerrattss = [...cmnTerrattss];
-    let _cmnTerratts = { ...localObj.newObj.obj };
+    let _cmnTerratts = [...cmnTerratts];
+    let _cmnTerratt = { ...localObj.newObj.obj };
+
     //setSubmitted(true);
-    if (localObj.newObj.terrattsTip === "CREATE") {
-      _cmnTerrattss.push(_cmnTerratts);
-    } else if (localObj.newObj.terrattsTip === "UPDATE") {
+    if (localObj.newObj.terrattTip === "CREATE") {
+      _cmnTerratts.push(_cmnTerratt);
+    } else if (localObj.newObj.terrattTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
-      _cmnTerrattss[index] = _cmnTerratts;
-    } else if ((localObj.newObj.terrattsTip === "DELETE")) {
-      _cmnTerrattss = cmnTerrattss.filter((val) => val.id !== localObj.newObj.obj.id);
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnTerratts Delete', life: 3000 });
+      _cmnTerratts[index] = _cmnTerratt;
+    } else if ((localObj.newObj.terrattTip === "DELETE")) {
+      _cmnTerratts = cmnTerratts.filter((val) => val.id !== localObj.newObj.obj.id);
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnTerratt Delete', life: 3000 });
     } else {
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnTerratts ?', life: 3000 });
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnTerratt ?', life: 3000 });
     }
-    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.terrattsTip}`, life: 3000 });
-    setCmnTerrattss(_cmnTerrattss);
-    setCmnTerratts(emptyCmnTerratts);
+    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.terrattTip}`, life: 3000 });
+    setCmnTerratts(_cmnTerratts);
+    setCmnTerratt(emptyCmnTerratt);
   };
 
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < cmnTerrattss.length; i++) {
-      if (cmnTerrattss[i].id === id) {
+    for (let i = 0; i < cmnTerratts.length; i++) {
+      if (cmnTerratts[i].id === id) {
         index = i;
         break;
       }
@@ -91,15 +84,14 @@ export default function CmnTerrattsL(props) {
   };
 
   const openNew = () => {
-    setCmnTerrattsDialog(emptyCmnTerratts);
+    setCmnTerrattDialog(emptyCmnTerratt);
   };
 
   const onRowSelect = (event) => {
-    //cmnTerratts.begda = event.data.begda
     toast.current.show({
       severity: "info",
       summary: "Action Selected",
-      detail: `Id: ${event.data.id} Name: ${event.data.text}`,
+      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
       life: 3000,
     });
   };
@@ -108,30 +100,24 @@ export default function CmnTerrattsL(props) {
     toast.current.show({
       severity: "warn",
       summary: "Action Unselected",
-      detail: `Id: ${event.data.id} Name: ${event.data.text}`,
+      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
       life: 3000,
     });
   };
+
   // <heder za filter
   const initFilters = () => {
     setFilters({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-      ctp: {
+      code: {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
-      ntp: {
+      textx: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],       
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
-      endda: {
-        operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],       
-      },
-      begda: {
-        operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],       
-      }      
+      valid: { value: null, matchMode: FilterMatchMode.EQUALS },
     });
     setGlobalFilterValue("");
   };
@@ -153,14 +139,11 @@ export default function CmnTerrattsL(props) {
   const renderHeader = () => {
     return (
       <div className="flex card-container">
-        <div className="flex flex-wrap gap-1" />
-        <Button label={translations[selectedLanguage].Cancel} icon="pi pi-times" onClick={handleCancelClick} text raised
-        />
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
-        <div className="flex-grow-1"></div>
-        <b>{translations[selectedLanguage].TerrattsList}</b>
+        <div className="flex-grow-1" />
+        <b>{translations[selectedLanguage].TerrattList}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -184,22 +167,45 @@ export default function CmnTerrattsL(props) {
     );
   };
 
-  const formatDateColumn = (rowData, field) => {
-    return DateFunction.formatDate(rowData[field]);
+  const validBodyTemplate = (rowData) => {
+    const valid = rowData.valid == 1 ? true : false
+    return (
+      <i
+        className={classNames("pi", {
+          "text-green-500 pi-check-circle": valid,
+          "text-red-500 pi-times-circle": !valid
+        })}
+      ></i>
+    );
+  };
+
+  const validFilterTemplate = (options) => {
+    return (
+      <div className="flex align-items-center gap-2">
+        <label htmlFor="verified-filter" className="font-bold">
+          {translations[selectedLanguage].Valid}
+        </label>
+        <TriStateCheckbox
+          inputId="verified-filter"
+          value={options.value}
+          onChange={(e) => options.filterCallback(e.value)}
+        />
+      </div>
+    );
   };
 
   // <--- Dialog
-  const setCmnTerrattsDialog = (cmnTerratts) => {
+  const setCmnTerrattDialog = (cmnTerratt) => {
     setVisible(true)
-    setTerrattsTip("CREATE")
-    setCmnTerratts({ ...cmnTerratts });
+    setTerrattTip("CREATE")
+    setCmnTerratt({ ...cmnTerratt });
   }
   //  Dialog --->
 
   const header = renderHeader();
   // heder za filter/>
 
-  const terrattsTemplate = (rowData) => {
+  const actionTemplate = (rowData) => {
     return (
       <div className="flex flex-wrap gap-1">
 
@@ -208,8 +214,8 @@ export default function CmnTerrattsL(props) {
           icon="pi pi-pencil"
           style={{ width: '24px', height: '24px' }}
           onClick={() => {
-            setCmnTerrattsDialog(rowData)
-            setTerrattsTip("UPDATE")
+            setCmnTerrattDialog(rowData)
+            setTerrattTip("UPDATE")
           }}
           text
           raised ></Button>
@@ -221,119 +227,83 @@ export default function CmnTerrattsL(props) {
   return (
     <div className="card">
       <Toast ref={toast} />
-      <div className="col-12">
-        <div className="card">
-          <div className="p-fluid formgrid grid">
-            <div className="field col-12 md:col-6">
-              <label htmlFor="code">{translations[selectedLanguage].Code}</label>
-              <InputText id="code"
-                value={props.cmnTerr.code}
-                disabled={true}
-              />
-            </div>
-            <div className="field col-12 md:col-6">
-              <label htmlFor="text">{translations[selectedLanguage].Text}</label>
-              <InputText
-                id="text"
-                value={props.cmnTerr.textx}
-                disabled={true}
-              />
-            </div>           
-          </div>
-        </div>
-      </div>
       <DataTable
         dataKey="id"
         selectionMode="single"
-        selection={cmnTerratts}
+        selection={cmnTerratt}
         loading={loading}
-        value={cmnTerrattss}
+        value={cmnTerratts}
         header={header}
         showGridlines
         removableSort
         filters={filters}
         scrollable
-        scrollHeight="550px"
+        sortField="code"
+        sortOrder={1}
+        scrollHeight="750px"
         virtualScrollerOptions={{ itemSize: 46 }}
         tableStyle={{ minWidth: "50rem" }}
         metaKeySelection={false}
         paginator
         rows={10}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        onSelectionChange={(e) => setCmnTerratts(e.value)}
+        onSelectionChange={(e) => setCmnTerratt(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
       >
         <Column
           //bodyClassName="text-center"
-          body={terrattsTemplate}
+          body={actionTemplate}
           exportable={false}
           headerClassName="w-10rem"
           style={{ minWidth: '4rem' }}
         />
         <Column
-          field="ctp"
+          field="code"
           header={translations[selectedLanguage].Code}
           sortable
           filter
-          style={{ width: "15%" }}
+          style={{ width: "25%" }}
         ></Column>
         <Column
-          field="ntp"
+          field="textx"
           header={translations[selectedLanguage].Text}
           sortable
           filter
-          style={{ width: "35%" }}
+          style={{ width: "60%" }}
         ></Column>
         <Column
-          field="text"
-          header={translations[selectedLanguage].Value}
+          field="valid"
+          filterField="valid"
+          dataType="numeric"
+          header={translations[selectedLanguage].Valid}
           sortable
           filter
-          style={{ width: "20%" }}
-        ></Column>        
-        <Column
-          field="begda"
-          header={translations[selectedLanguage].Begda}
-          sortable
-          filter
-          style={{ width: "10%" }}
-          body={(rowData) => formatDateColumn(rowData, "begda")}
-        ></Column>  
-        <Column
-          field="endda"
-          header={translations[selectedLanguage].Endda}
-          sortable
-          filter
-          style={{ width: "10%" }}
-          body={(rowData) => formatDateColumn(rowData, "endda")}
-        ></Column>         
+          filterElement={validFilterTemplate}
+          style={{ width: "15%" }}
+          bodyClassName="text-center"
+          body={validBodyTemplate}
+        ></Column>
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].Terratts}
+        header={translations[selectedLanguage].Terratt}
         visible={visible}
-        style={{ width: '60%' }}
+        style={{ width: '50%' }}
         onHide={() => {
           setVisible(false);
           setShowMyComponent(false);
         }}
       >
         {showMyComponent && (
-          <CmnTerratts
+          <CmnTerratt
             parameter={"inputTextValue"}
-            cmnTerratts={cmnTerratts}
-            cmnTerr={props.cmnTerr}
+            cmnTerratt={cmnTerratt}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
-            terrattsTip={terrattsTip}
+            terrattTip={terrattTip}
           />
         )}
-        <div className="p-dialog-header-icons" style={{ display: 'none' }}>
-          <button className="p-dialog-header-close p-link">
-            <span className="p-dialog-header-close-icon pi pi-times"></span>
-          </button>
-        </div>
       </Dialog>
     </div>
   );

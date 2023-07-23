@@ -7,33 +7,35 @@ import { Button } from "primereact/button";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
-import { CmnTerrattsService } from "../../service/model/CmnTerrattsService";
-import CmnTerratts from './cmnTerratts';
+import { CmnCurrService } from "../../service/model/CmnCurrService";
+import CmnCurr from './cmnCurr';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
 import './index.css';
 import { translations } from "../../configs/translations";
 import DateFunction from "../../utilities/DateFunction";
+import CmnCurrrateL from './cmnCurrrateL';
 
 
-export default function CmnTerrattsL(props) {
+export default function CmnCurrL(props) {
 
-  const objName = "cmn_terratts"
-  const selectedLanguage = localStorage.getItem('sl')||'en'
-  const emptyCmnTerratts = EmptyEntities[objName]
-  emptyCmnTerratts.loc = props.cmnTerr.id
+  const objName = "cmn_curr"
+  const selectedLanguage = localStorage.getItem('sl') || 'en'
+  const emptyCmnCurr = EmptyEntities[objName]
   const [showMyComponent, setShowMyComponent] = useState(true);
-  const [cmnTerrattss, setCmnTerrattss] = useState([]);
-  const [cmnTerratts, setCmnTerratts] = useState(emptyCmnTerratts);
+  const [cmnCurrs, setCmnCurrs] = useState([]);
+  const [cmnCurr, setCmnCurr] = useState(emptyCmnCurr);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
-  const [terrattsTip, setTerrattsTip] = useState('');
+  const [currTip, setCurrTip] = useState('');
+  const [cmnCurrattsLVisible, setCmnCurrattsLVisible] = useState(false);
+  const [cmnCurrrateLVisible, setCmnCurrrateLVisible] = useState(false);
   let i = 0
   const handleCancelClick = () => {
-    props.setCmnTerrattsLVisible(false);
+    props.setCmnCurrLVisible(false);
   };
 
   useEffect(() => {
@@ -41,9 +43,9 @@ export default function CmnTerrattsL(props) {
       try {
         ++i
         if (i < 2) {
-          const cmnTerrattsService = new CmnTerrattsService();
-          const data = await cmnTerrattsService.getLista(props.cmnTerr.id);
-          setCmnTerrattss(data);
+          const cmnCurrService = new CmnCurrService();
+          const data = await cmnCurrService.getLista();
+          setCmnCurrs(data);
 
           initFilters();
         }
@@ -58,30 +60,38 @@ export default function CmnTerrattsL(props) {
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
 
-    let _cmnTerrattss = [...cmnTerrattss];
-    let _cmnTerratts = { ...localObj.newObj.obj };
+    let _cmnCurrs = [...cmnCurrs];
+    let _cmnCurr = { ...localObj.newObj.obj };
     //setSubmitted(true);
-    if (localObj.newObj.terrattsTip === "CREATE") {
-      _cmnTerrattss.push(_cmnTerratts);
-    } else if (localObj.newObj.terrattsTip === "UPDATE") {
+    if (localObj.newObj.currTip === "CREATE") {
+      _cmnCurrs.push(_cmnCurr);
+    } else if (localObj.newObj.currTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
-      _cmnTerrattss[index] = _cmnTerratts;
-    } else if ((localObj.newObj.terrattsTip === "DELETE")) {
-      _cmnTerrattss = cmnTerrattss.filter((val) => val.id !== localObj.newObj.obj.id);
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnTerratts Delete', life: 3000 });
+      _cmnCurrs[index] = _cmnCurr;
+    } else if ((localObj.newObj.currTip === "DELETE")) {
+      _cmnCurrs = cmnCurrs.filter((val) => val.id !== localObj.newObj.obj.id);
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnCurr Delete', life: 3000 });
     } else {
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnTerratts ?', life: 3000 });
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnCurr ?', life: 3000 });
     }
-    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.terrattsTip}`, life: 3000 });
-    setCmnTerrattss(_cmnTerrattss);
-    setCmnTerratts(emptyCmnTerratts);
+    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.currTip}`, life: 3000 });
+    setCmnCurrs(_cmnCurrs);
+    setCmnCurr(emptyCmnCurr);
+  };
+
+  const handleCmnCurrattsLDialogClose = (newObj) => {
+    const localObj = { newObj };
+  };
+
+  const handleCmnCurrrateLDialogClose = (newObj) => {
+    const localObj = { newObj };
   };
 
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < cmnTerrattss.length; i++) {
-      if (cmnTerrattss[i].id === id) {
+    for (let i = 0; i < cmnCurrs.length; i++) {
+      if (cmnCurrs[i].id === id) {
         index = i;
         break;
       }
@@ -91,11 +101,19 @@ export default function CmnTerrattsL(props) {
   };
 
   const openNew = () => {
-    setCmnTerrattsDialog(emptyCmnTerratts);
+    setCmnCurrDialog(emptyCmnCurr);
+  };
+
+  const openParAtt = () => {
+    setCmnCurrattsLDialog();
+  };
+
+  const openParLink = () => {
+    setCmnCurrrateLDialog();
   };
 
   const onRowSelect = (event) => {
-    //cmnTerratts.begda = event.data.begda
+    //cmnCurr.begda = event.data.begda
     toast.current.show({
       severity: "info",
       summary: "Action Selected",
@@ -122,16 +140,16 @@ export default function CmnTerrattsL(props) {
       },
       ntp: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],       
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
       endda: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],       
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
       begda: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],       
-      }      
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+      }
     });
     setGlobalFilterValue("");
   };
@@ -158,9 +176,12 @@ export default function CmnTerrattsL(props) {
         />
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
-        </div>
+        </div> 
+        <div className="flex flex-wrap gap-1">
+          <Button label={translations[selectedLanguage].Ratecurr} icon="pi pi-sitemap" onClick={openParLink} text raised disabled={!cmnCurr} />
+        </div>                
         <div className="flex-grow-1"></div>
-        <b>{translations[selectedLanguage].TerrattsList}</b>
+        <b>{translations[selectedLanguage].CurrLista}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -189,17 +210,28 @@ export default function CmnTerrattsL(props) {
   };
 
   // <--- Dialog
-  const setCmnTerrattsDialog = (cmnTerratts) => {
+
+  const setCmnCurrattsLDialog = () => {
+    setShowMyComponent(true);
+    setCmnCurrattsLVisible(true);
+  } 
+
+  const setCmnCurrrateLDialog = () => {
+    setShowMyComponent(true);
+    setCmnCurrrateLVisible(true);
+  } 
+
+  const setCmnCurrDialog = (cmnCurr) => {
     setVisible(true)
-    setTerrattsTip("CREATE")
-    setCmnTerratts({ ...cmnTerratts });
+    setCurrTip("CREATE")
+    setCmnCurr({ ...cmnCurr });
   }
   //  Dialog --->
 
   const header = renderHeader();
   // heder za filter/>
 
-  const terrattsTemplate = (rowData) => {
+  const currTemplate = (rowData) => {
     return (
       <div className="flex flex-wrap gap-1">
 
@@ -208,8 +240,8 @@ export default function CmnTerrattsL(props) {
           icon="pi pi-pencil"
           style={{ width: '24px', height: '24px' }}
           onClick={() => {
-            setCmnTerrattsDialog(rowData)
-            setTerrattsTip("UPDATE")
+            setCmnCurrDialog(rowData)
+            setCurrTip("UPDATE")
           }}
           text
           raised ></Button>
@@ -221,33 +253,13 @@ export default function CmnTerrattsL(props) {
   return (
     <div className="card">
       <Toast ref={toast} />
-      <div className="col-12">
-        <div className="card">
-          <div className="p-fluid formgrid grid">
-            <div className="field col-12 md:col-6">
-              <label htmlFor="code">{translations[selectedLanguage].Code}</label>
-              <InputText id="code"
-                value={props.cmnTerr.code}
-                disabled={true}
-              />
-            </div>
-            <div className="field col-12 md:col-6">
-              <label htmlFor="text">{translations[selectedLanguage].Text}</label>
-              <InputText
-                id="text"
-                value={props.cmnTerr.textx}
-                disabled={true}
-              />
-            </div>           
-          </div>
-        </div>
-      </div>
+
       <DataTable
         dataKey="id"
         selectionMode="single"
-        selection={cmnTerratts}
+        selection={cmnCurr}
         loading={loading}
-        value={cmnTerrattss}
+        value={cmnCurrs}
         header={header}
         showGridlines
         removableSort
@@ -260,57 +272,41 @@ export default function CmnTerrattsL(props) {
         paginator
         rows={10}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        onSelectionChange={(e) => setCmnTerratts(e.value)}
+        onSelectionChange={(e) => setCmnCurr(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
       >
         <Column
           //bodyClassName="text-center"
-          body={terrattsTemplate}
+          body={currTemplate}
           exportable={false}
           headerClassName="w-10rem"
           style={{ minWidth: '4rem' }}
         />
         <Column
-          field="ctp"
+          field="code"
           header={translations[selectedLanguage].Code}
           sortable
           filter
-          style={{ width: "15%" }}
-        ></Column>
+          style={{ width: "20%" }}
+        ></Column> 
         <Column
-          field="ntp"
+          field="text"
           header={translations[selectedLanguage].Text}
           sortable
           filter
-          style={{ width: "35%" }}
+          style={{ width: "40%" }}
+        ></Column>                
+        <Column
+          field="ncountry"
+          header={translations[selectedLanguage].country}
+          sortable
+          filter
+          style={{ width: "40%" }}
         ></Column>
-        <Column
-          field="text"
-          header={translations[selectedLanguage].Value}
-          sortable
-          filter
-          style={{ width: "20%" }}
-        ></Column>        
-        <Column
-          field="begda"
-          header={translations[selectedLanguage].Begda}
-          sortable
-          filter
-          style={{ width: "10%" }}
-          body={(rowData) => formatDateColumn(rowData, "begda")}
-        ></Column>  
-        <Column
-          field="endda"
-          header={translations[selectedLanguage].Endda}
-          sortable
-          filter
-          style={{ width: "10%" }}
-          body={(rowData) => formatDateColumn(rowData, "endda")}
-        ></Column>         
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].Terratts}
+        header={translations[selectedLanguage].Curr}
         visible={visible}
         style={{ width: '60%' }}
         onHide={() => {
@@ -319,14 +315,13 @@ export default function CmnTerrattsL(props) {
         }}
       >
         {showMyComponent && (
-          <CmnTerratts
+          <CmnCurr
             parameter={"inputTextValue"}
-            cmnTerratts={cmnTerratts}
-            cmnTerr={props.cmnTerr}
+            cmnCurr={cmnCurr}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
-            terrattsTip={terrattsTip}
+            currTip={currTip}
           />
         )}
         <div className="p-dialog-header-icons" style={{ display: 'none' }}>
@@ -334,7 +329,27 @@ export default function CmnTerrattsL(props) {
             <span className="p-dialog-header-close-icon pi pi-times"></span>
           </button>
         </div>
-      </Dialog>
+      </Dialog>     
+      <Dialog
+        header={translations[selectedLanguage].CurrRateLista}
+        visible={cmnCurrrateLVisible}
+        style={{ width: '70%' }}
+        onHide={() => {
+          setCmnCurrrateLVisible(false);
+          setShowMyComponent(false);
+        }}
+      >
+        {showMyComponent && (
+          <CmnCurrrateL
+            parameter={"inputTextValue"}
+            cmnCurr={cmnCurr}
+            handleCmnCurrrateLDialogClose={handleCmnCurrrateLDialogClose}
+            setCmnCurrrateLVisible={setCmnCurrrateLVisible}
+            dialog={true}
+            lookUp={false}
+          />
+        )}
+      </Dialog>        
     </div>
   );
 }

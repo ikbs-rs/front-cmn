@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { classNames } from 'primereact/utils';
-import { CmnTerrlinkService } from "../../service/model/CmnTerrlinkService";
+import { CmnCurrService } from "../../service/model/CmnCurrService";
 import { CmnTerrService } from "../../service/model/CmnTerrService";
 import './index.css';
 import { InputText } from 'primereact/inputtext';
@@ -12,18 +12,18 @@ import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from "primereact/calendar";
 import DateFunction from "../../utilities/DateFunction"
 
-const CmnTerrlink = (props) => {
+const CmnCurr = (props) => {
 
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
-    const [cmnTerrlink, setCmnTerrlink] = useState(props.cmnTerrlink);
+    const [cmnCurr, setCmnCurr] = useState(props.cmnCurr);
     const [submitted, setSubmitted] = useState(false);
-    const [ddCmnTerrlinkItem, setDdCmnTerrlinkItem] = useState(null);
-    const [ddCmnTerrlinkItems, setDdCmnTerrlinkItems] = useState(null);
-    const [cmnTerrlinkItem, setCmnTerrlinkItem] = useState(null);
-    const [cmnTerrlinkItems, setCmnTerrlinkItems] = useState(null);
-    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnTerrlink.begda || DateFunction.currDate())));
-    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnTerrlink.endda || DateFunction.currDate())))
+    const [ddCmnCurrItem, setDdCmnCurrItem] = useState(null);
+    const [ddCmnCurrItems, setDdCmnCurrItems] = useState(null);
+    const [cmnCurrItem, setCmnCurrItem] = useState(null);
+    const [cmnCurrItems, setCmnCurrItems] = useState(null);
+    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnCurr.begda || DateFunction.currDate())));
+    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnCurr.endda || DateFunction.currDate())))
 
     const calendarRef = useRef(null);
 
@@ -35,17 +35,17 @@ const CmnTerrlink = (props) => {
                 const cmnTerrService = new CmnTerrService();
                 const data = await cmnTerrService.getCmnTerrs();
 
-                setCmnTerrlinkItems(data)
-                //console.log("******************", cmnTerrlinkItem)
+                setCmnCurrItems(data)
+                //console.log("******************", cmnCurrItem)
 
                 const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
-                setDdCmnTerrlinkItems(dataDD);
-                setDdCmnTerrlinkItem(dataDD.find((item) => item.code === props.cmnTerrlink.terr1) || null);
-                if (props.cmnTerrlink.terr1) {
-                    const foundItem = data.find((item) => item.id === props.cmnTerrlink.terr1);
-                    setCmnTerrlinkItem(foundItem || null);
-                    cmnTerrlink.cterr1 = foundItem.code
-                    cmnTerrlink.nterr1 = foundItem.textx
+                setDdCmnCurrItems(dataDD);
+                setDdCmnCurrItem(dataDD.find((item) => item.code === props.cmnCurr.country) || null);
+                if (props.cmnCurr.country) {
+                    const foundItem = data.find((item) => item.id === props.cmnCurr.country);
+                    setCmnCurrItem(foundItem || null);
+                    cmnCurr.ccountry = foundItem.code
+                    cmnCurr.ncountry = foundItem.textx
                 }
 
             } catch (error) {
@@ -64,17 +64,17 @@ const CmnTerrlink = (props) => {
     const handleCreateClick = async () => {
         try {
             setSubmitted(true);
-            cmnTerrlink.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
-            cmnTerrlink.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
-            const cmnTerrlinkService = new CmnTerrlinkService();
-            const data = await cmnTerrlinkService.postCmnTerrlink(cmnTerrlink);
-            cmnTerrlink.id = data
-            props.handleDialogClose({ obj: cmnTerrlink, terrlinkTip: props.terrlinkTip });
+            cmnCurr.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
+            cmnCurr.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
+            const cmnCurrService = new CmnCurrService();
+            const data = await cmnCurrService.postCmnCurr(cmnCurr);
+            cmnCurr.id = data
+            props.handleDialogClose({ obj: cmnCurr, currTip: props.currTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "CmnTerrlink ",
+                summary: "CmnCurr ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -84,17 +84,17 @@ const CmnTerrlink = (props) => {
     const handleSaveClick = async () => {
         try {
             setSubmitted(true);
-            cmnTerrlink.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
-            cmnTerrlink.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));            
-            const cmnTerrlinkService = new CmnTerrlinkService();
+            cmnCurr.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
+            cmnCurr.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
+            const cmnCurrService = new CmnCurrService();
 
-            await cmnTerrlinkService.putCmnTerrlink(cmnTerrlink);
-            props.handleDialogClose({ obj: cmnTerrlink, terrlinkTip: props.terrlinkTip });
+            await cmnCurrService.putCmnCurr(cmnCurr);
+            props.handleDialogClose({ obj: cmnCurr, currTip: props.currTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "CmnTerrlink ",
+                summary: "CmnCurr ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -108,15 +108,15 @@ const CmnTerrlink = (props) => {
     const handleDeleteClick = async () => {
         try {
             setSubmitted(true);
-            const cmnTerrlinkService = new CmnTerrlinkService();
-            await cmnTerrlinkService.deleteCmnTerrlink(cmnTerrlink);
-            props.handleDialogClose({ obj: cmnTerrlink, terrlinkTip: 'DELETE' });
+            const cmnCurrService = new CmnCurrService();
+            await cmnCurrService.deleteCmnCurr(cmnCurr);
+            props.handleDialogClose({ obj: cmnCurr, currTip: 'DELETE' });
             props.setVisible(false);
             hideDeleteDialog();
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "CmnTerrlink ",
+                summary: "CmnCurr ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -128,22 +128,22 @@ const CmnTerrlink = (props) => {
 
         if (type === "options") {
             val = (e.target && e.target.value && e.target.value.code) || '';
-            setDdCmnTerrlinkItem(e.value);
-            const foundItem = cmnTerrlinkItems.find((item) => item.id === val);
-            setCmnTerrlinkItem(foundItem || null);
-            cmnTerrlink.nterr1 = e.value.name
-            cmnTerrlink.cterr1 = foundItem.code
+            setDdCmnCurrItem(e.value);
+            const foundItem = cmnCurrItems.find((item) => item.id === val);
+            setCmnCurrItem(foundItem || null);
+            cmnCurr.ncountry = e.value.name
+            cmnCurr.ccountry = foundItem.code
         } else if (type === "Calendar") {
             const dateVal = DateFunction.dateGetValue(e.value)
             val = (e.target && e.target.value) || '';
             switch (name) {
                 case "begda":
                     setBegda(e.value)
-                    //cmnTerrlink.begda = DateFunction.formatDateToDBFormat(dateVal)
+                    //cmnCurr.begda = DateFunction.formatDateToDBFormat(dateVal)
                     break;
                 case "endda":
                     setEndda(e.value)
-                    //cmnTerrlink.endda = DateFunction.formatDateToDBFormat(dateVal)
+                    //cmnCurr.endda = DateFunction.formatDateToDBFormat(dateVal)
                     break;
                 default:
                     console.error("Pogresan naziv polja")
@@ -151,9 +151,9 @@ const CmnTerrlink = (props) => {
         } else {
             val = (e.target && e.target.value) || '';
         }
-        let _cmnTerrlink = { ...cmnTerrlink };
-        _cmnTerrlink[`${name}`] = val;
-        setCmnTerrlink(_cmnTerrlink);
+        let _cmnCurr = { ...cmnCurr };
+        _cmnCurr[`${name}`] = val;
+        setCmnCurr(_cmnCurr);
     };
 
     const hideDeleteDialog = () => {
@@ -168,51 +168,38 @@ const CmnTerrlink = (props) => {
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-5">
                             <label htmlFor="code">{translations[selectedLanguage].Code}</label>
-                            <InputText id="code"
-                                value={props.cmnTerr.code}
-                                disabled={true}
+                            <InputText id="code" autoFocus
+                                value={cmnCurr.code} onChange={(e) => onInputChange(e, "text", 'code')}
+                                required
+                                className={classNames({ 'p-invalid': submitted && !cmnCurr.code })}
                             />
+                            {submitted && !cmnCurr.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
-                        <div className="field col-12 md:col-7">
+                        <div className="field col-12 md:col-12">
                             <label htmlFor="text">{translations[selectedLanguage].Text}</label>
                             <InputText
                                 id="text"
-                                value={props.cmnTerr.text}
-                                disabled={true}
+                                value={cmnCurr.text} onChange={(e) => onInputChange(e, "text", 'text')}
+                                required
+                                className={classNames({ 'p-invalid': submitted && !cmnCurr.text })}
                             />
+                            {submitted && !cmnCurr.text && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div className="col-12">
-                <div className="card">
-                    <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-7">
-                            <label htmlFor="terr1">{translations[selectedLanguage].Attribute} *</label>
-                            <Dropdown id="terr1"
-                                value={ddCmnTerrlinkItem}
-                                options={ddCmnTerrlinkItems}
-                                onChange={(e) => onInputChange(e, "options", 'terr1')}
+                            <label htmlFor="country">{translations[selectedLanguage].country} *</label>
+                            <Dropdown id="country"
+                                value={ddCmnCurrItem}
+                                options={ddCmnCurrItems}
+                                onChange={(e) => onInputChange(e, "options", 'country')}
                                 required
                                 optionLabel="name"
                                 placeholder="Select One"
-                                className={classNames({ 'p-invalid': submitted && !cmnTerrlink.terr1 })}
+                                className={classNames({ 'p-invalid': submitted && !cmnCurr.country })}
                             />
-                            {submitted && !cmnTerrlink.terr1 && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnCurr.country && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
-                    </div>
 
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-11">
-                            <label htmlFor="text">{translations[selectedLanguage].Value}</label>
-                            <InputText
-                                id="text"
-                                value={cmnTerrlink.text} onChange={(e) => onInputChange(e, "text", 'text')}
-                            />
-                        </div>
-                    </div>
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-5">
+                        <div className="field col-12 md:col-6">
                             <label htmlFor="begda">{translations[selectedLanguage].Begda} *</label>
                             <Calendar
                                 value={begda}
@@ -220,11 +207,8 @@ const CmnTerrlink = (props) => {
                                 showIcon
                                 dateFormat="dd.mm.yy"
                             />
-
                         </div>
-                    </div>
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-5">
+                        <div className="field col-12 md:col-6">
                             <label htmlFor="roenddal">{translations[selectedLanguage].Endda} *</label>
                             <Calendar
                                 value={endda}
@@ -233,7 +217,18 @@ const CmnTerrlink = (props) => {
                                 dateFormat="dd.mm.yy"
                             />
                         </div>
+                        <div className="field col-12 md:col-3">
+                            <label htmlFor="tp">{translations[selectedLanguage].Text}</label>
+                            <InputText
+                                id="tp"
+                                value={cmnCurr.tp} onChange={(e) => onInputChange(e, "text", 'tp')}
+                                required
+                                className={classNames({ 'p-invalid': submitted && !cmnCurr.tp })}
+                            />
+                            {submitted && !cmnCurr.tp && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>                        
                     </div>
+
                     <div className="flex flex-wrap gap-1">
                         {props.dialog ? (
                             <Button
@@ -246,7 +241,7 @@ const CmnTerrlink = (props) => {
                         ) : null}
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
-                            {(props.terrlinkTip === 'CREATE') ? (
+                            {(props.currTip === 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Create}
                                     icon="pi pi-check"
@@ -255,7 +250,7 @@ const CmnTerrlink = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.terrlinkTip !== 'CREATE') ? (
+                            {(props.currTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Delete}
                                     icon="pi pi-trash"
@@ -264,7 +259,7 @@ const CmnTerrlink = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.terrlinkTip !== 'CREATE') ? (
+                            {(props.currTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Save}
                                     icon="pi pi-check"
@@ -275,12 +270,13 @@ const CmnTerrlink = (props) => {
                             ) : null}
                         </div>
                     </div>
+
                 </div>
             </div>
             <DeleteDialog
                 visible={deleteDialogVisible}
-                inCmnTerrlink="delete"
-                item={cmnTerrlink.roll}
+                inCmnCurr="delete"
+                item={cmnCurr.roll}
                 onHide={hideDeleteDialog}
                 onDelete={handleDeleteClick}
             />
@@ -288,4 +284,4 @@ const CmnTerrlink = (props) => {
     );
 };
 
-export default CmnTerrlink;
+export default CmnCurr;

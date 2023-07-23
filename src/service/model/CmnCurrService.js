@@ -2,11 +2,11 @@ import axios from 'axios';
 import env from "../../configs/env"
 import Token from "../../utilities/Token";
 
-export class CmnTerrattsService {
+export class CmnCurrService {
 
-    async getLista(objId) {
+    async getLista() {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.CMN_BACK_URL}/cmn/terratts/_v/lista/?stm=cmn_terratts_v&objid=${objId}&sl=${selectedLanguage}`;
+        const url = `${env.CMN_BACK_URL}/cmn/x/curr/_v/lista/?stm=cmn_curr_v&sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
           Authorization: tokenLocal.token
@@ -14,18 +14,17 @@ export class CmnTerrattsService {
     
         try {
           const response = await axios.get(url, { headers });
-          console.log(response.data.item, "*****************************************4")
+          console.log(url, "++++++++++++++++++++", response)
           return response.data.item;
-
         } catch (error) {
           console.error(error);
           throw error;
         }
       }
 
-    async getCmnTerrattss() {
+    async getCmnCurrs() {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.CMN_BACK_URL}/cmn/terratts/?sl=${selectedLanguage}`;
+        const url = `${env.CMN_BACK_URL}/cmn/x/curr/?sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
             Authorization: tokenLocal.token
@@ -40,9 +39,9 @@ export class CmnTerrattsService {
         }
     }
 
-    async getCmnTerratts(objId) {
+    async getCmnCurr(objId) {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.CMN_BACK_URL}/cmn/terratts/${objId}/?sl=${selectedLanguage}`;
+        const url = `${env.CMN_BACK_URL}/cmn/x/curr/${objId}/?sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
             Authorization: tokenLocal.token
@@ -58,15 +57,16 @@ export class CmnTerrattsService {
     }
 
 
-    async postCmnTerratts(newObj) {
+    async postCmnCurr(newObj) {
         try {
+            console.log(newObj, "6666666666666666666666666666666666")
             const selectedLanguage = localStorage.getItem('sl') || 'en'
             if (newObj.action === null || newObj.roll === null) {
                 throw new Error(
                     "Items must be filled!"
                 );
             }
-            const url = `${env.CMN_BACK_URL}/cmn/terratts/?sl=${selectedLanguage}`;
+            const url = `${env.CMN_BACK_URL}/cmn/x/curr/?sl=${selectedLanguage}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ console.log("*-*-*-*-*", url, newObj, jsonObj)
         }
     }
 
-    async putCmnTerratts(newObj) {
+    async putCmnCurr(newObj) {
         try {
             const selectedLanguage = localStorage.getItem('sl') || 'en'
             if (newObj.action === null || newObj.roll === null)  {
@@ -90,14 +90,13 @@ console.log("*-*-*-*-*", url, newObj, jsonObj)
                     "Items must be filled!"
                 );
             }
-            const url = `${env.CMN_BACK_URL}/cmn/terratts/?sl=${selectedLanguage}`;
+            const url = `${env.CMN_BACK_URL}/cmn/x/curr/?sl=${selectedLanguage}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': tokenLocal.token
             };
             const jsonObj = JSON.stringify(newObj)
-            console.log("*-*-*-*-*", url, newObj, jsonObj)            
             const response = await axios.put(url, jsonObj, { headers });
             //console.log("**************"  , response, "****************")
             return response.data.items;
@@ -108,9 +107,9 @@ console.log("*-*-*-*-*", url, newObj, jsonObj)
 
     }
 
-    async deleteCmnTerratts(newObj) {
+    async deleteCmnCurr(newObj) {
         try {
-            const url = `${env.CMN_BACK_URL}/cmn/terratts/${newObj.id}`;
+            const url = `${env.CMN_BACK_URL}/cmn/x/curr/${newObj.id}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Authorization': tokenLocal.token
