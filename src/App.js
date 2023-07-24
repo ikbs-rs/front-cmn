@@ -10,10 +10,13 @@ import AppMenu from './AppMenu';
 import AppRightMenu from './AppRightMenu';
 
 import Um from './components/model/cmnUmL';
+import Loc from './components/model/cmnLocL';
 import LocTP from './components/model/cmnLoctpL';
 import ObjTp from './components/model/cmnObjtpL';
 import Obj from './components/model/cmnObjL';
+import ObjD from './components/model/cmnObjDL';
 import ObjTree from './components/model/cmnObjTreeL';
+import ObjCon from './components/model/cmnObjTreeLC';
 import ObjAtt from './components/model/cmnObjattL';
 import ObjAttTp from './components/model/cmnObjatttpL';
 import Link from './components/model/cmnLinkL';
@@ -90,16 +93,16 @@ const App = () => {
                        // { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/terrtp'}
                     ]
                 },
-              /*  {
+                {
                     label: translations[selectedLanguage].Location_administration,
                     icon: 'pi pi-fw pi-bars',
                     items: [
                         { label: translations[selectedLanguage].Location_type, icon: 'pi pi-fw pi-calendar', to: '/loctp' },
                         { label: translations[selectedLanguage].Locations, icon: 'pi pi-fw pi-calendar', to: '/loc'  },
-                        { label: translations[selectedLanguage].Properties_location, icon: 'pi pi-fw pi-calendar' , to: '/locatt'},
-                        { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/loclinktp'}
+                      //d  { label: translations[selectedLanguage].Properties_location, icon: 'pi pi-fw pi-calendar' , to: '/locatt'},
+                       // { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/loclinktp'}
                     ]
-                },*/
+                },
                 {
                     label: translations[selectedLanguage].Currency_administration,
                     icon: 'pi pi-fw pi-bars',
@@ -125,6 +128,8 @@ const App = () => {
                         { label: translations[selectedLanguage].Group_of_properties, icon: 'pi pi-fw pi-clone', to: '/objatttp' },
                         { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-exclamation-triangle', to: '/link' },
                         { label: translations[selectedLanguage].ObjectsTree, icon: 'pi pi-fw pi-clone', to: '/objtree' },
+                        { label: translations[selectedLanguage].ObjCon, icon: 'pi pi-fw pi-clone', to: '/objcon' },
+                        { label: translations[selectedLanguage].ObjectsD, icon: 'pi pi-fw pi-clone', to: '/objd' },
                     ]
                 },
                 {
@@ -465,7 +470,7 @@ const App = () => {
 
                         
                         <Route path="/loctp" element={<LocTP />} />
-                        <Route path="/loc" element={<Um />} />
+                        <Route path="/loc" element={<Loc />} />
                         <Route path="/locatt" element={<Um />} />
                         <Route path="/loclinktp" element={<Um />} />
 
@@ -475,6 +480,8 @@ const App = () => {
                         <Route path="/objatt" element={<ObjAtt />} />
                         <Route path="/link" element={<Link />} />
                         <Route path="/objtree" element={<ObjTree />} />
+                        <Route path="/objcon" element={<ObjCon />} />
+                        <Route path="/objd" element={<ObjD />} />                        
                         
                     </Routes>
                 </div>

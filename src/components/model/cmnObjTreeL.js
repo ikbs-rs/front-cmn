@@ -11,7 +11,7 @@ import { translations } from "../../configs/translations";
 import { Toast } from "primereact/toast";
 import { ContextMenu } from 'primereact/contextmenu';
 import { InputText } from 'primereact/inputtext';
-
+import CmnLocobjL from './cmnLocobjL';
 
 export default function CmnObjTreeL() {
     let i = 0
@@ -50,6 +50,10 @@ export default function CmnObjTreeL() {
     const toast = useRef(null);
     const [expandedKeys, setExpandedKeys] = useState(null);
     const [selectedNodeKey, setSelectedNodeKey] = useState(null);
+    const [selectedNodeData, setSelectedNodeData] = useState(null);
+    const [cmnLocobjLVisible, setCmnLocobjLVisible] = useState(false);
+    const [showMyComponent, setShowMyComponent] = useState(true);
+
     const [globalFilter, setGlobalFilter] = useState('');
     const cm = useRef(null);
     const menu = [
@@ -137,6 +141,10 @@ export default function CmnObjTreeL() {
         setNodes(_nodes);
     };
 
+    const handleCmnLocobjLDialogClose = (newObj) => {
+        const localObj = { newObj };
+    };
+
     const findIndexById = (id) => {
         let index = -1;
 
@@ -152,6 +160,12 @@ export default function CmnObjTreeL() {
 
     const setCmnObjDialog = (cmnObj) => {
         setVisible(true)
+        setCmnObj({ ...cmnObj });
+    }
+
+    const setCmnLocobjLDialog = (cmnObj) => {
+        setShowMyComponent(true);
+        setCmnLocobjLVisible(true);
         setCmnObj({ ...cmnObj });
     }
 
@@ -175,6 +189,11 @@ export default function CmnObjTreeL() {
         return (
             <div className="flex flex-wrap gap-2">
                 <Button type="button" icon="pi pi-sitemap" severity="danger" rounded raised
+                    onClick={() => {
+                        const cmnObjData = convertToOriginalFormat(rowData); // Convert rowData to the desired format
+                        setCmnLocobjLDialog(cmnObjData);
+                        setObjTip("UPDATE");
+                    }}                
                 ></Button>
                 <Button type="button" icon="pi pi-pencil" severity="secondary" rounded raised
                     onClick={() => {
@@ -209,13 +228,13 @@ export default function CmnObjTreeL() {
         return (
             <div className="flex card-container">
                 <div className="flex flex-wrap gap-1">
-                    <Button label={translations[selectedLanguage].Таск1} icon="pi pi-plus" severity="success" onClick={console.log("Prvo")} text raised />
+                    <Button label={translations[selectedLanguage].Task1} icon="pi pi-plus" severity="success" onClick={console.log("Prvo")} text raised />
                 </div>
                 <div className="flex flex-wrap gap-1">
-                    <Button label={translations[selectedLanguage].Таск2} icon="pi pi-shield" onClick={console.log("Prvo")} text raised disabled={!cmnObj} />
+                    <Button label={translations[selectedLanguage].Task2} icon="pi pi-shield" onClick={console.log("Prvo")} text raised disabled={!cmnObj} />
                 </div>
                 <div className="flex flex-wrap gap-1">
-                    <Button label={translations[selectedLanguage].Таск3} icon="pi pi-sitemap" onClick={console.log("Prvo")} text raised disabled={!cmnObj} />
+                    <Button label={translations[selectedLanguage].Task3} icon="pi pi-sitemap" onClick={console.log("Prvo")} text raised disabled={!cmnObj} />
                 </div>
                 <div className="flex-grow-1" />
                 <b>{translations[selectedLanguage].ObjList}</b>
@@ -258,10 +277,12 @@ export default function CmnObjTreeL() {
 
                 scrollable scrollHeight="720px" tableStyle={{ minWidth: '50rem' }}
             >
-                <Column field="text" header="Text" expander></Column>
-                <Column field="code" header="Code"></Column>
-                <Column field="ntp" header="Tp"></Column>
-                <Column body={actionTemplate} headerClassName="w-10rem" />
+                <Column field="text" header="Text" expander style={{ width: "40%" }}></Column>
+                <Column field="code" header="Code" style={{ width: "20%" }}></Column>
+                <Column field="ntp" header="Tp" style={{ width: "30%" }}></Column>
+                {/**                 */}
+                <Column body={actionTemplate} headerClassName="w-10rem" style={{ width: "10%" }} />
+
             </TreeTable>
             <Dialog
                 header={translations[selectedLanguage].Obj}
@@ -280,6 +301,26 @@ export default function CmnObjTreeL() {
                         setVisible={setVisible}
                         dialog={true}
                         objTip={objTip}
+                    />
+                )}
+            </Dialog>
+            <Dialog
+                header={translations[selectedLanguage].LocobjLista}
+                visible={cmnLocobjLVisible}
+                style={{ width: '70%' }}
+                onHide={() => {
+                    setCmnLocobjLVisible(false);
+                    setShowMyComponent(false);
+                }}
+            >
+                {showMyComponent && (
+                    <CmnLocobjL
+                        parameter={"inputTextValue"}
+                        cmnObj={cmnObj}
+                        handleCmnLocobjLDialogClose={handleCmnLocobjLDialogClose}
+                        setCmnLocobjLVisible={setCmnLocobjLVisible}
+                        dialog={true}
+                        lookUp={false}
                     />
                 )}
             </Dialog>

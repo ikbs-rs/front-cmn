@@ -415,6 +415,13 @@ export const translations = {
         CurrRateLista: "Курс валута Листа",
         TgpList: "Тарифна група Листа",
         Tgp: "Тарифна групе",
+        ObjCon: "Конзола",
+        ObjectsD: "ОбјекатД",
+        tp: "Тип",
+        Location: "Локација",
+        LocationList: "Листа локација",
+        Place: "Место",
+        LocobjLista: "Веза са местим"
     }
   };
   

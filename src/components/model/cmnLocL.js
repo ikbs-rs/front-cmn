@@ -7,42 +7,43 @@ import { Button } from "primereact/button";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
-import './index.css';
-import { CmnObjService } from "../../service/model/CmnObjService";
-import CmnObj from './cmnObj';
+import { CmnLocService } from "../../service/model/CmnLocService";
+import CmnLoc from './cmnLoc';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
+import './index.css';
 import { translations } from "../../configs/translations";
-import CmnObjattsL from './cmnObjattsL';
-import CmnObjlinkL from './cmnObjlinkL';
-import CmnLocobjL from './cmnLocobjL';
+import DateFunction from "../../utilities/DateFunction";
 
-export default function CmnObjL(props) {
-  let i = 0
-  const objName = "cmn_obj"
+
+export default function CmnLocL(props) {
+
+  const objName = "cmn_loc"
   const selectedLanguage = localStorage.getItem('sl') || 'en'
-  const emptyCmnObj = EmptyEntities[objName]
+  const emptyCmnLoc = EmptyEntities[objName]
   const [showMyComponent, setShowMyComponent] = useState(true);
-  const [cmnObjs, setCmnObjs] = useState([]);
-  const [cmnObj, setCmnObj] = useState(emptyCmnObj);
+  const [cmnLocs, setCmnLocs] = useState([]);
+  const [cmnLoc, setCmnLoc] = useState(emptyCmnLoc);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
-  const [cmnObjattsLVisible, setCmnObjattsLVisible] = useState(false);
-  const [cmnObjlinkLVisible, setCmnObjlinkLVisible] = useState(false);
-  const [cmnLocobjLVisible, setCmnLocobjLVisible] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [objTip, setObjtpTip] = useState('');
+  const [locTip, setLocTip] = useState('');
+  let i = 0
+  const handleCancelClick = () => {
+    props.setCmnLocLVisible(false);
+  };
 
   useEffect(() => {
     async function fetchData() {
       try {
         ++i
         if (i < 2) {
-          const cmnObjService = new CmnObjService();
-          const data = await cmnObjService.getLista();
-          setCmnObjs(data);
+          const cmnLocService = new CmnLocService();
+          const data = await cmnLocService.getLista();
+          setCmnLocs(data);
+
           initFilters();
         }
       } catch (error) {
@@ -56,43 +57,30 @@ export default function CmnObjL(props) {
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
 
-    let _cmnObjs = [...cmnObjs];
-    let _cmnObj = { ...localObj.newObj.obj };
-
+    let _cmnLocs = [...cmnLocs];
+    let _cmnLoc = { ...localObj.newObj.obj };
     //setSubmitted(true);
-    if (localObj.newObj.objTip === "CREATE") {
-      _cmnObjs.push(_cmnObj);
-    } else if (localObj.newObj.objTip === "UPDATE") {
+    if (localObj.newObj.locTip === "CREATE") {
+      _cmnLocs.push(_cmnLoc);
+    } else if (localObj.newObj.locTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
-      _cmnObjs[index] = _cmnObj;
-    } else if ((localObj.newObj.objTip === "DELETE")) {
-      _cmnObjs = cmnObjs.filter((val) => val.id !== localObj.newObj.obj.id);
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnObj Delete', life: 3000 });
+      _cmnLocs[index] = _cmnLoc;
+    } else if ((localObj.newObj.locTip === "DELETE")) {
+      _cmnLocs = cmnLocs.filter((val) => val.id !== localObj.newObj.obj.id);
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnLoc Delete', life: 3000 });
     } else {
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnObj ?', life: 3000 });
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnLoc ?', life: 3000 });
     }
-    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.objTip}`, life: 3000 });
-    setCmnObjs(_cmnObjs);
-    setCmnObj(emptyCmnObj);
-  };
-
-  const handleCmnObjattsLDialogClose = (newObj) => {
-    const localObj = { newObj };
-  };
-
-  const handleCmnObjlinkLDialogClose = (newObj) => {
-    const localObj = { newObj };
-  };
-
-  const handleCmnLocobjLDialogClose = (newObj) => {
-    const localObj = { newObj };
+    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.locTip}`, life: 3000 });
+    setCmnLocs(_cmnLocs);
+    setCmnLoc(emptyCmnLoc);
   };
 
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < cmnObjs.length; i++) {
-      if (cmnObjs[i].id === id) {
+    for (let i = 0; i < cmnLocs.length; i++) {
+      if (cmnLocs[i].id === id) {
         index = i;
         break;
       }
@@ -102,26 +90,15 @@ export default function CmnObjL(props) {
   };
 
   const openNew = () => {
-    setCmnObjDialog(emptyCmnObj);
-  };
-
-  const openObjAtt = () => {
-    setCmnObjattsLDialog();
-  };
-
-  const openObjLink = () => {
-    setCmnObjlinkLDialog();
-  };
-
-  const openLocObj = () => {
-    setCmnLocobjLDialog();
+    setCmnLocDialog(emptyCmnLoc);
   };
 
   const onRowSelect = (event) => {
+    //cmnLoc.begda = event.data.begda
     toast.current.show({
       severity: "info",
       summary: "Action Selected",
-      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
+      detail: `Id: ${event.data.id} Name: ${event.data.text}`,
       life: 3000,
     });
   };
@@ -130,7 +107,7 @@ export default function CmnObjL(props) {
     toast.current.show({
       severity: "warn",
       summary: "Action Unselected",
-      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
+      detail: `Id: ${event.data.id} Name: ${event.data.text}`,
       life: 3000,
     });
   };
@@ -138,11 +115,19 @@ export default function CmnObjL(props) {
   const initFilters = () => {
     setFilters({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      ctp: {
+        operator: FilterOperator.AND,
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+      },
+      ntp: {
+        operator: FilterOperator.AND,
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+      },
       code: {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
-      textx: {
+      text: {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
@@ -168,20 +153,14 @@ export default function CmnObjL(props) {
   const renderHeader = () => {
     return (
       <div className="flex card-container">
+        <div className="flex flex-wrap gap-1" />
+        <Button label={translations[selectedLanguage].Cancel} icon="pi pi-times" onClick={handleCancelClick} text raised
+        />
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
-        <div className="flex flex-wrap gap-1">
-          <Button label={translations[selectedLanguage].Attributes} icon="pi pi-table" onClick={openObjAtt} text raised disabled={!cmnObj} />
-        </div>
-        <div className="flex flex-wrap gap-1">
-          <Button label={translations[selectedLanguage].Links} icon="pi pi-sitemap" onClick={openObjLink} text raised disabled={!cmnObj} />
-        </div>
-        <div className="flex flex-wrap gap-1">
-          <Button label={translations[selectedLanguage].Place} icon="pi pi-sitemap" onClick={openLocObj} text raised disabled={!cmnObj} />
-        </div>
-        <div className="flex-grow-1" />
-        <b>{translations[selectedLanguage].ObjList}</b>
+        <div className="flex-grow-1"></div>
+        <b>{translations[selectedLanguage].LocationList}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -206,7 +185,7 @@ export default function CmnObjL(props) {
   };
 
   const validBodyTemplate = (rowData) => {
-    const valid = rowData.valid == 1 ? true : false
+    const valid = rowData.valid == 1?true:false
     return (
       <i
         className={classNames("pi", {
@@ -221,7 +200,7 @@ export default function CmnObjL(props) {
     return (
       <div className="flex align-items-center gap-2">
         <label htmlFor="verified-filter" className="font-bold">
-          {translations[selectedLanguage].Valid}
+        {translations[selectedLanguage].Valid}
         </label>
         <TriStateCheckbox
           inputId="verified-filter"
@@ -232,35 +211,22 @@ export default function CmnObjL(props) {
     );
   };
 
+  const formatDateColumn = (rowData, field) => {
+    return DateFunction.formatDate(rowData[field]);
+  };
+
   // <--- Dialog
-  const setCmnObjDialog = (cmnObj) => {
+  const setCmnLocDialog = (cmnLoc) => {
     setVisible(true)
-    setObjtpTip("CREATE")
-    setCmnObj({ ...cmnObj });
-  }
-
-  const setCmnObjattsLDialog = () => {
-    setShowMyComponent(true);
-    setCmnObjattsLVisible(true);
-
-  }
-  const setCmnObjlinkLDialog = () => {
-    setShowMyComponent(true);
-    setCmnObjlinkLVisible(true);
-
-  }
-
-  const setCmnLocobjLDialog = () => {
-    setShowMyComponent(true);
-    setCmnLocobjLVisible(true);
-
+    setLocTip("CREATE")
+    setCmnLoc({ ...cmnLoc });
   }
   //  Dialog --->
 
   const header = renderHeader();
   // heder za filter/>
 
-  const actionTemplate = (rowData) => {
+  const locTemplate = (rowData) => {
     return (
       <div className="flex flex-wrap gap-1">
 
@@ -269,8 +235,8 @@ export default function CmnObjL(props) {
           icon="pi pi-pencil"
           style={{ width: '24px', height: '24px' }}
           onClick={() => {
-            setCmnObjDialog(rowData)
-            setObjtpTip("UPDATE")
+            setCmnLocDialog(rowData)
+            setLocTip("UPDATE")
           }}
           text
           raised ></Button>
@@ -285,30 +251,28 @@ export default function CmnObjL(props) {
       <DataTable
         dataKey="id"
         selectionMode="single"
-        selection={cmnObj}
+        selection={cmnLoc}
         loading={loading}
-        value={cmnObjs}
+        value={cmnLocs}
         header={header}
         showGridlines
         removableSort
         filters={filters}
         scrollable
-        sortField="code"
-        sortOrder={1}
-        scrollHeight="750px"
+        scrollHeight="550px"
         virtualScrollerOptions={{ itemSize: 46 }}
         tableStyle={{ minWidth: "50rem" }}
         metaKeySelection={false}
         paginator
         rows={10}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        onSelectionChange={(e) => setCmnObj(e.value)}
+        onSelectionChange={(e) => setCmnLoc(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
       >
         <Column
           //bodyClassName="text-center"
-          body={actionTemplate}
+          body={locTemplate}
           exportable={false}
           headerClassName="w-10rem"
           style={{ minWidth: '4rem' }}
@@ -321,27 +285,25 @@ export default function CmnObjL(props) {
           style={{ width: "15%" }}
         ></Column>
         <Column
-          field="textx"
+          field="text"
           header={translations[selectedLanguage].Text}
           sortable
           filter
           style={{ width: "30%" }}
         ></Column>
-        {/*
         <Column
           field="ctp"
-          header={translations[selectedLanguage].Text}
+          header={translations[selectedLanguage].Code}
           sortable
           filter
           style={{ width: "15%" }}
-        ></Column>    
-  */}
+        ></Column>
         <Column
           field="ntp"
-          header={translations[selectedLanguage].ObjTp}
+          header={translations[selectedLanguage].Text}
           sortable
           filter
-          style={{ width: "30%" }}
+          style={{ width: "35%" }}
         ></Column>
         <Column
           field="valid"
@@ -357,85 +319,30 @@ export default function CmnObjL(props) {
         ></Column>
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].Obj}
+        header={translations[selectedLanguage].Location}
         visible={visible}
-        style={{ width: '70%' }}
+        style={{ width: '60%' }}
         onHide={() => {
           setVisible(false);
           setShowMyComponent(false);
         }}
       >
         {showMyComponent && (
-          <CmnObj
+          <CmnLoc
             parameter={"inputTextValue"}
-            cmnObj={cmnObj}
+            cmnLoc={cmnLoc}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
-            objTip={objTip}
+            locTip={locTip}
           />
         )}
+        <div className="p-dialog-header-icons" style={{ display: 'none' }}>
+          <button className="p-dialog-header-close p-link">
+            <span className="p-dialog-header-close-icon pi pi-times"></span>
+          </button>
+        </div>
       </Dialog>
-      <Dialog
-        header={translations[selectedLanguage].ObjattsLista}
-        visible={cmnObjattsLVisible}
-        style={{ width: '70%' }}
-        onHide={() => {
-          setCmnObjattsLVisible(false);
-          setShowMyComponent(false);
-        }}
-      >
-        {showMyComponent && (
-          <CmnObjattsL
-            parameter={"inputTextValue"}
-            cmnObj={cmnObj}
-            handleCmnObjattsLDialogClose={handleCmnObjattsLDialogClose}
-            setCmnObjattsLVisible={setCmnObjattsLVisible}
-            dialog={true}
-            lookUp={false}
-          />
-        )}
-      </Dialog>
-      <Dialog
-        header={translations[selectedLanguage].ObjlinkLista}
-        visible={cmnObjlinkLVisible}
-        style={{ width: '90%' }}
-        onHide={() => {
-          setCmnObjlinkLVisible(false);
-          setShowMyComponent(false);
-        }}
-      >
-        {showMyComponent && (
-          <CmnObjlinkL
-            parameter={"inputTextValue"}
-            cmnObj={cmnObj}
-            handleCmnObjlinkLDialogClose={handleCmnObjlinkLDialogClose}
-            setCmnObjlinkLVisible={setCmnObjlinkLVisible}
-            dialog={true}
-            lookUp={false}
-          />
-        )}
-      </Dialog>
-      <Dialog
-        header={translations[selectedLanguage].LocobjLista}
-        visible={cmnLocobjLVisible}
-        style={{ width: '70%' }}
-        onHide={() => {
-          setCmnLocobjLVisible(false);
-          setShowMyComponent(false);
-        }}
-      >
-        {showMyComponent && (
-          <CmnLocobjL
-            parameter={"inputTextValue"}
-            cmnObj={cmnObj}
-            handleCmnLocobjLDialogClose={handleCmnLocobjLDialogClose}
-            setCmnLocobjLVisible={setCmnLocobjLVisible}
-            dialog={true}
-            lookUp={false}
-          />
-        )}
-      </Dialog>      
     </div>
   );
 }

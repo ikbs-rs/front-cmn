@@ -14,8 +14,10 @@ import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
 import { translations } from "../../configs/translations";
 import CmnObjattsL from './cmnObjattsL';
+
 import CmnObjlinkL from './cmnObjlinkL';
-import CmnLocobjL from './cmnLocobjL';
+import CmnObjtpService from '../../service/model/CmnObjtpService';
+import { Dropdown } from 'primereact/dropdown';
 
 export default function CmnObjL(props) {
   let i = 0
@@ -31,9 +33,10 @@ export default function CmnObjL(props) {
   const toast = useRef(null);
   const [cmnObjattsLVisible, setCmnObjattsLVisible] = useState(false);
   const [cmnObjlinkLVisible, setCmnObjlinkLVisible] = useState(false);
-  const [cmnLocobjLVisible, setCmnLocobjLVisible] = useState(false);
   const [visible, setVisible] = useState(false);
   const [objTip, setObjtpTip] = useState('');
+  const [ddTpItem, setDdTpItem] = useState(null);
+  const [ddTpItems, setDdTpItems] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -84,10 +87,6 @@ export default function CmnObjL(props) {
     const localObj = { newObj };
   };
 
-  const handleCmnLocobjLDialogClose = (newObj) => {
-    const localObj = { newObj };
-  };
-
   const findIndexById = (id) => {
     let index = -1;
 
@@ -111,10 +110,6 @@ export default function CmnObjL(props) {
 
   const openObjLink = () => {
     setCmnObjlinkLDialog();
-  };
-
-  const openLocObj = () => {
-    setCmnLocobjLDialog();
   };
 
   const onRowSelect = (event) => {
@@ -146,6 +141,10 @@ export default function CmnObjL(props) {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
+      ntp: {
+        operator: FilterOperator.AND,
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+      },      
       valid: { value: null, matchMode: FilterMatchMode.EQUALS },
     });
     setGlobalFilterValue("");
@@ -177,9 +176,24 @@ export default function CmnObjL(props) {
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].Links} icon="pi pi-sitemap" onClick={openObjLink} text raised disabled={!cmnObj} />
         </div>
-        <div className="flex flex-wrap gap-1">
-          <Button label={translations[selectedLanguage].Place} icon="pi pi-sitemap" onClick={openLocObj} text raised disabled={!cmnObj} />
+
+        {/*<label htmlFor="tp">{translations[selectedLanguage].tp}</label>*/}
+
+        <div className="flex flex-wrap gap-5">
+          <p></p>
+          <Dropdown id="tp"
+            value={ddTpItem}
+            options={ddTpItems}
+            //onChange={(e) => onInputChange(e, "options", 'tp')}
+            optionLabel="name"
+            placeholder="Select One"
+          />
+
         </div>
+        <div className="flex flex-wrap gap-2"><p></p><label htmlFor="tp">{translations[selectedLanguage].tp}</label></div>
+        
+        {/**/}
+
         <div className="flex-grow-1" />
         <b>{translations[selectedLanguage].ObjList}</b>
         <div className="flex-grow-1"></div>
@@ -247,12 +261,6 @@ export default function CmnObjL(props) {
   const setCmnObjlinkLDialog = () => {
     setShowMyComponent(true);
     setCmnObjlinkLVisible(true);
-
-  }
-
-  const setCmnLocobjLDialog = () => {
-    setShowMyComponent(true);
-    setCmnLocobjLVisible(true);
 
   }
   //  Dialog --->
@@ -416,26 +424,6 @@ export default function CmnObjL(props) {
           />
         )}
       </Dialog>
-      <Dialog
-        header={translations[selectedLanguage].LocobjLista}
-        visible={cmnLocobjLVisible}
-        style={{ width: '70%' }}
-        onHide={() => {
-          setCmnLocobjLVisible(false);
-          setShowMyComponent(false);
-        }}
-      >
-        {showMyComponent && (
-          <CmnLocobjL
-            parameter={"inputTextValue"}
-            cmnObj={cmnObj}
-            handleCmnLocobjLDialogClose={handleCmnLocobjLDialogClose}
-            setCmnLocobjLVisible={setCmnLocobjLVisible}
-            dialog={true}
-            lookUp={false}
-          />
-        )}
-      </Dialog>      
     </div>
   );
 }
