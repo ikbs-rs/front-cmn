@@ -5,6 +5,8 @@ import { Login } from './pages/Login';
 import { Error } from './pages/Error';
 import { NotFound } from './pages/NotFound';
 import LocEnd from './components/model/cmnLocL';
+import ObjEnd from './components/model/cmnObjL';
+import ParEnd from './components/model/cmnParL';
 import { Access } from './pages/Access';
 import axios from 'axios';
 import env from "./configs/env"
@@ -18,7 +20,7 @@ const AppWrapper = (props) => {
   const search = window.location.search;
   const params = new URLSearchParams(search);
   const sl = params.get('sl');
-  const aa = params.get('drugiend')
+  const aa = params.get('endpoint')
   localStorage.setItem('sl', sl || "en")
 
   useEffect(() => {
@@ -61,15 +63,21 @@ const AppWrapper = (props) => {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/locend" element={<LocEnd />} />
       <Route path="/error" element={<Error />} />
       <Route path="/notfound" element={<NotFound />} />
       <Route path="/access" element={<Access />} />
+      <Route path="/locend" element={<LocEnd />} />
+      <Route path="/objend" element={<ObjEnd />} />
+      <Route path="/parend" element={<ParEnd />} />
       <Route path="*" element={
         (() => {
           if (isLoggedIn) {
             if (aa === "locend") {
               return <LocEnd />;
+            } else if (aa === "objend") {
+              return <ObjEnd />;    
+            } else if (aa === "parend") {
+              return <ParEnd />;                          
             } else if (aa === "notfound") {
               return <NotFound />;
             } else if (aa === "access") {
