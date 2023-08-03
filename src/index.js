@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import { store } from './store/store';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+console.log("**AppWrapper****AppW2222rapper*******AppWrapper****")
 root.render(
     <Provider store={store}>
     <React.StrictMode>

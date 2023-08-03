@@ -16,7 +16,7 @@ import { translations } from "../../configs/translations";
 import DateFunction from "../../utilities/DateFunction";
 import CmnParattsL from './cmnParattsL';
 import CmnParlinkL from './cmnParlinkL';
-
+import TicParprivilegeL from './ticParprivilegeL';
 
 export default function CmnParL(props) {
 
@@ -34,6 +34,7 @@ export default function CmnParL(props) {
   const [parTip, setParTip] = useState('');
   const [cmnParattsLVisible, setCmnParattsLVisible] = useState(false);
   const [cmnParlinkLVisible, setCmnParlinkLVisible] = useState(false);
+  const [ticParprivilegeLVisible, setTicParprivilegeLVisible] = useState(false);
   let i = 0
   const handleCancelClick = () => {
     props.setCmnParLVisible(false);
@@ -88,6 +89,10 @@ export default function CmnParL(props) {
     const localObj = { newObj };
   };
 
+  const handleTicParprivilegeDialogClose = (newObj) => {
+    const localObj = { newObj };
+  };
+
   const findIndexById = (id) => {
     let index = -1;
 
@@ -111,6 +116,10 @@ export default function CmnParL(props) {
 
   const openParLink = () => {
     setCmnParlinkLDialog();
+  };
+
+  const openParPrivilege = () => {
+    setTicParprivilegeLDialog();
   };
 
   const onRowSelect = (event) => {
@@ -183,7 +192,10 @@ export default function CmnParL(props) {
         </div> 
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].Links} icon="pi pi-sitemap" onClick={openParLink} text raised disabled={!cmnPar} />
-        </div>                
+        </div>  
+        <div className="flex flex-wrap gap-1">
+          <Button label={translations[selectedLanguage].Privilege} icon="pi pi-wallet" onClick={openParPrivilege} text raised disabled={!cmnPar} />
+        </div>                        
         <div className="flex-grow-1"></div>
         <b>{translations[selectedLanguage].ParList}</b>
         <div className="flex-grow-1"></div>
@@ -223,6 +235,11 @@ export default function CmnParL(props) {
   const setCmnParlinkLDialog = () => {
     setShowMyComponent(true);
     setCmnParlinkLVisible(true);
+  } 
+
+  const setTicParprivilegeLDialog = () => {
+    setShowMyComponent(true);
+    setTicParprivilegeLVisible(true);
   } 
 
   const setCmnParDialog = (cmnPar) => {
@@ -401,7 +418,27 @@ export default function CmnParL(props) {
             lookUp={false}
           />
         )}
-      </Dialog>        
+      </Dialog>       
+      <Dialog
+        header={translations[selectedLanguage].ParprivilegeLista}
+        visible={ticParprivilegeLVisible}
+        style={{ width: '70%' }}
+        onHide={() => {
+          setTicParprivilegeLVisible(false);
+          setShowMyComponent(false);
+        }}
+      >
+        {showMyComponent && (
+          <TicParprivilegeL
+            parameter={"inputTextValue"}
+            cmnPar={cmnPar}
+            handleTicParprivilegeLDialogClose={handleTicParprivilegeDialogClose}
+            setTicParprivilegeLVisible={setTicParprivilegeLVisible}
+            dialog={true}
+            lookUp={false}
+          />
+        )}
+      </Dialog>         
     </div>
   );
 }

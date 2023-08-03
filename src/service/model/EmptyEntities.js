@@ -558,6 +558,24 @@ const EmptyEntities =
     "valid": "1",
     "nobjtp1": null,
     "nobjtp2": null
+  },  
+  "tic_artloc": {
+    "id": null,
+    "site": null,
+    "art": null,
+    "loc": null,
+    "begda": "",
+    "endda": ""
+  },
+  "tic_parprivilege": {
+    "id": null,
+    "site": null,
+    "par": null,
+    "privilege": null,
+    "begda": "",
+    "datumod2": "",
+    "maxprc": null,
+    "maxval": null
   }
 }
 

@@ -421,7 +421,15 @@ export const translations = {
         Location: "Локација",
         LocationList: "Листа локација",
         Place: "Место",
-        LocobjLista: "Веза са местим"
+        LocobjLista: "Веза са местим",
+        Locart: "Артикал",
+        LocartList: "Листа артикала",
+        art: "Артикал",
+        Privilege: "Привилегије",
+        Parprivilege: "Привилегија",
+        ParprivilegeLista: "Привилегија Листа",
+        maxprc: "Макс проценат",
+        maxval: "Макс износ",
     }
   };
   

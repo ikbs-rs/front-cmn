@@ -7,34 +7,33 @@ import { Button } from "primereact/button";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
-import { CmnLocService } from "../../service/model/CmnLocService";
-import CmnLoc from './cmnLoc';
+import { TicParprivilegeService } from "../../service/model/TicParprivilegeService";
+import TicParprivilege from './ticParprivilege';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
 import './index.css';
 import { translations } from "../../configs/translations";
 import DateFunction from "../../utilities/DateFunction";
-import CmnLocartL from "./cmnLocartL"
 
 
-export default function CmnLocL(props) {
-
-  const objName = "cmn_loc"
-  const selectedLanguage = localStorage.getItem('sl') || 'en'
-  const emptyCmnLoc = EmptyEntities[objName]
+export default function TicParprivilegeL(props) {
+  console.log(props, "*************TicParprivilegeL****************")
+  const objName = "tic_parprivilege"
+  const selectedLanguage = localStorage.getItem('sl')||'en'
+  const emptyTicParprivilege = EmptyEntities[objName]
+  emptyTicParprivilege.par = props.cmnPar.id
   const [showMyComponent, setShowMyComponent] = useState(true);
-  const [cmnLocs, setCmnLocs] = useState([]);
-  const [cmnLoc, setCmnLoc] = useState(emptyCmnLoc);
+  const [ticParprivileges, setTicParprivileges] = useState([]);
+  const [ticParprivilege, setTicParprivilege] = useState(emptyTicParprivilege);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
-  const [locTip, setLocTip] = useState('');
-  const [cmnLocartLVisible, setCmnLocartLVisible] = useState(false);
+  const [parprivilegeTip, setParprivilegeTip] = useState('');
   let i = 0
   const handleCancelClick = () => {
-    props.setCmnLocLVisible(false);
+    props.setTicParprivilegeLVisible(false);
   };
 
   useEffect(() => {
@@ -42,9 +41,10 @@ export default function CmnLocL(props) {
       try {
         ++i
         if (i < 2) {
-          const cmnLocService = new CmnLocService();
-          const data = await cmnLocService.getLista();
-          setCmnLocs(data);
+          const ticParprivilegeService = new TicParprivilegeService();
+          const data = await ticParprivilegeService.getLista(props.cmnPar.id);
+          console.log(data, "*******************getLista**********************")
+          setTicParprivileges(data);
 
           initFilters();
         }
@@ -59,30 +59,30 @@ export default function CmnLocL(props) {
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
 
-    let _cmnLocs = [...cmnLocs];
-    let _cmnLoc = { ...localObj.newObj.obj };
+    let _ticParprivileges = [...ticParprivileges];
+    let _ticParprivilege = { ...localObj.newObj.obj };
     //setSubmitted(true);
-    if (localObj.newObj.locTip === "CREATE") {
-      _cmnLocs.push(_cmnLoc);
-    } else if (localObj.newObj.locTip === "UPDATE") {
+    if (localObj.newObj.parprivilegeTip === "CREATE") {
+      _ticParprivileges.push(_ticParprivilege);
+    } else if (localObj.newObj.parprivilegeTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
-      _cmnLocs[index] = _cmnLoc;
-    } else if ((localObj.newObj.locTip === "DELETE")) {
-      _cmnLocs = cmnLocs.filter((val) => val.id !== localObj.newObj.obj.id);
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnLoc Delete', life: 3000 });
+      _ticParprivileges[index] = _ticParprivilege;
+    } else if ((localObj.newObj.parprivilegeTip === "DELETE")) {
+      _ticParprivileges = ticParprivileges.filter((val) => val.id !== localObj.newObj.obj.id);
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'TicParprivilege Delete', life: 3000 });
     } else {
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnLoc ?', life: 3000 });
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'TicParprivilege ?', life: 3000 });
     }
-    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.locTip}`, life: 3000 });
-    setCmnLocs(_cmnLocs);
-    setCmnLoc(emptyCmnLoc);
+    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.parprivilegeTip}`, life: 3000 });
+    setTicParprivileges(_ticParprivileges);
+    setTicParprivilege(emptyTicParprivilege);
   };
 
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < cmnLocs.length; i++) {
-      if (cmnLocs[i].id === id) {
+    for (let i = 0; i < ticParprivileges.length; i++) {
+      if (ticParprivileges[i].id === id) {
         index = i;
         break;
       }
@@ -91,20 +91,12 @@ export default function CmnLocL(props) {
     return index;
   };
 
-  const handleCmnLocartLDialogClose = (newObj) => {
-    const localObj = { newObj };
-  }; 
-
   const openNew = () => {
-    setCmnLocDialog(emptyCmnLoc);
-  };
-
-  const openLocart = () => {
-    setCmnLocartDialog();
+    setTicParprivilegeDialog(emptyTicParprivilege);
   };
 
   const onRowSelect = (event) => {
-    //cmnLoc.begda = event.data.begda
+    //ticParprivilege.begda = event.data.begda
     toast.current.show({
       severity: "info",
       summary: "Action Selected",
@@ -131,17 +123,16 @@ export default function CmnLocL(props) {
       },
       ntp: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],       
       },
-      code: {
+      endda: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],       
       },
-      text: {
+      begda: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-      },
-      valid: { value: null, matchMode: FilterMatchMode.EQUALS },
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],       
+      }      
     });
     setGlobalFilterValue("");
   };
@@ -160,11 +151,6 @@ export default function CmnLocL(props) {
     setGlobalFilterValue(value1);
   };
 
-  const setCmnLocartDialog = () => {
-    setShowMyComponent(true);
-    setCmnLocartLVisible(true);
-
-  }   
   const renderHeader = () => {
     return (
       <div className="flex card-container">
@@ -174,11 +160,8 @@ export default function CmnLocL(props) {
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
-        <div className="flex flex-wrap gap-1">
-          <Button label={translations[selectedLanguage].art} icon="pi pi-shield" onClick={openLocart} text raised disabled={!cmnLoc} />
-        </div>        
         <div className="flex-grow-1"></div>
-        <b>{translations[selectedLanguage].LocationList}</b>
+        <b>{translations[selectedLanguage].ParprivilegeList}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -202,49 +185,22 @@ export default function CmnLocL(props) {
     );
   };
 
-  const validBodyTemplate = (rowData) => {
-    const valid = rowData.valid == 1?true:false
-    return (
-      <i
-        className={classNames("pi", {
-          "text-green-500 pi-check-circle": valid,
-          "text-red-500 pi-times-circle": !valid
-        })}
-      ></i>
-    );
-  };
-
-  const validFilterTemplate = (options) => {
-    return (
-      <div className="flex align-items-center gap-2">
-        <label htmlFor="verified-filter" className="font-bold">
-        {translations[selectedLanguage].Valid}
-        </label>
-        <TriStateCheckbox
-          inputId="verified-filter"
-          value={options.value}
-          onChange={(e) => options.filterCallback(e.value)}
-        />
-      </div>
-    );
-  };
-
   const formatDateColumn = (rowData, field) => {
     return DateFunction.formatDate(rowData[field]);
   };
 
   // <--- Dialog
-  const setCmnLocDialog = (cmnLoc) => {
+  const setTicParprivilegeDialog = (ticParprivilege) => {
     setVisible(true)
-    setLocTip("CREATE")
-    setCmnLoc({ ...cmnLoc });
+    setParprivilegeTip("CREATE")
+    setTicParprivilege({ ...ticParprivilege });
   }
   //  Dialog --->
 
   const header = renderHeader();
   // heder za filter/>
 
-  const locTemplate = (rowData) => {
+  const parprivilegeTemplate = (rowData) => {
     return (
       <div className="flex flex-wrap gap-1">
 
@@ -253,8 +209,8 @@ export default function CmnLocL(props) {
           icon="pi pi-pencil"
           style={{ width: '24px', height: '24px' }}
           onClick={() => {
-            setCmnLocDialog(rowData)
-            setLocTip("UPDATE")
+            setTicParprivilegeDialog(rowData)
+            setParprivilegeTip("UPDATE")
           }}
           text
           raised ></Button>
@@ -266,12 +222,33 @@ export default function CmnLocL(props) {
   return (
     <div className="card">
       <Toast ref={toast} />
+      <div className="col-12">
+        <div className="card">
+          <div className="p-fluid formgrid grid">
+            <div className="field col-12 md:col-6">
+              <label htmlFor="code">{translations[selectedLanguage].Code}</label>
+              <InputText id="code"
+                value={props.cmnPar.code}
+                disabled={true}
+              />
+            </div>
+            <div className="field col-12 md:col-6">
+              <label htmlFor="text">{translations[selectedLanguage].Text}</label>
+              <InputText
+                id="text"
+                value={props.cmnPar.textx}
+                disabled={true}
+              />
+            </div>           
+          </div>
+        </div>
+      </div>
       <DataTable
         dataKey="id"
         selectionMode="single"
-        selection={cmnLoc}
+        selection={ticParprivilege}
         loading={loading}
-        value={cmnLocs}
+        value={ticParprivileges}
         header={header}
         showGridlines
         removableSort
@@ -284,60 +261,64 @@ export default function CmnLocL(props) {
         paginator
         rows={10}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        onSelectionChange={(e) => setCmnLoc(e.value)}
+        onSelectionChange={(e) => setTicParprivilege(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
       >
         <Column
           //bodyClassName="text-center"
-          body={locTemplate}
+          body={parprivilegeTemplate}
           exportable={false}
           headerClassName="w-10rem"
           style={{ minWidth: '4rem' }}
         />
         <Column
-          field="code"
+          field="cprivilege"
           header={translations[selectedLanguage].Code}
           sortable
           filter
           style={{ width: "15%" }}
         ></Column>
         <Column
-          field="text"
-          header={translations[selectedLanguage].Text}
-          sortable
-          filter
-          style={{ width: "30%" }}
-        ></Column>
-        <Column
-          field="ctp"
-          header={translations[selectedLanguage].Code}
-          sortable
-          filter
-          style={{ width: "15%" }}
-        ></Column>
-        <Column
-          field="ntp"
+          field="nprivilege"
           header={translations[selectedLanguage].Text}
           sortable
           filter
           style={{ width: "35%" }}
         ></Column>
         <Column
-          field="valid"
-          filterField="valid"
-          dataType="numeric"
-          header={translations[selectedLanguage].Valid}
+          field="maxprc"
+          header={translations[selectedLanguage].maxprc}
           sortable
           filter
-          filterElement={validFilterTemplate}
           style={{ width: "10%" }}
-          bodyClassName="text-center"
-          body={validBodyTemplate}
-        ></Column>
+        ></Column>  
+        <Column
+          field="maxval"
+          header={translations[selectedLanguage].maxval}
+          sortable
+          filter
+          style={{ width: "10%" }}
+        ></Column>               
+        <Column
+          field="begda"
+          header={translations[selectedLanguage].Begda}
+          sortable
+          filter
+          style={{ width: "10%" }}
+          body={(rowData) => formatDateColumn(rowData, "begda")}
+        ></Column>  
+        <Column
+          field="endda"
+          header={translations[selectedLanguage].Endda}
+          sortable
+          filter
+          style={{ width: "10%" }}
+          body={(rowData) => formatDateColumn(rowData, "endda")}
+        ></Column>         
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].Location}
+        header={translations[selectedLanguage].Link}
         visible={visible}
         style={{ width: '60%' }}
         onHide={() => {
@@ -346,13 +327,14 @@ export default function CmnLocL(props) {
         }}
       >
         {showMyComponent && (
-          <CmnLoc
+          <TicParprivilege
             parameter={"inputTextValue"}
-            cmnLoc={cmnLoc}
+            ticParprivilege={ticParprivilege}
+            cmnPar={props.cmnPar}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
-            locTip={locTip}
+            parprivilegeTip={parprivilegeTip}
           />
         )}
         <div className="p-dialog-header-icons" style={{ display: 'none' }}>
@@ -361,26 +343,6 @@ export default function CmnLocL(props) {
           </button>
         </div>
       </Dialog>
-      <Dialog
-        header={translations[selectedLanguage].LocartList}
-        visible={cmnLocartLVisible}
-        style={{ width: '90%' }}
-        onHide={() => {
-          setCmnLocartLVisible(false);
-          setShowMyComponent(false);
-        }}
-      >
-        {showMyComponent && (
-          <CmnLocartL
-            parameter={"inputTextValue"}
-            cmnLoc={cmnLoc}
-            handleCmnLocartLDialogClose={handleCmnLocartLDialogClose}
-            setCmnLocartLVisible={setCmnLocartLVisible}
-            dialog={true}
-            lookUp={false}
-          />
-        )}
-      </Dialog>       
     </div>
   );
 }
