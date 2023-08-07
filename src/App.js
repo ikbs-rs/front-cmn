@@ -460,7 +460,7 @@ const App = () => {
                         <Route path="/" element={<EmptyPage />} />
                         <Route path="/um" element={<Um />} />
                         <Route path="/partp" element={<Partp />} />
-                        <Route path="/par" element={<Par />} />
+                        <Route path="/par" element={<Par independent={true}/>} />
                         <Route path="/paratt" element={<Paratt />} />
                         <Route path="/terrtp" element={<Terrtp />} />
                         <Route path="/terr" element={<Terr />} />

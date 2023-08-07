@@ -35,6 +35,8 @@ export default function CmnParL(props) {
   const [cmnParattsLVisible, setCmnParattsLVisible] = useState(false);
   const [cmnParlinkLVisible, setCmnParlinkLVisible] = useState(false);
   const [ticParprivilegeLVisible, setTicParprivilegeLVisible] = useState(false);
+  const [parentData, setParentData] = useState(null);
+
   let i = 0
   const handleCancelClick = () => {
     props.setCmnParLVisible(false);
@@ -46,10 +48,13 @@ export default function CmnParL(props) {
         ++i
         if (i < 2) {
           const cmnParService = new CmnParService();
-          const data = await cmnParService.getLista();
-          setCmnPars(data);
-
-          initFilters();
+          //!!!!! OVDE MI TREBAJU PODACI KOJE PRIMAM SA PARENT KOMPONENTA
+          if (props.independent || parentData ) {
+            console.log(parentData, "**************parentData****************************", props )            
+            const data = await cmnParService.getLista();
+            setCmnPars(data);
+            initFilters();
+          }
         }
       } catch (error) {
         console.error(error);
@@ -57,7 +62,52 @@ export default function CmnParL(props) {
       }
     }
     fetchData();
+  }, [parentData]);
+
+  useEffect(() => {
+    const handleMessageFromParent = (event) => {
+      
+      // Provera da li poruka dolazi iz očekivanog izvora
+      if (event.origin === 'http://ws10.ems.local:8354') {
+        // Provera tipa poruke
+        if (event.data.type === 'dataUpdate') {
+          const receivedData = event.data.data;
+          console.log('Received message from parent on iframe load ....', receivedData);
+          // Sačuvaj primljene podatke u promenljivoj
+          setParentData(receivedData);
+        }
+      }
+    };
+    // Dodavanje event slušača prilikom montiranja komponente
+    window.addEventListener('message', handleMessageFromParent);
+
+    // Uklanjanje event slušača prilikom demontiranja komponente
+    return () => {
+      window.removeEventListener('message', handleMessageFromParent);
+    };
   }, []);
+
+  /*
+  // Dodajte ovu funkciju za dodavanje slušača događaja za poruke
+  const addMessageEventListener = () => {
+    window.addEventListener('message', (event) => {
+      // Provera da li je poruka poslata sa očekivanog izvora
+      if (event.origin === 'http://ws10.ems.local:8354') {
+        // Obrada poruke
+        const receivedData = event.data;
+        console.log('Received message:', receivedData);
+
+        // Opciono: Slanje odgovora nazad roditeljskom dokumentu
+        const response = { type: 'response', data: 'Message received!' };
+        event.source.postMessage(response, event.origin);
+      }
+    });
+  }
+*/
+  const sendToParent = (data) => {
+    const parentOrigin = 'http://ws10.ems.local:8354'; // Promenite ovo na stvarni izvor roditeljskog dokumenta
+    window.parent.postMessage(data, parentOrigin);
+  }
 
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
@@ -130,6 +180,9 @@ export default function CmnParL(props) {
       detail: `Id: ${event.data.id} Name: ${event.data.text}`,
       life: 3000,
     });
+    // Primer slanja poruke sa podacima na roditeljski dokument
+    const dataToSend = { type: 'dataFromIframe', data: { id: event.data.id, text: event.data.text } };
+    sendToParent(dataToSend);
   };
 
   const onRowUnselect = (event) => {
@@ -189,13 +242,13 @@ export default function CmnParL(props) {
         </div>
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].Attributes} icon="pi pi-table" onClick={openParAtt} text raised disabled={!cmnPar} />
-        </div> 
+        </div>
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].Links} icon="pi pi-sitemap" onClick={openParLink} text raised disabled={!cmnPar} />
-        </div>  
+        </div>
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].Privilege} icon="pi pi-wallet" onClick={openParPrivilege} text raised disabled={!cmnPar} />
-        </div>                        
+        </div>
         <div className="flex-grow-1"></div>
         <b>{translations[selectedLanguage].ParList}</b>
         <div className="flex-grow-1"></div>
@@ -230,17 +283,17 @@ export default function CmnParL(props) {
   const setCmnParattsLDialog = () => {
     setShowMyComponent(true);
     setCmnParattsLVisible(true);
-  } 
+  }
 
   const setCmnParlinkLDialog = () => {
     setShowMyComponent(true);
     setCmnParlinkLVisible(true);
-  } 
+  }
 
   const setTicParprivilegeLDialog = () => {
     setShowMyComponent(true);
     setTicParprivilegeLVisible(true);
-  } 
+  }
 
   const setCmnParDialog = (cmnPar) => {
     setVisible(true)
@@ -310,14 +363,14 @@ export default function CmnParL(props) {
           sortable
           filter
           style={{ width: "20%" }}
-        ></Column> 
+        ></Column>
         <Column
           field="text"
           header={translations[selectedLanguage].text}
           sortable
           filter
           style={{ width: "20%" }}
-        ></Column>                
+        ></Column>
         <Column
           field="ntp"
           header={translations[selectedLanguage].Text}
@@ -398,7 +451,7 @@ export default function CmnParL(props) {
             lookUp={false}
           />
         )}
-      </Dialog>       
+      </Dialog>
       <Dialog
         header={translations[selectedLanguage].ParlinkLista}
         visible={cmnParlinkLVisible}
@@ -418,7 +471,7 @@ export default function CmnParL(props) {
             lookUp={false}
           />
         )}
-      </Dialog>       
+      </Dialog>
       <Dialog
         header={translations[selectedLanguage].ParprivilegeLista}
         visible={ticParprivilegeLVisible}
@@ -438,7 +491,7 @@ export default function CmnParL(props) {
             lookUp={false}
           />
         )}
-      </Dialog>         
+      </Dialog>
     </div>
   );
 }
