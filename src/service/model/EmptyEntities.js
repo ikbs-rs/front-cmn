@@ -28,6 +28,21 @@ const EmptyEntities =
     "grammcase": "1",
     "text": ""
   },
+  "cmn_inputtp": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "valid": "1"
+  },
+  "cmn_inputtpx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },  
   "cmn_link": {
     "id": null,
     "site": null,
@@ -382,6 +397,21 @@ const EmptyEntities =
     "grammcase": "1",
     "text": ""
   },
+  "cmn_paymenttp": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "valid": "1"
+  },
+  "cmn_paymenttpx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },  
   "cmn_site": {
     "id": null,
     "site": null,
