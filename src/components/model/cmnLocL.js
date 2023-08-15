@@ -176,7 +176,10 @@ export default function CmnLocL(props) {
         </div>
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].art} icon="pi pi-shield" onClick={openLocart} text raised disabled={!cmnLoc} />
-        </div>        
+        </div>     
+        <div className="flex flex-wrap gap-1">
+          <Button label={translations[selectedLanguage].Terr} icon="pi pi-building" onClick={openLocart} text raised disabled={!cmnLoc} />
+        </div>            
         <div className="flex-grow-1"></div>
         <b>{translations[selectedLanguage].LocationList}</b>
         <div className="flex-grow-1"></div>
