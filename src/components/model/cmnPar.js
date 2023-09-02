@@ -13,7 +13,7 @@ import { Calendar } from "primereact/calendar";
 import DateFunction from "../../utilities/DateFunction"
 
 const CmnPar = (props) => {
-
+console.log(props, "*-*-*-*-*-*-*-*****CmnPar-*-*-*-*-*-*-*-*-*-*-*-*-*-*")
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [cmnPar, setCmnPar] = useState(props.cmnPar);
@@ -57,10 +57,22 @@ const CmnPar = (props) => {
     }, []);
     // Autocomplit>
 
+    // const handleCancelClick = () => {
+    //     props.setVisible(false);
+    // };
     const handleCancelClick = () => {
-        props.setVisible(false);
-    };
-
+        console.log(props, "111111111111111111111111111")
+        if (props.remote) {
+            const dataToSend = { type: 'dataFromIframe', visible: false };
+            sendToParent(dataToSend);
+        } else {
+            props.setVisible(false);  
+        }
+      };    
+      const sendToParent = (data) => {
+        const parentOrigin = 'http://ws10.ems.local:8354'; // Promenite ovo na stvarni izvor roditeljskog dokumenta
+        window.parent.postMessage(data, parentOrigin);
+      }
     const handleCreateClick = async () => {
         try {
             setSubmitted(true);
@@ -125,7 +137,6 @@ const CmnPar = (props) => {
 
     const onInputChange = (e, type, name, a) => {
         let val = ''
-
         if (type === "options") {
             val = (e.target && e.target.value && e.target.value.code) || '';
             setDdCmnParItem(e.value);
@@ -134,7 +145,7 @@ const CmnPar = (props) => {
             cmnPar.ntp = e.value.name
             cmnPar.ctp = foundItem.code
         } else if (type === "Calendar") {
-            const dateVal = DateFunction.dateGetValue(e.value)
+            //const dateVal = DateFunction.dateGetValue(e.value)
             val = (e.target && e.target.value) || '';
             switch (name) {
                 case "begda":
@@ -143,13 +154,13 @@ const CmnPar = (props) => {
                     break;
                 case "endda":
                     setEndda(e.value)
-                    //cmnPar.endda = DateFunction.formatDateToDBFormat(dateVal)
                     break;
                 default:
                     console.error("Pogresan naziv polja")
             }
         } else {
             val = (e.target && e.target.value) || '';
+            console.log(val, "*******************", e.target)
         }
         let _cmnPar = { ...cmnPar };
         _cmnPar[`${name}`] = val;
@@ -179,7 +190,7 @@ const CmnPar = (props) => {
                             <label htmlFor="text">{translations[selectedLanguage].Text}</label>
                             <InputText
                                 id="text"
-                                value={cmnPar.textx} onChange={(e) => onInputChange(e, "text", 'text')}
+                                value={cmnPar.text} onChange={(e) => onInputChange(e, "text", 'text')}
                                 required
                                 className={classNames({ 'p-invalid': submitted && !cmnPar.text })}
                             />
@@ -204,7 +215,7 @@ const CmnPar = (props) => {
                             <label htmlFor="short">{translations[selectedLanguage].short}</label>
                             <InputText
                                 id="short"
-                                value={cmnPar.value} onChange={(e) => onInputChange(e, "text", 'short')}
+                                value={cmnPar.short} onChange={(e) => onInputChange(e, "text", 'short')}
                             />
                         </div>
 
@@ -212,7 +223,7 @@ const CmnPar = (props) => {
                             <label htmlFor="address">{translations[selectedLanguage].address}</label>
                             <InputText
                                 id="address"
-                                value={cmnPar.value} onChange={(e) => onInputChange(e, "text", 'address')}
+                                value={cmnPar.address} onChange={(e) => onInputChange(e, "text", 'address')}
                             />
 
                         </div>
@@ -221,7 +232,7 @@ const CmnPar = (props) => {
                             <label htmlFor="place">{translations[selectedLanguage].place}</label>
                             <InputText
                                 id="place"
-                                value={cmnPar.value} onChange={(e) => onInputChange(e, "text", 'place')}
+                                value={cmnPar.place} onChange={(e) => onInputChange(e, "text", 'place')}
                             />
                         </div>
 
@@ -230,21 +241,21 @@ const CmnPar = (props) => {
                             <label htmlFor="postcode">{translations[selectedLanguage].postcode}</label>
                             <InputText
                                 id="postcode"
-                                value={cmnPar.value} onChange={(e) => onInputChange(e, "text", 'postcode')}
+                                value={cmnPar.postcode} onChange={(e) => onInputChange(e, "text", 'postcode')}
                             />
                         </div>
                         <div className="field col-12 md:col-8">
                             <label htmlFor="tel">{translations[selectedLanguage].tel}</label>
                             <InputText
                                 id="tel"
-                                value={cmnPar.value} onChange={(e) => onInputChange(e, "text", 'tel')}
+                                value={cmnPar.tel} onChange={(e) => onInputChange(e, "text", 'tel')}
                             />
                         </div>
                         <div className="field col-12 md:col-6">
                             <label htmlFor="activity">{translations[selectedLanguage].activity}</label>
                             <InputText
                                 id="activity"
-                                value={cmnPar.value} onChange={(e) => onInputChange(e, "text", 'activity')}
+                                value={cmnPar.activity} onChange={(e) => onInputChange(e, "text", 'activity')}
                             />
                         </div>
 
@@ -252,14 +263,14 @@ const CmnPar = (props) => {
                             <label htmlFor="pib">{translations[selectedLanguage].pib}</label>
                             <InputText
                                 id="pib"
-                                value={cmnPar.value} onChange={(e) => onInputChange(e, "text", 'pib')}
+                                value={cmnPar.pib} onChange={(e) => onInputChange(e, "text", 'pib')}
                             />
                         </div>
                         <div className="field col-12 md:col-6">
                             <label htmlFor="idnum">{translations[selectedLanguage].idnum}</label>
                             <InputText
                                 id="idnum"
-                                value={cmnPar.value} onChange={(e) => onInputChange(e, "text", 'idnum')}
+                                value={cmnPar.idnum} onChange={(e) => onInputChange(e, "text", 'idnum')}
                             />
                         </div>
 
@@ -267,7 +278,7 @@ const CmnPar = (props) => {
                             <label htmlFor="pdvnum">{translations[selectedLanguage].pdvnum}</label>
                             <InputText
                                 id="pdvnum"
-                                value={cmnPar.value} onChange={(e) => onInputChange(e, "text", 'pdvnum')}
+                                value={cmnPar.pdvnum} onChange={(e) => onInputChange(e, "text", 'pdvnum')}
                             />
                         </div>
                         <div className="field col-12 md:col-6">
@@ -280,7 +291,7 @@ const CmnPar = (props) => {
                             />
                         </div>
                         <div className="field col-12 md:col-6">
-                            <label htmlFor="roenddal">{translations[selectedLanguage].Endda} *</label>
+                            <label htmlFor="endda">{translations[selectedLanguage].Endda} *</label>
                             <Calendar
                                 value={endda}
                                 onChange={(e) => onInputChange(e, "Calendar", 'endda')}
@@ -291,7 +302,7 @@ const CmnPar = (props) => {
                     </div>
 
                     <div className="flex flex-wrap gap-1">
-                        {props.dialog ? (
+                        
                             <Button
                                 label={translations[selectedLanguage].Cancel}
                                 icon="pi pi-times"
@@ -299,7 +310,7 @@ const CmnPar = (props) => {
                                 onClick={handleCancelClick}
                                 outlined
                             />
-                        ) : null}
+                
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
                             {(props.parTip === 'CREATE') ? (

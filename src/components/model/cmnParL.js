@@ -39,7 +39,12 @@ export default function CmnParL(props) {
 
   let i = 0
   const handleCancelClick = () => {
+    if (props.setCmnParLVisible)
     props.setCmnParLVisible(false);
+    if (parentData) {
+      const dataToSend = { type: 'dataFromIframe', visible: false };
+      sendToParent(dataToSend);
+    }
   };
 
   useEffect(() => {
@@ -49,8 +54,7 @@ export default function CmnParL(props) {
         if (i < 2) {
           const cmnParService = new CmnParService();
           //!!!!! OVDE MI TREBAJU PODACI KOJE PRIMAM SA PARENT KOMPONENTA
-          if (props.independent || parentData ) {
-            console.log(parentData, "**************parentData****************************", props )            
+          if (props.independent || parentData ) {           
             const data = await cmnParService.getLista();
             setCmnPars(data);
             initFilters();
@@ -66,13 +70,12 @@ export default function CmnParL(props) {
 
   useEffect(() => {
     const handleMessageFromParent = (event) => {
-      
+      const receivedData = event.data.data;
       // Provera da li poruka dolazi iz očekivanog izvora
       if (event.origin === 'http://ws10.ems.local:8354') {
         // Provera tipa poruke
         if (event.data.type === 'dataUpdate') {
-          const receivedData = event.data.data;
-          console.log('Received message from parent on iframe load ....', receivedData);
+          console.log('Received message from parent on iframe load .... dialog', receivedData);
           // Sačuvaj primljene podatke u promenljivoj
           setParentData(receivedData);
         }
@@ -181,7 +184,7 @@ export default function CmnParL(props) {
       life: 3000,
     });
     // Primer slanja poruke sa podacima na roditeljski dokument
-    const dataToSend = { type: 'dataFromIframe', data: { id: event.data.id, text: event.data.text } };
+    const dataToSend = { type: 'dataFromIframe', data: {row: event.data}, visible: true };
     sendToParent(dataToSend);
   };
 
@@ -235,8 +238,10 @@ export default function CmnParL(props) {
     return (
       <div className="flex card-container">
         <div className="flex flex-wrap gap-1" />
+        {parentData && (
         <Button label={translations[selectedLanguage].Cancel} icon="pi pi-times" onClick={handleCancelClick} text raised
         />
+        )}
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
@@ -408,7 +413,7 @@ export default function CmnParL(props) {
         ></Column>
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].Link}
+        header={translations[selectedLanguage].Par}
         visible={visible}
         style={{ width: '60%' }}
         onHide={() => {

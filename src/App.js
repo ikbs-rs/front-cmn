@@ -16,6 +16,7 @@ import ObjTp from './components/model/cmnObjtpL';
 import Obj from './components/model/cmnObjL';
 import ObjD from './components/model/cmnObjDL';
 import ObjTree from './components/model/cmnObjTreeL';
+import LocTree from './components/model/cmnLocTreeL';
 import ObjCon from './components/model/cmnObjTreeLC';
 import ObjAtt from './components/model/cmnObjattL';
 import ObjAttTp from './components/model/cmnObjatttpL';
@@ -99,6 +100,7 @@ const App = () => {
                     items: [
                         { label: translations[selectedLanguage].Location_type, icon: 'pi pi-fw pi-calendar', to: '/loctp' },
                         { label: translations[selectedLanguage].Locations, icon: 'pi pi-fw pi-calendar', to: '/loc'  },
+                        { label: translations[selectedLanguage].LocTree, icon: 'pi pi-fw pi-clone', to: '/loctree' },
                       //d  { label: translations[selectedLanguage].Properties_location, icon: 'pi pi-fw pi-calendar' , to: '/locatt'},
                        // { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/loclinktp'}
                     ]
@@ -480,6 +482,7 @@ const App = () => {
                         <Route path="/objatt" element={<ObjAtt />} />
                         <Route path="/link" element={<Link />} />
                         <Route path="/objtree" element={<ObjTree />} />
+                        <Route path="/loctree" element={<LocTree />} />
                         <Route path="/objcon" element={<ObjCon />} />
                         <Route path="/objd" element={<ObjD />} />                        
                         

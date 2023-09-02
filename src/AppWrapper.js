@@ -6,14 +6,15 @@ import { Error } from './pages/Error';
 import { NotFound } from './pages/NotFound';
 import LocEnd from './components/model/cmnLocL';
 import ObjEnd from './components/model/cmnObjL';
-import ParEnd from './components/model/cmnParL';
+import ParLEnd from './components/model/cmnParL';
+import ParEnd from './components/model/cmnObject';
 import { Access } from './pages/Access';
 import axios from 'axios';
 import env from "./configs/env"
 
 
 const AppWrapper = (props) => {
-console.log("**AppWrapper****AppWrapper*******AppWrapper****")
+//console.log("**AppWrapper****AppWrapper*******AppWrapper****")
   let location = useLocation();
   const navigate = useNavigate();
   let [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -21,6 +22,9 @@ console.log("**AppWrapper****AppWrapper*******AppWrapper****")
   const params = new URLSearchParams(search);
   const sl = params.get('sl');
   const aa = params.get('endpoint')
+  const objId = params.get('objid');
+  const obj = params.get('obj');
+  
   localStorage.setItem('sl', sl || "en")
 
   useEffect(() => {
@@ -68,7 +72,8 @@ console.log("**AppWrapper****AppWrapper*******AppWrapper****")
       <Route path="/access" element={<Access />} />
       <Route path="/locend" element={<LocEnd />} />
       <Route path="/objend" element={<ObjEnd />} />
-      <Route path="/parend" element={<ParEnd />} />
+      <Route path="/parlend" element={<ParLEnd />} />
+      <Route path="/parend" element={<ParEnd objId={objId} />} />
       <Route path="*" element={
         (() => {
           if (isLoggedIn) {
@@ -76,8 +81,10 @@ console.log("**AppWrapper****AppWrapper*******AppWrapper****")
               return <LocEnd />;
             } else if (aa === "objend") {
               return <ObjEnd />;    
+            } else if (aa === "parlend") {
+              return <ParLEnd />;  
             } else if (aa === "parend") {
-              return <ParEnd />;                          
+              return <ParEnd objId={objId} dialog={false} />;                                       
             } else if (aa === "notfound") {
               return <NotFound />;
             } else if (aa === "access") {

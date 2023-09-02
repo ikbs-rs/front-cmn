@@ -96,12 +96,16 @@ const EmptyEntities =
   "cmn_loclink": {
     "id": null,
     "site": null,
-    "tp": null,
+    "tp": 1,
+    "loctp1": null,
     "loc1": null,
+    "loctp2": null,
     "loc2": null,
-    "long": "",
+    "val": "",
     "begda": "",
-    "endda": ""
+    "endda": "99991231",
+    "hijerarhija": null,
+    "onoff": null
   },
   "cmn_loclinktp": {
     "id": null,
