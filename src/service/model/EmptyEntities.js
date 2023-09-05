@@ -17,7 +17,7 @@ const EmptyEntities =
     "curr2": null,
     "begda": "",
     "endda": "",
-    "rate": null,
+    "rate": 1,
     "parity": "1"
   },
   "cmn_currx": {
@@ -433,7 +433,6 @@ const EmptyEntities =
   },
   "cmn_taxrate": {
     "id": null,
-    "cmn_id": null,
     "site": null,
     "tax": null,
     "rate": null,
@@ -545,7 +544,7 @@ const EmptyEntities =
   "cmn_tgptax": {
     "id": null,
     "site": null,
-    "tableid": null,
+    "tgp": null,
     "tax": null,
     "begda": "",
     "endda": ""

@@ -8,37 +8,37 @@ import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
 import './index.css';
-import { CmnTgpService } from "../../service/model/CmnTgpService";
-import CmnTgp from './cmnTgp';
+import { CmnTaxService } from "../../service/model/CmnTaxService";
+import CmnTax from './cmnTax';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
 import { translations } from "../../configs/translations";
-import CmnTgptaxL from './cmnTgptaxL';
+import CmnTaxrateL from './cmnTaxrateL';
 
-export default function CmnTgpL(props) {
+export default function CmnTaxL(props) {
   let i = 0
-  const objName = "cmn_tgp"
+  const objName = "cmn_tax"
   const selectedLanguage = localStorage.getItem('sl')||'en'
-  const emptyCmnTgp = EmptyEntities[objName]
+  const emptyCmnTax = EmptyEntities[objName]
   const [showMyComponent, setShowMyComponent] = useState(true);
-  const [cmnTgps, setCmnTgps] = useState([]);
-  const [cmnTgp, setCmnTgp] = useState(emptyCmnTgp);
+  const [cmnTaxs, setCmnTaxs] = useState([]);
+  const [cmnTax, setCmnTax] = useState(emptyCmnTax);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
-  const [cmnTgptaxLVisible, setCmnTgptaxLVisible] = useState(false);
+  const [cmnTaxrateLVisible, setCmnTaxrateLVisible] = useState(false);  
   const [visible, setVisible] = useState(false);
-  const [tgpTip, setTgpTip] = useState('');
+  const [taxTip, setTgpTip] = useState('');
 
   useEffect(() => {
     async function fetchData() {
       try {
         ++i
         if (i<2) {  
-        const cmnTgpService = new CmnTgpService();
-        const data = await cmnTgpService.getLista();
-        setCmnTgps(data);
+        const cmnTaxService = new CmnTaxService();
+        const data = await cmnTaxService.getLista();
+        setCmnTaxs(data);
         initFilters();
         }
       } catch (error) {
@@ -52,35 +52,35 @@ export default function CmnTgpL(props) {
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
 
-    let _cmnTgps = [...cmnTgps];
-    let _cmnTgp = { ...localObj.newObj.obj };
+    let _cmnTaxs = [...cmnTaxs];
+    let _cmnTax = { ...localObj.newObj.obj };
 
     //setSubmitted(true);
-    if (localObj.newObj.tgpTip === "CREATE") {
-      _cmnTgps.push(_cmnTgp);
-    } else if (localObj.newObj.tgpTip === "UPDATE") {
+    if (localObj.newObj.taxTip === "CREATE") {
+      _cmnTaxs.push(_cmnTax);
+    } else if (localObj.newObj.taxTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
-      _cmnTgps[index] = _cmnTgp;
-    } else if ((localObj.newObj.tgpTip === "DELETE")) {
-      _cmnTgps = cmnTgps.filter((val) => val.id !== localObj.newObj.obj.id);
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnTgp Delete', life: 3000 });
+      _cmnTaxs[index] = _cmnTax;
+    } else if ((localObj.newObj.taxTip === "DELETE")) {
+      _cmnTaxs = cmnTaxs.filter((val) => val.id !== localObj.newObj.obj.id);
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnTax Delete', life: 3000 });
     } else {
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnTgp ?', life: 3000 });
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnTax ?', life: 3000 });
     }
-    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.tgpTip}`, life: 3000 });
-    setCmnTgps(_cmnTgps);
-    setCmnTgp(emptyCmnTgp);
+    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.taxTip}`, life: 3000 });
+    setCmnTaxs(_cmnTaxs);
+    setCmnTax(emptyCmnTax);
   };
 
-  const handleCmnTgptaxLDialogClose = (newObj) => {
+  const handleCmnTaxrateLDialogClose = (newObj) => {
     const localObj = { newObj };
   };
 
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < cmnTgps.length; i++) {
-      if (cmnTgps[i].id === id) {
+    for (let i = 0; i < cmnTaxs.length; i++) {
+      if (cmnTaxs[i].id === id) {
         index = i;
         break;
       }
@@ -90,13 +90,13 @@ export default function CmnTgpL(props) {
   };
 
   const openNew = () => {
-    setCmnTgpDialog(emptyCmnTgp);
+    setCmnTaxDialog(emptyCmnTax);
   };
 
-  const openTgptax = () => {
-    setCmnTgptaxLDialog();
+  const openTaxrate = () => {
+    setCmnTaxrateLDialog();
   };
-  
+
   const onRowSelect = (event) => {
     toast.current.show({
       severity: "info",
@@ -150,12 +150,12 @@ export default function CmnTgpL(props) {
       <div className="flex card-container">
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
-        </div>
+        </div>   
         <div className="flex flex-wrap gap-1">
-          <Button label={translations[selectedLanguage].Taxes} icon="pi pi-table" onClick={openTgptax} text raised disabled={!cmnTgp} />
-        </div>       
+          <Button label={translations[selectedLanguage].Rate} icon="pi pi-table" onClick={openTaxrate} text raised disabled={!cmnTax} />
+        </div>              
         <div className="flex-grow-1" />
-        <b>{translations[selectedLanguage].TgpList}</b>
+        <b>{translations[selectedLanguage].TaxList}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -207,17 +207,18 @@ export default function CmnTgpL(props) {
   };
 
   // <--- Dialog
-  const setCmnTgpDialog = (cmnTgp) => {
+  const setCmnTaxDialog = (cmnTax) => {
     setVisible(true)
     setTgpTip("CREATE")
-    setCmnTgp({ ...cmnTgp });
+    setCmnTax({ ...cmnTax });
   }
+  
 
-  const setCmnTgptaxLDialog = () => {
+  const setCmnTaxrateLDialog = () => {
     setShowMyComponent(true);
-    setCmnTgptaxLVisible(true);
+    setCmnTaxrateLVisible(true);
 
-  }    
+  }   
   //  Dialog --->
 
   const header = renderHeader();
@@ -232,7 +233,7 @@ export default function CmnTgpL(props) {
           icon="pi pi-pencil"
           style={{ width: '24px', height: '24px' }}
           onClick={() => {
-            setCmnTgpDialog(rowData)
+            setCmnTaxDialog(rowData)
             setTgpTip("UPDATE")
           }}
           text
@@ -248,9 +249,9 @@ export default function CmnTgpL(props) {
       <DataTable
         dataKey="id"
         selectionMode="single"
-        selection={cmnTgp}
+        selection={cmnTax}
         loading={loading}
-        value={cmnTgps}
+        value={cmnTaxs}
         header={header}
         showGridlines
         removableSort
@@ -265,7 +266,7 @@ export default function CmnTgpL(props) {
         paginator
         rows={10}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        onSelectionChange={(e) => setCmnTgp(e.value)}
+        onSelectionChange={(e) => setCmnTax(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
       >
@@ -320,7 +321,7 @@ export default function CmnTgpL(props) {
         ></Column>
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].TgpList}
+        header={translations[selectedLanguage].Tax}
         visible={visible}
         style={{ width: '70%' }}
         onHide={() => {
@@ -329,36 +330,36 @@ export default function CmnTgpL(props) {
         }}
       >
         {showMyComponent && (
-          <CmnTgp
+          <CmnTax
             parameter={"inputTextValue"}
-            cmnTgp={cmnTgp}
+            cmnTax={cmnTax}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
-            tgpTip={tgpTip}
+            taxTip={taxTip}
           />
         )}
-      </Dialog>
+      </Dialog>  
       <Dialog
-        header={translations[selectedLanguage].TaxLista}
-        visible={cmnTgptaxLVisible}
+        header={translations[selectedLanguage].RateLista}
+        visible={cmnTaxrateLVisible}
         style={{ width: '60%' }}
         onHide={() => {
-          setCmnTgptaxLVisible(false);
+          setCmnTaxrateLVisible(false);
           setShowMyComponent(false);
         }}
       >
         {showMyComponent && (
-          <CmnTgptaxL
+          <CmnTaxrateL
             parameter={"inputTextValue"}
-            cmnTgp={cmnTgp}
-            handleCmnTgptaxLDialogClose={handleCmnTgptaxLDialogClose}
-            setCmnTgptaxLVisible={setCmnTgptaxLVisible}
+            cmnTax={cmnTax}
+            handleCmnTaxrateLDialogClose={handleCmnTaxrateLDialogClose}
+            setCmnTaxrateLVisible={setCmnTaxrateLVisible}
             dialog={true}
             lookUp={false}
           />
         )}
-      </Dialog>      
+      </Dialog>           
     </div>
   );
 }

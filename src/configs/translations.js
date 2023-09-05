@@ -450,6 +450,15 @@ export const translations = {
         rownum: "Rownum",
         seatnum: "seatnum",
         Par: "Партнер",
+        ParList: "Партнер Листа",
+        TaxLista: "Порез Листа",
+        TgptaxList: "Порези тарифне групе Листа",
+        Tax: "Порез",
+        Rate: "Стопа",
+        TaxList: "Порез Листа",
+        RateLista: "Пореска стопа Листа",
+        Parity: "Паритет",
+        Currrate: "Однос",
     }
   };
   

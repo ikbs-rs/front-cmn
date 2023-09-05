@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { classNames } from 'primereact/utils';
-import { TicParprivilegeService } from "../../service/model/TicParprivilegeService";
-import { CmnParService } from "../../service/model/CmnParService";
+import { CmnCurrrateService } from "../../service/model/CmnCurrrateService";
+import { CmnCurrService } from "../../service/model/CmnCurrService";
 import './index.css';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -12,18 +12,18 @@ import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from "primereact/calendar";
 import DateFunction from "../../utilities/DateFunction"
 
-const TicParprivilege = (props) => {
-
+const CmnCurrrate = (props) => {
+console.log(props, "********************************CmnCurrrate***********************************")
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
-    const [ticParprivilege, setTicParprivilege] = useState(props.ticParprivilege);
+    const [cmnCurrrate, setCmnCurrrate] = useState(props.cmnCurrrate);
     const [submitted, setSubmitted] = useState(false);
-    const [ddTicPrivilege, setDdTicPrivilege] = useState(null);
-    const [ddTicPrivileges, setDdTicPrivileges] = useState(null);
-    const [ticPrivilegeItem, setTicPrivilegeItem] = useState(null);
-    const [ticPrivilegeItems, setTicPrivilegeItems] = useState(null);
-    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.ticParprivilege.begda || DateFunction.currDate())));
-    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.ticParprivilege.endda || DateFunction.currDate())))
+    const [ddCmnCurrItem, setDdCmnCurrItem] = useState(null);
+    const [ddCmnCurrItems, setDdCmnCurrItems] = useState(null);
+    const [cmnCurrItem, setCmnCurrItem] = useState(null);
+    const [cmnCurrItems, setCmnCurrItems] = useState(null);
+    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnCurrrate.begda || DateFunction.currDate())));
+    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnCurrrate.endda || DateFunction.currDate())))
 
     const calendarRef = useRef(null);
 
@@ -32,20 +32,20 @@ const TicParprivilege = (props) => {
     useEffect(() => {
         async function fetchData() {
             try {
-                const ticParprivilegeService = new TicParprivilegeService();
-                const data = await ticParprivilegeService.getTicPrivileges();
+                const cmnCurrService = new CmnCurrService();
+                const data = await cmnCurrService.getCmnCurrs();
 
-                setTicPrivilegeItems(data)
-                //console.log("******************", ticPrivilegeItem)
+                setCmnCurrItems(data)
+                //console.log("******************", cmnCurrItem)
 
                 const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
-                setDdTicPrivileges(dataDD);
-                setDdTicPrivilege(dataDD.find((item) => item.code === props.ticParprivilege.privilege) || null);
-                if (props.ticParprivilege.privilege) {
-                    const foundItem = data.find((item) => item.id === props.ticParprivilege.privilege);
-                    setTicPrivilegeItem(foundItem || null);
-                    ticParprivilege.cprivilege = foundItem.code
-                    ticParprivilege.nprivilege = foundItem.textx
+                setDdCmnCurrItems(dataDD);
+                setDdCmnCurrItem(dataDD.find((item) => item.code === props.cmnCurrrate.curr1) || null);
+                if (props.cmnCurrrate.curr1) {
+                    const foundItem = data.find((item) => item.id === props.cmnCurrrate.curr1);
+                    setCmnCurrItem(foundItem || null);
+                    cmnCurrrate.ctp = foundItem.code
+                    cmnCurrrate.ntp = foundItem.textx
                 }
 
             } catch (error) {
@@ -64,17 +64,17 @@ const TicParprivilege = (props) => {
     const handleCreateClick = async () => {
         try {
             setSubmitted(true);
-            ticParprivilege.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
-            ticParprivilege.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
-            const ticParprivilegeService = new TicParprivilegeService();
-            const data = await ticParprivilegeService.postTicParprivilege(ticParprivilege);
-            ticParprivilege.id = data
-            props.handleDialogClose({ obj: ticParprivilege, parprivilegeTip: props.parprivilegeTip });
+            cmnCurrrate.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
+            cmnCurrrate.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
+            const cmnCurrrateService = new CmnCurrrateService();
+            const data = await cmnCurrrateService.postCmnCurrrate(cmnCurrrate);
+            cmnCurrrate.id = data
+            props.handleDialogClose({ obj: cmnCurrrate, currrateTip: props.currrateTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "TicParprivilege ",
+                summary: "CmnCurrrate ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -84,17 +84,17 @@ const TicParprivilege = (props) => {
     const handleSaveClick = async () => {
         try {
             setSubmitted(true);
-            ticParprivilege.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
-            ticParprivilege.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));            
-            const ticParprivilegeService = new TicParprivilegeService();
+            cmnCurrrate.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
+            cmnCurrrate.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));            
+            const cmnCurrrateService = new CmnCurrrateService();
 
-            await ticParprivilegeService.putTicParprivilege(ticParprivilege);
-            props.handleDialogClose({ obj: ticParprivilege, parprivilegeTip: props.parprivilegeTip });
+            await cmnCurrrateService.putCmnCurrrate(cmnCurrrate);
+            props.handleDialogClose({ obj: cmnCurrrate, currrateTip: props.currrateTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "TicParprivilege ",
+                summary: "CmnCurrrate ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -108,15 +108,15 @@ const TicParprivilege = (props) => {
     const handleDeleteClick = async () => {
         try {
             setSubmitted(true);
-            const ticParprivilegeService = new TicParprivilegeService();
-            await ticParprivilegeService.deleteTicParprivilege(ticParprivilege);
-            props.handleDialogClose({ obj: ticParprivilege, parprivilegeTip: 'DELETE' });
+            const cmnCurrrateService = new CmnCurrrateService();
+            await cmnCurrrateService.deleteCmnCurrrate(cmnCurrrate);
+            props.handleDialogClose({ obj: cmnCurrrate, currrateTip: 'DELETE' });
             props.setVisible(false);
             hideDeleteDialog();
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "TicParprivilege ",
+                summary: "CmnCurrrate ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -128,22 +128,23 @@ const TicParprivilege = (props) => {
 
         if (type === "options") {
             val = (e.target && e.target.value && e.target.value.code) || '';
-            setDdTicPrivilege(e.value);
-            const foundItem = ticPrivilegeItems.find((item) => item.id === val);
-            setTicPrivilegeItem(foundItem || null);
-            ticParprivilege.nprivilege = e.value.name
-            ticParprivilege.cprivilege = foundItem.code
+            setDdCmnCurrItem(e.value);
+            const foundItem = cmnCurrItems.find((item) => item.id === val);
+            setCmnCurrItem(foundItem || null);
+            cmnCurrrate.ncurr1 = e.value.name
+            cmnCurrrate.ccurr1 = foundItem.code
         } else if (type === "Calendar") {
             //const dateVal = DateFunction.dateGetValue(e.value)
+
             val = (e.target && e.target.value) || '';
             switch (name) {
                 case "begda":
                     setBegda(e.value)
-                    //ticParprivilege.begda = DateFunction.formatDateToDBFormat(dateVal)
+                    //cmnCurrrate.begda = DateFunction.formatDateToDBFormat(dateVal)
                     break;
                 case "endda":
                     setEndda(e.value)
-                    //ticParprivilege.endda = DateFunction.formatDateToDBFormat(dateVal)
+                    //cmnCurrrate.endda = DateFunction.formatDateToDBFormat(dateVal)
                     break;
                 default:
                     console.error("Pogresan naziv polja")
@@ -151,9 +152,9 @@ const TicParprivilege = (props) => {
         } else {
             val = (e.target && e.target.value) || '';
         }
-        let _ticParprivilege = { ...ticParprivilege };
-        _ticParprivilege[`${name}`] = val;
-        setTicParprivilege(_ticParprivilege);
+        let _cmnCurrrate = { ...cmnCurrrate };
+        _cmnCurrrate[`${name}`] = val;
+        setCmnCurrrate(_cmnCurrrate);
     };
 
     const hideDeleteDialog = () => {
@@ -169,7 +170,7 @@ const TicParprivilege = (props) => {
                         <div className="field col-12 md:col-5">
                             <label htmlFor="code">{translations[selectedLanguage].Code}</label>
                             <InputText id="code"
-                                value={props.cmnPar.code}
+                                value={props.cmnCurr.code}
                                 disabled={true}
                             />
                         </div>
@@ -177,7 +178,7 @@ const TicParprivilege = (props) => {
                             <label htmlFor="text">{translations[selectedLanguage].Text}</label>
                             <InputText
                                 id="text"
-                                value={props.cmnPar.text}
+                                value={props.cmnCurr.text}
                                 disabled={true}
                             />
                         </div>
@@ -188,36 +189,38 @@ const TicParprivilege = (props) => {
                 <div className="card">
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-7">
-                            <label htmlFor="privilege">{translations[selectedLanguage].Privilege} *</label>
-                            <Dropdown id="privilege"
-                                value={ddTicPrivilege}
-                                options={ddTicPrivileges}
-                                onChange={(e) => onInputChange(e, "options", 'privilege')}
+                            <label htmlFor="curr1">{translations[selectedLanguage].Curr} *</label>
+                            <Dropdown id="curr1"
+                                value={ddCmnCurrItem}
+                                options={ddCmnCurrItems}
+                                onChange={(e) => onInputChange(e, "options", 'curr1')}
                                 required
                                 optionLabel="name"
                                 placeholder="Select One"
-                                className={classNames({ 'p-invalid': submitted && !ticParprivilege.privilege })}
+                                className={classNames({ 'p-invalid': submitted && !cmnCurrrate.curr1 })}
                             />
-                            {submitted && !ticParprivilege.privilege && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnCurrrate.curr1 && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
                     </div>
 
                     <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-6">
-                            <label htmlFor="maxprc">{translations[selectedLanguage].maxprc}</label>
+                        <div className="field col-12 md:col-11">
+                            <label htmlFor="rate">{translations[selectedLanguage].Currrate}</label>
                             <InputText
-                                id="maxprc"
-                                value={ticParprivilege.maxprc} onChange={(e) => onInputChange(e, "text", 'maxprc')}
+                                id="rate"
+                                value={cmnCurrrate.rate} onChange={(e) => onInputChange(e, "text", 'rate')}
                             />
                         </div>
-                        <div className="field col-12 md:col-6">
-                            <label htmlFor="maxval">{translations[selectedLanguage].maxval}</label>
-                            <InputText
-                                id="maxval"
-                                value={ticParprivilege.maxval} onChange={(e) => onInputChange(e, "text", 'maxval')}
-                            />
-                        </div>                        
                     </div>
+                    <div className="p-fluid formgrid grid">
+                        <div className="field col-12 md:col-11">
+                            <label htmlFor="parity">{translations[selectedLanguage].Parity}</label>
+                            <InputText
+                                id="parity"
+                                value={cmnCurrrate.parity} onChange={(e) => onInputChange(e, "text", 'parity')}
+                            />
+                        </div>
+                    </div>                    
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-5">
                             <label htmlFor="begda">{translations[selectedLanguage].Begda} *</label>
@@ -253,7 +256,7 @@ const TicParprivilege = (props) => {
                         ) : null}
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
-                            {(props.parprivilegeTip === 'CREATE') ? (
+                            {(props.currrateTip === 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Create}
                                     icon="pi pi-check"
@@ -262,7 +265,7 @@ const TicParprivilege = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.parprivilegeTip !== 'CREATE') ? (
+                            {(props.currrateTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Delete}
                                     icon="pi pi-trash"
@@ -271,7 +274,7 @@ const TicParprivilege = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.parprivilegeTip !== 'CREATE') ? (
+                            {(props.currrateTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Save}
                                     icon="pi pi-check"
@@ -286,8 +289,8 @@ const TicParprivilege = (props) => {
             </div>
             <DeleteDialog
                 visible={deleteDialogVisible}
-                inTicParprivilege="delete"
-                item={ticParprivilege.roll}
+                inCmnCurrrate="delete"
+                item={cmnCurrrate.roll}
                 onHide={hideDeleteDialog}
                 onDelete={handleDeleteClick}
             />
@@ -295,4 +298,4 @@ const TicParprivilege = (props) => {
     );
 };
 
-export default TicParprivilege;
+export default CmnCurrrate;

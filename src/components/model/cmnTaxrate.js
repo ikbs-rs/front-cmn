@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { classNames } from 'primereact/utils';
-import { TicParprivilegeService } from "../../service/model/TicParprivilegeService";
-import { CmnParService } from "../../service/model/CmnParService";
+import { CmnTaxrateService } from "../../service/model/CmnTaxrateService";
 import './index.css';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -12,49 +11,23 @@ import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from "primereact/calendar";
 import DateFunction from "../../utilities/DateFunction"
 
-const TicParprivilege = (props) => {
+const CmnTaxrate = (props) => {
 
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
-    const [ticParprivilege, setTicParprivilege] = useState(props.ticParprivilege);
+    const [cmnTaxrate, setCmnTaxrate] = useState(props.cmnTaxrate);
     const [submitted, setSubmitted] = useState(false);
-    const [ddTicPrivilege, setDdTicPrivilege] = useState(null);
-    const [ddTicPrivileges, setDdTicPrivileges] = useState(null);
-    const [ticPrivilegeItem, setTicPrivilegeItem] = useState(null);
-    const [ticPrivilegeItems, setTicPrivilegeItems] = useState(null);
-    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.ticParprivilege.begda || DateFunction.currDate())));
-    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.ticParprivilege.endda || DateFunction.currDate())))
+    const [ddCmnTaxrateItem, setDdCmnTaxrateItem] = useState(null);
+    const [ddCmnTaxrateItems, setDdCmnTaxrateItems] = useState(null);
+    const [cmnTaxrateItem, setCmnTaxrateItem] = useState(null);
+    const [cmnTaxrateItems, setCmnTaxrateItems] = useState(null);
+    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnTaxrate.begda || DateFunction.currDate())));
+    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnTaxrate.endda || DateFunction.currDate())))
 
     const calendarRef = useRef(null);
 
     const toast = useRef(null);
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const ticParprivilegeService = new TicParprivilegeService();
-                const data = await ticParprivilegeService.getTicPrivileges();
-
-                setTicPrivilegeItems(data)
-                //console.log("******************", ticPrivilegeItem)
-
-                const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
-                setDdTicPrivileges(dataDD);
-                setDdTicPrivilege(dataDD.find((item) => item.code === props.ticParprivilege.privilege) || null);
-                if (props.ticParprivilege.privilege) {
-                    const foundItem = data.find((item) => item.id === props.ticParprivilege.privilege);
-                    setTicPrivilegeItem(foundItem || null);
-                    ticParprivilege.cprivilege = foundItem.code
-                    ticParprivilege.nprivilege = foundItem.textx
-                }
-
-            } catch (error) {
-                console.error(error);
-                // Obrada greške ako je potrebna
-            }
-        }
-        fetchData();
-    }, []);
     // Autocomplit>
 
     const handleCancelClick = () => {
@@ -64,17 +37,17 @@ const TicParprivilege = (props) => {
     const handleCreateClick = async () => {
         try {
             setSubmitted(true);
-            ticParprivilege.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
-            ticParprivilege.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
-            const ticParprivilegeService = new TicParprivilegeService();
-            const data = await ticParprivilegeService.postTicParprivilege(ticParprivilege);
-            ticParprivilege.id = data
-            props.handleDialogClose({ obj: ticParprivilege, parprivilegeTip: props.parprivilegeTip });
+            cmnTaxrate.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
+            cmnTaxrate.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
+            const cmnTaxrateService = new CmnTaxrateService();
+            const data = await cmnTaxrateService.postCmnTaxrate(cmnTaxrate);
+            cmnTaxrate.id = data
+            props.handleDialogClose({ obj: cmnTaxrate, taxrateTip: props.taxrateTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "TicParprivilege ",
+                summary: "CmnTaxrate ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -84,17 +57,17 @@ const TicParprivilege = (props) => {
     const handleSaveClick = async () => {
         try {
             setSubmitted(true);
-            ticParprivilege.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
-            ticParprivilege.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));            
-            const ticParprivilegeService = new TicParprivilegeService();
+            cmnTaxrate.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
+            cmnTaxrate.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));            
+            const cmnTaxrateService = new CmnTaxrateService();
 
-            await ticParprivilegeService.putTicParprivilege(ticParprivilege);
-            props.handleDialogClose({ obj: ticParprivilege, parprivilegeTip: props.parprivilegeTip });
+            await cmnTaxrateService.putCmnTaxrate(cmnTaxrate);
+            props.handleDialogClose({ obj: cmnTaxrate, taxrateTip: props.taxrateTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "TicParprivilege ",
+                summary: "CmnTaxrate ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -108,15 +81,15 @@ const TicParprivilege = (props) => {
     const handleDeleteClick = async () => {
         try {
             setSubmitted(true);
-            const ticParprivilegeService = new TicParprivilegeService();
-            await ticParprivilegeService.deleteTicParprivilege(ticParprivilege);
-            props.handleDialogClose({ obj: ticParprivilege, parprivilegeTip: 'DELETE' });
+            const cmnTaxrateService = new CmnTaxrateService();
+            await cmnTaxrateService.deleteCmnTaxrate(cmnTaxrate);
+            props.handleDialogClose({ obj: cmnTaxrate, taxrateTip: 'DELETE' });
             props.setVisible(false);
             hideDeleteDialog();
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "TicParprivilege ",
+                summary: "CmnTaxrate ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -126,24 +99,18 @@ const TicParprivilege = (props) => {
     const onInputChange = (e, type, name, a) => {
         let val = ''
 
-        if (type === "options") {
-            val = (e.target && e.target.value && e.target.value.code) || '';
-            setDdTicPrivilege(e.value);
-            const foundItem = ticPrivilegeItems.find((item) => item.id === val);
-            setTicPrivilegeItem(foundItem || null);
-            ticParprivilege.nprivilege = e.value.name
-            ticParprivilege.cprivilege = foundItem.code
-        } else if (type === "Calendar") {
+        if (type === "Calendar") {
             //const dateVal = DateFunction.dateGetValue(e.value)
+
             val = (e.target && e.target.value) || '';
             switch (name) {
                 case "begda":
                     setBegda(e.value)
-                    //ticParprivilege.begda = DateFunction.formatDateToDBFormat(dateVal)
+                    //cmnTaxrate.begda = DateFunction.formatDateToDBFormat(dateVal)
                     break;
                 case "endda":
                     setEndda(e.value)
-                    //ticParprivilege.endda = DateFunction.formatDateToDBFormat(dateVal)
+                    //cmnTaxrate.endda = DateFunction.formatDateToDBFormat(dateVal)
                     break;
                 default:
                     console.error("Pogresan naziv polja")
@@ -151,9 +118,9 @@ const TicParprivilege = (props) => {
         } else {
             val = (e.target && e.target.value) || '';
         }
-        let _ticParprivilege = { ...ticParprivilege };
-        _ticParprivilege[`${name}`] = val;
-        setTicParprivilege(_ticParprivilege);
+        let _cmnTaxrate = { ...cmnTaxrate };
+        _cmnTaxrate[`${name}`] = val;
+        setCmnTaxrate(_cmnTaxrate);
     };
 
     const hideDeleteDialog = () => {
@@ -169,7 +136,7 @@ const TicParprivilege = (props) => {
                         <div className="field col-12 md:col-5">
                             <label htmlFor="code">{translations[selectedLanguage].Code}</label>
                             <InputText id="code"
-                                value={props.cmnPar.code}
+                                value={props.cmnTax.code}
                                 disabled={true}
                             />
                         </div>
@@ -177,7 +144,7 @@ const TicParprivilege = (props) => {
                             <label htmlFor="text">{translations[selectedLanguage].Text}</label>
                             <InputText
                                 id="text"
-                                value={props.cmnPar.text}
+                                value={props.cmnTax.text}
                                 disabled={true}
                             />
                         </div>
@@ -186,37 +153,15 @@ const TicParprivilege = (props) => {
             </div>
             <div className="col-12">
                 <div className="card">
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-7">
-                            <label htmlFor="privilege">{translations[selectedLanguage].Privilege} *</label>
-                            <Dropdown id="privilege"
-                                value={ddTicPrivilege}
-                                options={ddTicPrivileges}
-                                onChange={(e) => onInputChange(e, "options", 'privilege')}
-                                required
-                                optionLabel="name"
-                                placeholder="Select One"
-                                className={classNames({ 'p-invalid': submitted && !ticParprivilege.privilege })}
-                            />
-                            {submitted && !ticParprivilege.privilege && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
-                        </div>
-                    </div>
 
                     <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-6">
-                            <label htmlFor="maxprc">{translations[selectedLanguage].maxprc}</label>
+                        <div className="field col-12 md:col-11">
+                            <label htmlFor="rate">{translations[selectedLanguage].Rate}</label>
                             <InputText
-                                id="maxprc"
-                                value={ticParprivilege.maxprc} onChange={(e) => onInputChange(e, "text", 'maxprc')}
+                                id="rate"
+                                value={cmnTaxrate.rate} onChange={(e) => onInputChange(e, "text", 'rate')}
                             />
                         </div>
-                        <div className="field col-12 md:col-6">
-                            <label htmlFor="maxval">{translations[selectedLanguage].maxval}</label>
-                            <InputText
-                                id="maxval"
-                                value={ticParprivilege.maxval} onChange={(e) => onInputChange(e, "text", 'maxval')}
-                            />
-                        </div>                        
                     </div>
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-5">
@@ -253,7 +198,7 @@ const TicParprivilege = (props) => {
                         ) : null}
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
-                            {(props.parprivilegeTip === 'CREATE') ? (
+                            {(props.taxrateTip === 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Create}
                                     icon="pi pi-check"
@@ -262,7 +207,7 @@ const TicParprivilege = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.parprivilegeTip !== 'CREATE') ? (
+                            {(props.taxrateTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Delete}
                                     icon="pi pi-trash"
@@ -271,7 +216,7 @@ const TicParprivilege = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.parprivilegeTip !== 'CREATE') ? (
+                            {(props.taxrateTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Save}
                                     icon="pi pi-check"
@@ -286,8 +231,8 @@ const TicParprivilege = (props) => {
             </div>
             <DeleteDialog
                 visible={deleteDialogVisible}
-                inTicParprivilege="delete"
-                item={ticParprivilege.roll}
+                inCmnTaxrate="delete"
+                item={cmnTaxrate.roll}
                 onHide={hideDeleteDialog}
                 onDelete={handleDeleteClick}
             />
@@ -295,4 +240,4 @@ const TicParprivilege = (props) => {
     );
 };
 
-export default TicParprivilege;
+export default CmnTaxrate;

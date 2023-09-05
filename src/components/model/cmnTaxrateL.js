@@ -7,8 +7,8 @@ import { Button } from "primereact/button";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
-import { CmnCurrrateService } from "../../service/model/CmnCurrrateService";
-import CmnCurrrate from './cmnCurrrate';
+import { CmnTaxrateService } from "../../service/model/CmnTaxrateService";
+import CmnTaxrate from './cmnTaxrate';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
 import './index.css';
@@ -16,24 +16,24 @@ import { translations } from "../../configs/translations";
 import DateFunction from "../../utilities/DateFunction";
 
 
-export default function CmnCurrrateL(props) {
+export default function CmnTaxrateL(props) {
 
-  const objName = "cmn_currrate"
+  const objName = "cmn_taxrate"
   const selectedLanguage = localStorage.getItem('sl')||'en'
-  const emptyCmnCurrrate = EmptyEntities[objName]
-  emptyCmnCurrrate.curr2 = props.cmnCurr.id
+  const emptyCmnTaxrate = EmptyEntities[objName]
+  emptyCmnTaxrate.tax = props.cmnTax.id
   const [showMyComponent, setShowMyComponent] = useState(true);
-  const [cmnCurrrates, setCmnCurrrates] = useState([]);
-  const [cmnCurrrate, setCmnCurrrate] = useState(emptyCmnCurrrate);
+  const [cmnTaxrates, setCmnTaxrates] = useState([]);
+  const [cmnTaxrate, setCmnTaxrate] = useState(emptyCmnTaxrate);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
-  const [currrateTip, setCurrrateTip] = useState('');
+  const [taxrateTip, setTaxrateTip] = useState('');
   let i = 0
   const handleCancelClick = () => {
-    props.setCmnCurrrateLVisible(false);
+    props.setCmnTaxrateLVisible(false);
   };
 
   useEffect(() => {
@@ -41,9 +41,9 @@ export default function CmnCurrrateL(props) {
       try {
         ++i
         if (i < 2) {
-          const cmnCurrrateService = new CmnCurrrateService();
-          const data = await cmnCurrrateService.getLista(props.cmnCurr.id);
-          setCmnCurrrates(data);
+          const cmnTaxrateService = new CmnTaxrateService();
+          const data = await cmnTaxrateService.getLista(props.cmnTax.id);
+          setCmnTaxrates(data);
 
           initFilters();
         }
@@ -58,30 +58,30 @@ export default function CmnCurrrateL(props) {
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
 
-    let _cmnCurrrates = [...cmnCurrrates];
-    let _cmnCurrrate = { ...localObj.newObj.obj };
+    let _cmnTaxrates = [...cmnTaxrates];
+    let _cmnTaxrate = { ...localObj.newObj.obj };
     //setSubmitted(true);
-    if (localObj.newObj.currrateTip === "CREATE") {
-      _cmnCurrrates.push(_cmnCurrrate);
-    } else if (localObj.newObj.currrateTip === "UPDATE") {
+    if (localObj.newObj.taxrateTip === "CREATE") {
+      _cmnTaxrates.push(_cmnTaxrate);
+    } else if (localObj.newObj.taxrateTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
-      _cmnCurrrates[index] = _cmnCurrrate;
-    } else if ((localObj.newObj.currrateTip === "DELETE")) {
-      _cmnCurrrates = cmnCurrrates.filter((val) => val.id !== localObj.newObj.obj.id);
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnCurrrate Delete', life: 3000 });
+      _cmnTaxrates[index] = _cmnTaxrate;
+    } else if ((localObj.newObj.taxrateTip === "DELETE")) {
+      _cmnTaxrates = cmnTaxrates.filter((val) => val.id !== localObj.newObj.obj.id);
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnTaxrate Delete', life: 3000 });
     } else {
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnCurrrate ?', life: 3000 });
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnTaxrate ?', life: 3000 });
     }
-    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.currrateTip}`, life: 3000 });
-    setCmnCurrrates(_cmnCurrrates);
-    setCmnCurrrate(emptyCmnCurrrate);
+    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.taxrateTip}`, life: 3000 });
+    setCmnTaxrates(_cmnTaxrates);
+    setCmnTaxrate(emptyCmnTaxrate);
   };
 
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < cmnCurrrates.length; i++) {
-      if (cmnCurrrates[i].id === id) {
+    for (let i = 0; i < cmnTaxrates.length; i++) {
+      if (cmnTaxrates[i].id === id) {
         index = i;
         break;
       }
@@ -91,11 +91,11 @@ export default function CmnCurrrateL(props) {
   };
 
   const openNew = () => {
-    setCmnCurrrateDialog(emptyCmnCurrrate);
+    setCmnTaxrateDialog(emptyCmnTaxrate);
   };
 
   const onRowSelect = (event) => {
-    //cmnCurrrate.begda = event.data.begda
+    //cmnTaxrate.begda = event.data.begda
     toast.current.show({
       severity: "info",
       summary: "Action Selected",
@@ -160,7 +160,7 @@ export default function CmnCurrrateL(props) {
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
         <div className="flex-grow-1"></div>
-        <b>{translations[selectedLanguage].CurrrateList}</b>
+        <b>{translations[selectedLanguage].TaxrateList}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -189,17 +189,17 @@ export default function CmnCurrrateL(props) {
   };
 
   // <--- Dialog
-  const setCmnCurrrateDialog = (cmnCurrrate) => {
+  const setCmnTaxrateDialog = (cmnTaxrate) => {
     setVisible(true)
-    setCurrrateTip("CREATE")
-    setCmnCurrrate({ ...cmnCurrrate });
+    setTaxrateTip("CREATE")
+    setCmnTaxrate({ ...cmnTaxrate });
   }
   //  Dialog --->
 
   const header = renderHeader();
   // heder za filter/>
 
-  const currrateTemplate = (rowData) => {
+  const taxrateTemplate = (rowData) => {
     return (
       <div className="flex flex-wrap gap-1">
 
@@ -208,8 +208,8 @@ export default function CmnCurrrateL(props) {
           icon="pi pi-pencil"
           style={{ width: '24px', height: '24px' }}
           onClick={() => {
-            setCmnCurrrateDialog(rowData)
-            setCurrrateTip("UPDATE")
+            setCmnTaxrateDialog(rowData)
+            setTaxrateTip("UPDATE")
           }}
           text
           raised ></Button>
@@ -227,7 +227,7 @@ export default function CmnCurrrateL(props) {
             <div className="field col-12 md:col-6">
               <label htmlFor="code">{translations[selectedLanguage].Code}</label>
               <InputText id="code"
-                value={props.cmnCurr.code}
+                value={props.cmnTax.code}
                 disabled={true}
               />
             </div>
@@ -235,7 +235,7 @@ export default function CmnCurrrateL(props) {
               <label htmlFor="text">{translations[selectedLanguage].Text}</label>
               <InputText
                 id="text"
-                value={props.cmnCurr.textx}
+                value={props.cmnTax.textx}
                 disabled={true}
               />
             </div>           
@@ -245,9 +245,9 @@ export default function CmnCurrrateL(props) {
       <DataTable
         dataKey="id"
         selectionMode="single"
-        selection={cmnCurrrate}
+        selection={cmnTaxrate}
         loading={loading}
-        value={cmnCurrrates}
+        value={cmnTaxrates}
         header={header}
         showGridlines
         removableSort
@@ -260,51 +260,30 @@ export default function CmnCurrrateL(props) {
         paginator
         rows={10}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        onSelectionChange={(e) => setCmnCurrrate(e.value)}
+        onSelectionChange={(e) => setCmnTaxrate(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
       >
         <Column
           //bodyClassName="text-center"
-          body={currrateTemplate}
+          body={taxrateTemplate}
           exportable={false}
           headerClassName="w-10rem"
           style={{ minWidth: '4rem' }}
         />
         <Column
-          field="ccurr1"
-          header={translations[selectedLanguage].Code}
-          sortable
-          filter
-          style={{ width: "10%" }}
-        ></Column>
-        <Column
-          field="ncurr1"
-          header={translations[selectedLanguage].Text}
-          sortable
-          filter
-          style={{ width: "50%" }}
-        ></Column>
-        <Column
           field="rate"
-          header={translations[selectedLanguage].Currrate}
+          header={translations[selectedLanguage].Rate}
           sortable
           filter
-          style={{ width: "10%" }}
-        ></Column>  
-        <Column
-          field="parity"
-          header={translations[selectedLanguage].Parity}
-          sortable
-          filter
-          style={{ width: "10%" }}
-        ></Column>              
+          style={{ width: "60%" }}
+        ></Column>        
         <Column
           field="begda"
           header={translations[selectedLanguage].Begda}
           sortable
           filter
-          style={{ width: "10%" }}
+          style={{ width: "20%" }}
           body={(rowData) => formatDateColumn(rowData, "begda")}
         ></Column>  
         <Column
@@ -312,12 +291,12 @@ export default function CmnCurrrateL(props) {
           header={translations[selectedLanguage].Endda}
           sortable
           filter
-          style={{ width: "10%" }}
+          style={{ width: "20%" }}
           body={(rowData) => formatDateColumn(rowData, "endda")}
         ></Column>         
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].Currrate}
+        header={translations[selectedLanguage].Taxrate}
         visible={visible}
         style={{ width: '60%' }}
         onHide={() => {
@@ -326,14 +305,14 @@ export default function CmnCurrrateL(props) {
         }}
       >
         {showMyComponent && (
-          <CmnCurrrate
+          <CmnTaxrate
             parameter={"inputTextValue"}
-            cmnCurrrate={cmnCurrrate}
-            cmnCurr={props.cmnCurr}
+            cmnTaxrate={cmnTaxrate}
+            cmnTax={props.cmnTax}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
-            currrateTip={currrateTip}
+            taxrateTip={taxrateTip}
           />
         )}
         <div className="p-dialog-header-icons" style={{ display: 'none' }}>

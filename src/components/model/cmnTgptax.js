@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { classNames } from 'primereact/utils';
-import { TicParprivilegeService } from "../../service/model/TicParprivilegeService";
-import { CmnParService } from "../../service/model/CmnParService";
+import { CmnTgptaxService } from "../../service/model/CmnTgptaxService";
+import { CmnTaxService } from "../../service/model/CmnTaxService";
 import './index.css';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -12,18 +12,18 @@ import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from "primereact/calendar";
 import DateFunction from "../../utilities/DateFunction"
 
-const TicParprivilege = (props) => {
+const CmnTgptax = (props) => {
 
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
-    const [ticParprivilege, setTicParprivilege] = useState(props.ticParprivilege);
+    const [cmnTgptax, setCmnTgptax] = useState(props.cmnTgptax);
     const [submitted, setSubmitted] = useState(false);
-    const [ddTicPrivilege, setDdTicPrivilege] = useState(null);
-    const [ddTicPrivileges, setDdTicPrivileges] = useState(null);
-    const [ticPrivilegeItem, setTicPrivilegeItem] = useState(null);
-    const [ticPrivilegeItems, setTicPrivilegeItems] = useState(null);
-    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.ticParprivilege.begda || DateFunction.currDate())));
-    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.ticParprivilege.endda || DateFunction.currDate())))
+    const [ddCmnTgptaxItem, setDdCmnTgptaxItem] = useState(null);
+    const [ddCmnTgptaxItems, setDdCmnTgptaxItems] = useState(null);
+    const [cmnTgptaxItem, setCmnTgptaxItem] = useState(null);
+    const [cmnTgptaxItems, setCmnTgptaxItems] = useState(null);
+    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnTgptax.begda || DateFunction.currDate())));
+    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnTgptax.endda || DateFunction.currDate())))
 
     const calendarRef = useRef(null);
 
@@ -32,20 +32,20 @@ const TicParprivilege = (props) => {
     useEffect(() => {
         async function fetchData() {
             try {
-                const ticParprivilegeService = new TicParprivilegeService();
-                const data = await ticParprivilegeService.getTicPrivileges();
+                const cmnTaxService = new CmnTaxService();
+                const data = await cmnTaxService.getCmnTaxs();
 
-                setTicPrivilegeItems(data)
-                //console.log("******************", ticPrivilegeItem)
+                setCmnTgptaxItems(data)
+                //console.log("******************", cmnTgptaxItem)
 
                 const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
-                setDdTicPrivileges(dataDD);
-                setDdTicPrivilege(dataDD.find((item) => item.code === props.ticParprivilege.privilege) || null);
-                if (props.ticParprivilege.privilege) {
-                    const foundItem = data.find((item) => item.id === props.ticParprivilege.privilege);
-                    setTicPrivilegeItem(foundItem || null);
-                    ticParprivilege.cprivilege = foundItem.code
-                    ticParprivilege.nprivilege = foundItem.textx
+                setDdCmnTgptaxItems(dataDD);
+                setDdCmnTgptaxItem(dataDD.find((item) => item.code === props.cmnTgptax.tax) || null);
+                if (props.cmnTgptax.tax) {
+                    const foundItem = data.find((item) => item.id === props.cmnTgptax.tax);
+                    setCmnTgptaxItem(foundItem || null);
+                    cmnTgptax.ctax = foundItem.code
+                    cmnTgptax.ntax = foundItem.textx
                 }
 
             } catch (error) {
@@ -64,17 +64,17 @@ const TicParprivilege = (props) => {
     const handleCreateClick = async () => {
         try {
             setSubmitted(true);
-            ticParprivilege.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
-            ticParprivilege.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
-            const ticParprivilegeService = new TicParprivilegeService();
-            const data = await ticParprivilegeService.postTicParprivilege(ticParprivilege);
-            ticParprivilege.id = data
-            props.handleDialogClose({ obj: ticParprivilege, parprivilegeTip: props.parprivilegeTip });
+            cmnTgptax.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
+            cmnTgptax.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
+            const cmnTgptaxService = new CmnTgptaxService();
+            const data = await cmnTgptaxService.postCmnTgptax(cmnTgptax);
+            cmnTgptax.id = data
+            props.handleDialogClose({ obj: cmnTgptax, tgptaxTip: props.tgptaxTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "TicParprivilege ",
+                summary: "CmnTgptax ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -84,17 +84,17 @@ const TicParprivilege = (props) => {
     const handleSaveClick = async () => {
         try {
             setSubmitted(true);
-            ticParprivilege.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
-            ticParprivilege.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));            
-            const ticParprivilegeService = new TicParprivilegeService();
+            cmnTgptax.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
+            cmnTgptax.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));            
+            const cmnTgptaxService = new CmnTgptaxService();
 
-            await ticParprivilegeService.putTicParprivilege(ticParprivilege);
-            props.handleDialogClose({ obj: ticParprivilege, parprivilegeTip: props.parprivilegeTip });
+            await cmnTgptaxService.putCmnTgptax(cmnTgptax);
+            props.handleDialogClose({ obj: cmnTgptax, tgptaxTip: props.tgptaxTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "TicParprivilege ",
+                summary: "CmnTgptax ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -108,15 +108,15 @@ const TicParprivilege = (props) => {
     const handleDeleteClick = async () => {
         try {
             setSubmitted(true);
-            const ticParprivilegeService = new TicParprivilegeService();
-            await ticParprivilegeService.deleteTicParprivilege(ticParprivilege);
-            props.handleDialogClose({ obj: ticParprivilege, parprivilegeTip: 'DELETE' });
+            const cmnTgptaxService = new CmnTgptaxService();
+            await cmnTgptaxService.deleteCmnTgptax(cmnTgptax);
+            props.handleDialogClose({ obj: cmnTgptax, tgptaxTip: 'DELETE' });
             props.setVisible(false);
             hideDeleteDialog();
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "TicParprivilege ",
+                summary: "CmnTgptax ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -128,22 +128,23 @@ const TicParprivilege = (props) => {
 
         if (type === "options") {
             val = (e.target && e.target.value && e.target.value.code) || '';
-            setDdTicPrivilege(e.value);
-            const foundItem = ticPrivilegeItems.find((item) => item.id === val);
-            setTicPrivilegeItem(foundItem || null);
-            ticParprivilege.nprivilege = e.value.name
-            ticParprivilege.cprivilege = foundItem.code
+            setDdCmnTgptaxItem(e.value);
+            const foundItem = cmnTgptaxItems.find((item) => item.id === val);
+            setCmnTgptaxItem(foundItem || null);
+            cmnTgptax.ntp = e.value.name
+            cmnTgptax.ctp = foundItem.code
         } else if (type === "Calendar") {
             //const dateVal = DateFunction.dateGetValue(e.value)
+
             val = (e.target && e.target.value) || '';
             switch (name) {
                 case "begda":
                     setBegda(e.value)
-                    //ticParprivilege.begda = DateFunction.formatDateToDBFormat(dateVal)
+                    //cmnTgptax.begda = DateFunction.formatDateToDBFormat(dateVal)
                     break;
                 case "endda":
                     setEndda(e.value)
-                    //ticParprivilege.endda = DateFunction.formatDateToDBFormat(dateVal)
+                    //cmnTgptax.endda = DateFunction.formatDateToDBFormat(dateVal)
                     break;
                 default:
                     console.error("Pogresan naziv polja")
@@ -151,9 +152,9 @@ const TicParprivilege = (props) => {
         } else {
             val = (e.target && e.target.value) || '';
         }
-        let _ticParprivilege = { ...ticParprivilege };
-        _ticParprivilege[`${name}`] = val;
-        setTicParprivilege(_ticParprivilege);
+        let _cmnTgptax = { ...cmnTgptax };
+        _cmnTgptax[`${name}`] = val;
+        setCmnTgptax(_cmnTgptax);
     };
 
     const hideDeleteDialog = () => {
@@ -169,7 +170,7 @@ const TicParprivilege = (props) => {
                         <div className="field col-12 md:col-5">
                             <label htmlFor="code">{translations[selectedLanguage].Code}</label>
                             <InputText id="code"
-                                value={props.cmnPar.code}
+                                value={props.cmnTgp.code}
                                 disabled={true}
                             />
                         </div>
@@ -177,7 +178,7 @@ const TicParprivilege = (props) => {
                             <label htmlFor="text">{translations[selectedLanguage].Text}</label>
                             <InputText
                                 id="text"
-                                value={props.cmnPar.text}
+                                value={props.cmnTgp.text}
                                 disabled={true}
                             />
                         </div>
@@ -188,35 +189,18 @@ const TicParprivilege = (props) => {
                 <div className="card">
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-7">
-                            <label htmlFor="privilege">{translations[selectedLanguage].Privilege} *</label>
-                            <Dropdown id="privilege"
-                                value={ddTicPrivilege}
-                                options={ddTicPrivileges}
-                                onChange={(e) => onInputChange(e, "options", 'privilege')}
+                            <label htmlFor="tax">{translations[selectedLanguage].Tax} *</label>
+                            <Dropdown id="tax"
+                                value={ddCmnTgptaxItem}
+                                options={ddCmnTgptaxItems}
+                                onChange={(e) => onInputChange(e, "options", 'tax')}
                                 required
                                 optionLabel="name"
                                 placeholder="Select One"
-                                className={classNames({ 'p-invalid': submitted && !ticParprivilege.privilege })}
+                                className={classNames({ 'p-invalid': submitted && !cmnTgptax.tax })}
                             />
-                            {submitted && !ticParprivilege.privilege && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnTgptax.tax && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
-                    </div>
-
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-6">
-                            <label htmlFor="maxprc">{translations[selectedLanguage].maxprc}</label>
-                            <InputText
-                                id="maxprc"
-                                value={ticParprivilege.maxprc} onChange={(e) => onInputChange(e, "text", 'maxprc')}
-                            />
-                        </div>
-                        <div className="field col-12 md:col-6">
-                            <label htmlFor="maxval">{translations[selectedLanguage].maxval}</label>
-                            <InputText
-                                id="maxval"
-                                value={ticParprivilege.maxval} onChange={(e) => onInputChange(e, "text", 'maxval')}
-                            />
-                        </div>                        
                     </div>
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-5">
@@ -253,7 +237,7 @@ const TicParprivilege = (props) => {
                         ) : null}
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
-                            {(props.parprivilegeTip === 'CREATE') ? (
+                            {(props.tgptaxTip === 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Create}
                                     icon="pi pi-check"
@@ -262,7 +246,7 @@ const TicParprivilege = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.parprivilegeTip !== 'CREATE') ? (
+                            {(props.tgptaxTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Delete}
                                     icon="pi pi-trash"
@@ -271,7 +255,7 @@ const TicParprivilege = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.parprivilegeTip !== 'CREATE') ? (
+                            {(props.tgptaxTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Save}
                                     icon="pi pi-check"
@@ -286,8 +270,8 @@ const TicParprivilege = (props) => {
             </div>
             <DeleteDialog
                 visible={deleteDialogVisible}
-                inTicParprivilege="delete"
-                item={ticParprivilege.roll}
+                inCmnTgptax="delete"
+                item={cmnTgptax.roll}
                 onHide={hideDeleteDialog}
                 onDelete={handleDeleteClick}
             />
@@ -295,4 +279,4 @@ const TicParprivilege = (props) => {
     );
 };
 
-export default TicParprivilege;
+export default CmnTgptax;

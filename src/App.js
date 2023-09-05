@@ -29,6 +29,7 @@ import Terr from './components/model/cmnTerrL';
 import Terratt from './components/model/cmnTerrattL';
 import Curr from './components/model/cmnCurrL';
 import Tgp from './components/model/cmnTgpL';
+import Tax from './components/model/cmnTaxL';
 
 import EmptyPage from './pages/EmptyPage';
 
@@ -469,6 +470,7 @@ const App = () => {
                         <Route path="/terratt" element={<Terratt />} />
                         <Route path="/curr" element={<Curr />} />
                         <Route path="/tgp" element={<Tgp />} />
+                        <Route path="/tax" element={<Tax />} />
 
                         
                         <Route path="/loctp" element={<LocTP />} />
