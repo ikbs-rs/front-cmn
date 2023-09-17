@@ -12,9 +12,9 @@ export const Login = () => {
     const [checked, setChecked] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const sl = 'en'
+    let sl = localStorage.getItem('sl')||'en'
 
-    const handleButtonClick = (parameter) => {
+    const handleButtonClick = async (parameter) => {
         // Ovde nedostaje kod za logovanje
         let isLoggedIn = true;
         const usernameInput = document.getElementById("input").value; // Koristimo document.getElementById da bismo dohvatili vrijednost polja Username
@@ -25,32 +25,31 @@ export const Login = () => {
             password: passwordInput
         };
 
+        const url = `${env.JWT_BACK_URL}/adm/services/sign/in`;
         //dispatch(setLanguage('en')); // Postavite željeni jezik umesto 'en'
 
-        axios
-            .post(`${env.JWT_BACK_URL}/adm/services/sign/in`, requestData)
-            .then((response) => {
-                isLoggedIn = response.status === 200; // Ako je status 200, isLoggedIn će biti true
-                if (isLoggedIn) {
-                    //TODO idi na pocetnu stranicu
-                    localStorage.setItem('token', response.data.token);
-                    localStorage.setItem('refreshToken', response.data.refreshToken);
-                    //const newUrl = `${window.location.pathname}?sl=${sl}`;
-                    //window.location.replace(newUrl);
-                    navigate('/');
-                } else {
-                    //TODO vrati se na login
-                    navigate('/login');
-                }
-            })
-            .catch((error) => {
-                navigate('/login');
-            })
-            .catch((error) => {
-                console.error(error);
-                isLoggedIn = false; // Ako se dogodila pogreška, isLoggedIn će biti false
+        try {
+            console.log(url, requestData, "*****************url*********************")
+            const response = await axios.post(url, requestData, {});
+            console.log(response, "******************response********************")
+            if (response.status === 200) {
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('refreshToken', response.data.refreshToken);
+                sessionStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('sl', sl || "en");
+                navigate('/');
+                //const newUrl = `${window.location.pathname}?sl=${sl}`;
+                //window.location.replace(newUrl);
+            } else {
                 //TODO vrati se na login
-            });
+                navigate('/login');
+            }
+        } catch (error) {
+            console.log(error, "******************error********************")
+            console.error(error);
+            // Handle error and possibly navigate back to login
+            navigate('/login');
+        }
     }
 
     return (

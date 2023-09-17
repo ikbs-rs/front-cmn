@@ -13,7 +13,7 @@ export class CmnParService {
         };
     
         try {
-          const response = await axios.get(url, { headers });
+          const response = await axios.get(url, { headers, timeout: 10000 });
           console.log(url, "++++++++++++++++++++", response)
           return response.data.item;
         } catch (error) {

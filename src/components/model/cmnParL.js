@@ -17,6 +17,7 @@ import DateFunction from "../../utilities/DateFunction";
 import CmnParattsL from './cmnParattsL';
 import CmnParlinkL from './cmnParlinkL';
 import TicParprivilegeL from './ticParprivilegeL';
+import env from '../../configs/env';
 
 export default function CmnParL(props) {
 
@@ -71,8 +72,9 @@ export default function CmnParL(props) {
   useEffect(() => {
     const handleMessageFromParent = (event) => {
       const receivedData = event.data.data;
+      const eOrign = event.origin
       // Provera da li poruka dolazi iz očekivanog izvora
-      if (event.origin === 'http://ws10.ems.local:8354') {
+      if (eOrign === `${env.DOMEN}`) {
         // Provera tipa poruke
         if (event.data.type === 'dataUpdate') {
           console.log('Received message from parent on iframe load .... dialog', receivedData);
@@ -108,7 +110,8 @@ export default function CmnParL(props) {
   }
 */
   const sendToParent = (data) => {
-    const parentOrigin = 'http://ws10.ems.local:8354'; // Promenite ovo na stvarni izvor roditeljskog dokumenta
+    const parentOrigin = `${env.DOMEN}`; // Promenite ovo na stvarni izvor roditeljskog dokumenta
+    console.log(parentOrigin, "******************parentOrigin******1***************", data)
     window.parent.postMessage(data, parentOrigin);
   }
 

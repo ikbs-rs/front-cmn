@@ -13,7 +13,9 @@ export class CmnTaxService {
     };
 
     try {
+     // console.log(url, "*******************url******************")
       const response = await axios.get(url, { headers });
+      //console.log(response, "****************response*********************")
       return response.data.item;
     } catch (error) {
       console.error(error);

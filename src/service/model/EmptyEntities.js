@@ -1,5 +1,20 @@
 const EmptyEntities = 
 {
+  "cmn_ccard": {
+		"id": null ,
+		"site": null ,
+		"code": "",
+		"text": "",
+		"valid": null 
+  },
+  "cmn_ccardx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  }, 
   "cmn_curr": {
     "id": null,
     "site": null,

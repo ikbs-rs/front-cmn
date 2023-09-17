@@ -30,9 +30,7 @@ export class CmnArtlocService {
         };
 
         try {
-            console.log(url, "*********************getCmnArtlocs***************************")
             const response = await axios.get(url, { headers });
-            console.log(response, "*********************response***************************")
             return response.data.items;
         } catch (error) {
             console.error(error);
@@ -133,9 +131,7 @@ console.log("*-*-*jsonObj-*-*", url, newObj, jsonObj)
         };
 
         try {
-            console.log(url, "*********************getCmnArtlocs***************************")
             const response = await axios.get(url, { headers });
-            console.log(response, "*********************response***************************")
             return response.data.items;
         } catch (error) {
             console.error(error);
