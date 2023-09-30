@@ -23,7 +23,7 @@ const CmnTerr = (props) => {
     const [cmnTerrItem, setCmnTerrItem] = useState(null);
     const [cmnTerrItems, setCmnTerrItems] = useState(null);
     const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnTerr.begda || DateFunction.currDate())));
-    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnTerr.endda || DateFunction.currDate())))
+    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate('99991231' || DateFunction.currDate())))
 
     const calendarRef = useRef(null);
 
@@ -134,7 +134,7 @@ const CmnTerr = (props) => {
             cmnTerr.ntp = e.value.name
             cmnTerr.ctp = foundItem.code
         } else if (type === "Calendar") {
-            const dateVal = DateFunction.dateGetValue(e.value)
+            //const dateVal = DateFunction.dateGetValue(e.value)
             val = (e.target && e.target.value) || '';
             switch (name) {
                 case "begda":

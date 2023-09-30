@@ -358,7 +358,7 @@ export const translations = {
         Taxes: "Порези",
         Territorial_administration: "Администрација територија",
         Territory: "Територија",
-        Text: "Текст",
+        Text: "Назив",
         TextObj: "Текст Обј",
         TextObjTp: "Текст Тп",
         Type: "Тип",

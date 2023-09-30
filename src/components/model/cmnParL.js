@@ -108,7 +108,7 @@ export default function CmnParL(props) {
       }
     });
   }
-*/
+  */
   const sendToParent = (data) => {
     const parentOrigin = `${env.DOMEN}`; // Promenite ovo na stvarni izvor roditeljskog dokumenta
     console.log(parentOrigin, "******************parentOrigin******1***************", data)

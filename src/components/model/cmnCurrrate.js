@@ -13,7 +13,7 @@ import { Calendar } from "primereact/calendar";
 import DateFunction from "../../utilities/DateFunction"
 
 const CmnCurrrate = (props) => {
-console.log(props, "********************************CmnCurrrate***********************************")
+console.log("********************************CmnCurrrate***********************************")
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [cmnCurrrate, setCmnCurrrate] = useState(props.cmnCurrrate);

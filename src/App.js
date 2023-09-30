@@ -44,6 +44,7 @@ import env from "./configs/env"
 import { useDispatch } from 'react-redux';
 import { setLanguage } from './store/actions';
 import { translations } from "./configs/translations";
+import { checkPermissions } from "./security/interceptors"
 
 const App = () => {
     const dispatch = useDispatch();
@@ -80,9 +81,9 @@ const App = () => {
                     label: translations[selectedLanguage].Business_partners_administration,
                     icon: 'pi pi-fw pi-bars',
                     items: [
-                        { label: translations[selectedLanguage].Type_partners, icon: 'pi pi-fw pi-calendar', to: '/partp' },
-                        { label: translations[selectedLanguage].Business_partners, icon: 'pi pi-fw pi-calendar', to: '/par'  },
-                        { label: translations[selectedLanguage].Properties_partners, icon: 'pi pi-fw pi-calendar' , to: '/paratt'},
+                        { action: 'partpMenu', label: translations[selectedLanguage].Type_partners, icon: 'pi pi-fw pi-calendar', to: '/partp' },
+                        { action: 'parpMenu', label: translations[selectedLanguage].Business_partners, icon: 'pi pi-fw pi-calendar', to: '/par'  },
+                        { action: 'parattpMenu', label: translations[selectedLanguage].Properties_partners, icon: 'pi pi-fw pi-calendar' , to: '/paratt'},
                     ]
                 },
                 {
@@ -125,14 +126,14 @@ const App = () => {
                     label: translations[selectedLanguage].Objects_administration,
                     icon: 'pi pi-prime',
                     items: [
-                        { label: translations[selectedLanguage].Objects_type, icon: 'pi pi-database', to: '/objtp' },
-                        { label: translations[selectedLanguage].Objects, icon: 'pi pi-fw pi-clone', to: '/obj' },
-                        { label: translations[selectedLanguage].Properties_object, icon: 'pi pi-fw pi-clone', to: '/objatt' },
-                        { label: translations[selectedLanguage].Group_of_properties, icon: 'pi pi-fw pi-clone', to: '/objatttp' },
-                        { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-exclamation-triangle', to: '/link' },
-                        { label: translations[selectedLanguage].ObjectsTree, icon: 'pi pi-fw pi-clone', to: '/objtree' },
-                        { label: translations[selectedLanguage].ObjCon, icon: 'pi pi-fw pi-clone', to: '/objcon' },
-                        { label: translations[selectedLanguage].ObjectsD, icon: 'pi pi-fw pi-clone', to: '/objd' },
+                        { action: 'objtpMenu', label: translations[selectedLanguage].Objects_type, icon: 'pi pi-database', to: '/objtp' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].Objects, icon: 'pi pi-fw pi-clone', to: '/obj' },
+                        { action: 'objattMenu', label: translations[selectedLanguage].Properties_object, icon: 'pi pi-fw pi-clone', to: '/objatt' },
+                        { action: 'objatttpMenu', label: translations[selectedLanguage].Group_of_properties, icon: 'pi pi-fw pi-clone', to: '/objatttp' },
+                        { action: 'linkMenu', label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-exclamation-triangle', to: '/link' },
+                        { action: 'objtreeMenu', label: translations[selectedLanguage].ObjectsTree, icon: 'pi pi-fw pi-clone', to: '/objtree' },
+                        { action: 'objconMenu', label: translations[selectedLanguage].ObjCon, icon: 'pi pi-fw pi-clone', to: '/objcon' },
+                        { action: 'objdMenu', label: translations[selectedLanguage].ObjectsD, icon: 'pi pi-fw pi-clone', to: '/objd' },
                     ]
                 },
                 {
@@ -161,6 +162,48 @@ const App = () => {
     let rightMenuClick;
     let userMenuClick;
     let configClick = false;
+    let iRef = useRef(0);
+
+    const [filteredMenu, setFilteredMenu] = useState([]);
+    
+    useEffect(() => {
+        iRef.current++;
+        if (iRef.current<2) {
+            async function filterMenuItems(menu) {
+                const filteredMenuL = [];
+        
+                for (const item of menu) {
+                    const filteredItem = { ...item };
+        
+                    if (item.items) {
+                        // Filtriranje podmenija
+                        const filteredSubMenu = await filterMenuItems(item.items);
+                        if (filteredSubMenu.length > 0) {
+                            filteredItem.items = filteredSubMenu;
+                        } else {
+                            delete filteredItem.items;
+                        }
+                    }
+        
+                    if (await checkPermissions(item.action)) {
+                        // Dodajemo samo ako ima akciju ili podmeni
+                        filteredMenuL.push(filteredItem);
+                    }                    
+                    // if (item.action || filteredItem.items) {
+                    //     // Dodajemo samo ako ima akciju ili podmeni
+                    //     filteredMenuL.push(filteredItem);
+                    // }
+                }
+                return filteredMenuL;
+            }
+            async function fetchData() {
+                const filteredMenuLL = await filterMenuItems(menu);
+                setFilteredMenu(filteredMenuLL); // Postavite stanje filtriranog menija
+            }
+    
+            fetchData();
+        }
+    }, [menu]);
 
     useEffect(() => {      
       if (selectedLanguage) {
@@ -227,6 +270,7 @@ const App = () => {
     };
 
     const onMenuButtonClick = (event) => {
+
         menuClick = true;
         setTopbarMenuActive(false);
         setRightPanelMenuActive(false);
@@ -454,7 +498,7 @@ const App = () => {
                         </CSSTransition>
                     </div>
                 )}
-                <AppMenu model={menu} onMenuItemClick={onMenuItemClick} onRootMenuItemClick={onRootMenuItemClick} layoutMode={layoutMode} active={menuActive} mobileMenuActive={staticMenuMobileActive} />
+                <AppMenu model={filteredMenu} onMenuItemClick={onMenuItemClick} onRootMenuItemClick={onRootMenuItemClick} layoutMode={layoutMode} active={menuActive} mobileMenuActive={staticMenuMobileActive} />
             </div>
 
             <div className="layout-main">

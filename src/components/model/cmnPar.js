@@ -13,7 +13,7 @@ import { Calendar } from "primereact/calendar";
 import DateFunction from "../../utilities/DateFunction"
 
 const CmnPar = (props) => {
-console.log(props, "*-*-*-*-*-*-*-*****CmnPar-*-*-*-*-*-*-*-*-*-*-*-*-*-*")
+//console.log(props, "*-*-*-*-*-*-*-*****CmnPar-*-*-*-*-*-*-*-*-*-*-*-*-*-*")
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [cmnPar, setCmnPar] = useState(props.cmnPar);
@@ -23,7 +23,7 @@ console.log(props, "*-*-*-*-*-*-*-*****CmnPar-*-*-*-*-*-*-*-*-*-*-*-*-*-*")
     const [cmnParItem, setCmnParItem] = useState(null);
     const [cmnParItems, setCmnParItems] = useState(null);
     const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnPar.begda || DateFunction.currDate())));
-    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnPar.endda || DateFunction.currDate())))
+    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate('99991231' || DateFunction.currDate())))
 
     const calendarRef = useRef(null);
 
@@ -61,7 +61,6 @@ console.log(props, "*-*-*-*-*-*-*-*****CmnPar-*-*-*-*-*-*-*-*-*-*-*-*-*-*")
     //     props.setVisible(false);
     // };
     const handleCancelClick = () => {
-        console.log(props, "111111111111111111111111111")
         if (props.remote) {
             const dataToSend = { type: 'dataFromIframe', visible: false };
             sendToParent(dataToSend);

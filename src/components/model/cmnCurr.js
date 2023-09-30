@@ -23,7 +23,7 @@ const CmnCurr = (props) => {
     const [cmnCurrItem, setCmnCurrItem] = useState(null);
     const [cmnCurrItems, setCmnCurrItems] = useState(null);
     const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnCurr.begda || DateFunction.currDate())));
-    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnCurr.endda || DateFunction.currDate())))
+    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate('99991231' || DateFunction.currDate())))
 
     const calendarRef = useRef(null);
 
@@ -134,7 +134,7 @@ const CmnCurr = (props) => {
             cmnCurr.ncountry = e.value.name
             cmnCurr.ccountry = foundItem.code
         } else if (type === "Calendar") {
-            const dateVal = DateFunction.dateGetValue(e.value)
+            //const dateVal = DateFunction.dateGetValue(e.value)
             val = (e.target && e.target.value) || '';
             switch (name) {
                 case "begda":
