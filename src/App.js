@@ -79,29 +79,29 @@ const App = () => {
             items: [
                 {
                     label: translations[selectedLanguage].Business_partners_administration,
-                    icon: 'pi pi-fw pi-bars',
+                    icon: 'pi pi-fw pi-user',
                     items: [
-                        { action: 'partpMenu', label: translations[selectedLanguage].Type_partners, icon: 'pi pi-fw pi-calendar', to: '/partp' },
-                        { action: 'parpMenu', label: translations[selectedLanguage].Business_partners, icon: 'pi pi-fw pi-calendar', to: '/par'  },
-                        { action: 'parattpMenu', label: translations[selectedLanguage].Properties_partners, icon: 'pi pi-fw pi-calendar' , to: '/paratt'},
+                        { action: 'partpMenu', label: translations[selectedLanguage].Type_partners, icon: 'pi pi-fw pi-clone', to: '/partp' },
+                        { action: 'parpMenu', label: translations[selectedLanguage].Business_partners, icon: 'pi pi-fw pi-clone', to: '/par'  },
+                        { action: 'parattpMenu', label: translations[selectedLanguage].Properties_partners, icon: 'pi pi-fw pi-clone' , to: '/paratt'},
                     ]
                 },
                 {
                     label: translations[selectedLanguage].Territorial_administration,
-                    icon: 'pi pi-fw pi-bars',
+                    icon: 'pi pi-fw pi-globe',
                     items: [
-                        { label: translations[selectedLanguage].Type_of_territory, icon: 'pi pi-fw pi-calendar', to: '/terrtp' },
-                        { label: translations[selectedLanguage].Territory, icon: 'pi pi-fw pi-calendar', to: '/terr'  },
-                        { label: translations[selectedLanguage].Properties_territory, icon: 'pi pi-fw pi-table' , to: '/terratt'}
+                        { label: translations[selectedLanguage].Type_of_territory, icon: 'pi pi-fw pi-clone', to: '/terrtp' },
+                        { label: translations[selectedLanguage].Territory, icon: 'pi pi-fw pi-clone', to: '/terr'  },
+                        { label: translations[selectedLanguage].Properties_territory, icon: 'pi pi-fw pi-clone' , to: '/terratt'}
                        // { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/terrtp'}
                     ]
                 },
                 {
                     label: translations[selectedLanguage].Location_administration,
-                    icon: 'pi pi-fw pi-bars',
+                    icon: 'pi pi-fw pi-map',
                     items: [
-                        { label: translations[selectedLanguage].Location_type, icon: 'pi pi-fw pi-calendar', to: '/loctp' },
-                        { label: translations[selectedLanguage].Locations, icon: 'pi pi-fw pi-calendar', to: '/loc'  },
+                        { label: translations[selectedLanguage].Location_type, icon: 'pi pi-fw pi-clone', to: '/loctp' },
+                        { label: translations[selectedLanguage].Locations, icon: 'pi pi-fw pi-clone', to: '/loc'  },
                         { label: translations[selectedLanguage].LocTree, icon: 'pi pi-fw pi-clone', to: '/loctree' },
                       //d  { label: translations[selectedLanguage].Properties_location, icon: 'pi pi-fw pi-calendar' , to: '/locatt'},
                        // { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/loclinktp'}
@@ -109,38 +109,38 @@ const App = () => {
                 },
                 {
                     label: translations[selectedLanguage].Currency_administration,
-                    icon: 'pi pi-fw pi-bars',
+                    icon: 'pi pi-fw pi-dollar',
                     items: [
-                        { label: translations[selectedLanguage].Currency, icon: 'pi pi-fw pi-calendar' , to: '/curr'},
+                        { label: translations[selectedLanguage].Currency, icon: 'pi pi-fw pi-clone' , to: '/curr'},
                     ]
                 },
                 {
                     label: translations[selectedLanguage].Tax_system,
-                    icon: 'pi pi-fw pi-bars',
+                    icon: 'pi pi-fw pi-percentage',
                     items: [
-                        { label: translations[selectedLanguage].Tariff_groups, icon: 'pi pi-fw pi-calendar' , to: '/tgp'},
-                        { label: translations[selectedLanguage].Taxes, icon: 'pi pi-fw pi-calendar' , to: '/tax'}
+                        { label: translations[selectedLanguage].Tariff_groups, icon: 'pi pi-fw pi-clone' , to: '/tgp'},
+                        { label: translations[selectedLanguage].Taxes, icon: 'pi pi-fw pi-clone' , to: '/tax'}
                     ]
                 },
                 {
                     label: translations[selectedLanguage].Objects_administration,
-                    icon: 'pi pi-prime',
+                    icon: 'pi pi-cog',
                     items: [
-                        { action: 'objtpMenu', label: translations[selectedLanguage].Objects_type, icon: 'pi pi-database', to: '/objtp' },
+                        { action: 'objtpMenu', label: translations[selectedLanguage].Objects_type, icon: 'pi pi-clone', to: '/objtp' },
                         { action: 'pobjMenu', label: translations[selectedLanguage].Objects, icon: 'pi pi-fw pi-clone', to: '/obj' },
                         { action: 'objattMenu', label: translations[selectedLanguage].Properties_object, icon: 'pi pi-fw pi-clone', to: '/objatt' },
                         { action: 'objatttpMenu', label: translations[selectedLanguage].Group_of_properties, icon: 'pi pi-fw pi-clone', to: '/objatttp' },
-                        { action: 'linkMenu', label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-exclamation-triangle', to: '/link' },
+                        //{ action: 'linkMenu', label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-exclamation-triangle', to: '/link' },
                         { action: 'objtreeMenu', label: translations[selectedLanguage].ObjectsTree, icon: 'pi pi-fw pi-clone', to: '/objtree' },
-                        { action: 'objconMenu', label: translations[selectedLanguage].ObjCon, icon: 'pi pi-fw pi-clone', to: '/objcon' },
-                        { action: 'objdMenu', label: translations[selectedLanguage].ObjectsD, icon: 'pi pi-fw pi-clone', to: '/objd' },
+                        // { action: 'objconMenu', label: translations[selectedLanguage].ObjCon, icon: 'pi pi-fw pi-clone', to: '/objcon' },
+                        // { action: 'objdMenu', label: translations[selectedLanguage].ObjectsD, icon: 'pi pi-fw pi-clone', to: '/objd' },
                     ]
                 },
                 {
                     label: translations[selectedLanguage].Other,
-                    icon: 'pi pi-prime',
+                    icon: 'pi pi-table',
                     items: [
-                        { label: translations[selectedLanguage].Program_modules, icon: 'pi pi-database', to: '/module' },
+                        { label: translations[selectedLanguage].Program_modules, icon: 'pi pi-clone', to: '/module' },
                   //      { label: translations[selectedLanguage].Menu_administration, icon: 'pi pi-fw pi-clone', to: '/menu' },
                         { label: translations[selectedLanguage].Units_of_measurement, icon: 'pi pi-fw pi-clone', to: '/um' },
                     ]

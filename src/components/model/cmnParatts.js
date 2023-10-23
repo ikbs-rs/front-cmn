@@ -23,7 +23,7 @@ const CmnParatts = (props) => {
     const [cmnParattsItem, setCmnParattsItem] = useState(null);
     const [cmnParattsItems, setCmnParattsItems] = useState(null);
     const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnParatts.begda || DateFunction.currDate())));
-    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnParatts.endda || DateFunction.currDate())))
+    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnParatts.endda || '99991231')))
 
     const calendarRef = useRef(null);
 
@@ -134,7 +134,7 @@ const CmnParatts = (props) => {
             cmnParatts.ntp = e.value.name
             cmnParatts.ctp = foundItem.code
         } else if (type === "Calendar") {
-            const dateVal = DateFunction.dateGetValue(e.value)
+            //const dateVal = DateFunction.dateGetValue(e.value)
 
             val = (e.target && e.target.value) || '';
             switch (name) {

@@ -65,7 +65,7 @@ export class CmnObjService {
 
     try {
       const response = await axios.get(url, { headers });
-      return response.data.items;
+      return response.data.item;
     } catch (error) {
       console.error(error);
       throw error;

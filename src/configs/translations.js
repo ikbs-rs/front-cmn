@@ -438,7 +438,7 @@ export const translations = {
         LoctpText: "Тип локације",
         LocText: "Локација",
         Loclink: "Локација веза",
-        LocTree: "Листа стабло",
+        LocTree: "Локације стабло",
         LocList: "Листа локација",
         Loc: "Локација",
         graftp: "Graftp",
@@ -459,6 +459,7 @@ export const translations = {
         RateLista: "Пореска стопа Листа",
         Parity: "Паритет",
         Currrate: "Однос",
+        Toggle: "Затвор/Отвори",
     }
   };
   
