@@ -28,6 +28,7 @@ import Terrtp from './components/model/cmnTerrtpL';
 import Terr from './components/model/cmnTerrL';
 import Terratt from './components/model/cmnTerrattL';
 import Curr from './components/model/cmnCurrL';
+import Paymenttp from './components/model/cmnPaymenttpL';
 import Tgp from './components/model/cmnTgpL';
 import Tax from './components/model/cmnTaxL';
 
@@ -112,6 +113,7 @@ const App = () => {
                     icon: 'pi pi-fw pi-dollar',
                     items: [
                         { label: translations[selectedLanguage].Currency, icon: 'pi pi-fw pi-clone' , to: '/curr'},
+                        { label: translations[selectedLanguage].Paymenttp, icon: 'pi pi-fw pi-clone' , to: '/paymenttp'},
                     ]
                 },
                 {
@@ -513,6 +515,7 @@ const App = () => {
                         <Route path="/terr" element={<Terr />} />
                         <Route path="/terratt" element={<Terratt />} />
                         <Route path="/curr" element={<Curr />} />
+                        <Route path="/paymenttp" element={<Paymenttp />} />
                         <Route path="/tgp" element={<Tgp />} />
                         <Route path="/tax" element={<Tax />} />
 

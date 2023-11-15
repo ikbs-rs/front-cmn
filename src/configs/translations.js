@@ -460,6 +460,8 @@ export const translations = {
         Parity: "Паритет",
         Currrate: "Однос",
         Toggle: "Затвор/Отвори",
+        PaymenttpList: "Тип плаћања Листа",
+        Paymenttp: "Тип плаћања",
     }
   };
   

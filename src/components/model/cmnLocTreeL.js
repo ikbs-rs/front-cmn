@@ -134,16 +134,16 @@ export default function CmnLocTreeL() {
     const handleReload = () => {
         setRefreshing(true); // Označava da je započeto ažuriranje
         //fetchData();
-    
+
         // Pokrenite tajmer za automatsko ažuriranje (na primer, svakih 60 sekundi)
         const timer = setInterval(() => {
             //fetchData();
-            setRefreshing(true); 
+            setRefreshing(true);
         }, 60000); // 60 sekundi
-    
+
         setReloadTimer(timer);
     };
-    
+
     const handleDialogClose = (newObj) => {
         const localObj = { newObj };
 
@@ -204,13 +204,13 @@ export default function CmnLocTreeL() {
         setCmnLoc({ ...cmnLoc });
         setShowMyComponent(true);
         setCmnLoclinkLVisible(true);
-    
-      } 
 
-      const openNew = () => {
+    }
+
+    const openNew = () => {
         setLocTip("CREATE");
         setCmnLocDialog(emptyCmnObj);
-      };
+    };
 
     const actionTemplate = (rowData) => {
         const convertToOriginalFormat = (node) => {
@@ -234,10 +234,10 @@ export default function CmnLocTreeL() {
                 <Button type="button" icon="pi pi-sitemap" severity="danger" rounded raised
                     onClick={() => {
                         const cmnLocData = convertToOriginalFormat(rowData); // Convert rowData to the desired format
-                       // setCmnLocobjLDialog(cmnLocData);
-                       setCmnLoclinkLDialog(cmnLocData);
+                        // setCmnLocobjLDialog(cmnLocData);
+                        setCmnLoclinkLDialog(cmnLocData);
                         setLocTip("UPDATE");
-                    }}                
+                    }}
                 ></Button>
                 <Button type="button" icon="pi pi-pencil" severity="secondary" rounded raised
                     onClick={() => {
@@ -301,9 +301,9 @@ export default function CmnLocTreeL() {
     //const header = <div className="text-xl font-bold">Object tree</div>;
     const footer = (
         <div className="flex justify-content-start">
-            <Button icon="pi pi-refresh" label="Reload" severity="warning" text raised 
-            onClick={handleReload}
-            disabled={refreshing}
+            <Button icon="pi pi-refresh" label="Reload" severity="warning" text raised
+                onClick={handleReload}
+                disabled={refreshing}
             />
         </div>
     );
@@ -356,21 +356,21 @@ export default function CmnLocTreeL() {
                 visible={cmnLoclinkLVisible}
                 style={{ width: '90%' }}
                 onHide={() => {
-                setCmnLoclinkLVisible(false);
-                setShowMyComponent(false);
+                    setCmnLoclinkLVisible(false);
+                    setShowMyComponent(false);
                 }}
             >
                 {showMyComponent && (
-                <CmnLoclinkL
-                    parameter={"inputTextValue"}
-                    cmnLoc={cmnLoc}
-                    handleCmnLoclinkLDialogClose={handleCmnLoclinkLDialogClose}
-                    setCmnLoclinkLVisible={setCmnLoclinkLVisible}
-                    dialog={true}
-                    lookUp={false}
-                />
+                    <CmnLoclinkL
+                        parameter={"inputTextValue"}
+                        cmnLoc={cmnLoc}
+                        handleCmnLoclinkLDialogClose={handleCmnLoclinkLDialogClose}
+                        setCmnLoclinkLVisible={setCmnLoclinkLVisible}
+                        dialog={true}
+                        lookUp={false}
+                    />
                 )}
-            </Dialog>              
+            </Dialog>
             <Dialog
                 header={translations[selectedLanguage].LocobjLista}
                 visible={cmnLocobjLVisible}

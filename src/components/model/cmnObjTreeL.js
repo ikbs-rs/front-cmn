@@ -75,17 +75,17 @@ export default function CmnObjTreeL() {
             //console.log(uId, "*-*-*-*", data)
             return data;
         } catch (error) {
-          console.error(error);
-          // Obrada greške ako je potrebna
+            console.error(error);
+            // Obrada greške ako je potrebna
         }
-      }
+    }
 
     const menu = [
         {
             label: translations[selectedLanguage].Attributes,
             icon: 'pi pi-table',
             command: async () => {
-                const rowData = await  fetchObj(selectedNodeKey) 
+                const rowData = await fetchObj(selectedNodeKey)
                 // { id: selectedNodeKey,
                 // parentid: selectedNodeKey,
                 // site: null,
@@ -163,13 +163,13 @@ export default function CmnObjTreeL() {
     const handleReload = () => {
         setRefreshing(true); // Označava da je započeto ažuriranje
         //fetchData();
-    
+
         // Pokrenite tajmer za automatsko ažuriranje (na primer, svakih 60 sekundi)
         const timer = setInterval(() => {
             //fetchData();
-            setRefreshing(true); 
+            setRefreshing(true);
         }, 60000); // 60 sekundi
-    
+
         setReloadTimer(timer);
     };
 
@@ -205,7 +205,7 @@ export default function CmnObjTreeL() {
 
     const handleCmnObjattsLDialogClose = (newObj) => {
         const localObj = { newObj };
-    };    
+    };
 
     const findIndexById = (id) => {
         let index = -1;
@@ -234,16 +234,16 @@ export default function CmnObjTreeL() {
         setCmnObj({ ...cmnObj });
         setShowMyComponent(true);
         setCmnObjlinkLVisible(true);
-      }
+    }
 
-      const setCmnObjattsLDialog = (cmnObj) => {
+    const setCmnObjattsLDialog = (cmnObj) => {
         //console.log("---------------------------", cmnObj)
         setCmnObj({ ...cmnObj });
         setShowMyComponent(true);
         setCmnObjattsLVisible(true);
-    
-      } 
-      const convertToOriginalFormat = (node) => {
+
+    }
+    const convertToOriginalFormat = (node) => {
         return {
             id: node.key,
             parentid: node.data.parentid,
@@ -258,11 +258,11 @@ export default function CmnObjTreeL() {
             grammcase: node.data.grammcase,
             valid: node.data.valid
         };
-    };    
+    };
     const openNew = () => {
         setObjTip("CREATE");
         setCmnObjDialog(emptyCmnObj);
-      };       
+    };
     const actionTemplate = (rowData) => {
         const convertToOriginalFormat = (node) => {
             return {
@@ -287,10 +287,11 @@ export default function CmnObjTreeL() {
                         const cmnObjData = convertToOriginalFormat(rowData); // Convert rowData to the desired format
                         setCmnObjlinkLDialog(cmnObjData);
                         setObjTip("UPDATE");
-                    }}                
+                    }}
                 ></Button>
                 <Button type="button" icon="pi pi-pencil" severity="secondary" rounded raised
                     onClick={() => {
+                        console.log(rowData, "*******************rowData***********************")
                         const cmnObjData = convertToOriginalFormat(rowData); // Convert rowData to the desired format
                         setCmnObjDialog(cmnObjData);
                         setObjTip("UPDATE");
@@ -351,9 +352,9 @@ export default function CmnObjTreeL() {
     //const header = <div className="text-xl font-bold">Object tree</div>;
     const footer = (
         <div className="flex justify-content-start">
-            <Button icon="pi pi-refresh" label="Reload" severity="warning" text raised 
-            onClick={handleReload}
-            disabled={refreshing}
+            <Button icon="pi pi-refresh" label="Reload" severity="warning" text raised
+                onClick={handleReload}
+                disabled={refreshing}
             />
         </div>
     );
@@ -426,41 +427,41 @@ export default function CmnObjTreeL() {
                 visible={cmnObjattsLVisible}
                 style={{ width: '70%' }}
                 onHide={() => {
-                setCmnObjattsLVisible(false);
-                setShowMyComponent(false);
+                    setCmnObjattsLVisible(false);
+                    setShowMyComponent(false);
                 }}
             >
                 {showMyComponent && (
-                <CmnObjattsL
-                    parameter={"inputTextValue"}
-                    cmnObj={cmnObj}
-                    handleCmnObjattsLDialogClose={handleCmnObjattsLDialogClose}
-                    setCmnObjattsLVisible={setCmnObjattsLVisible}
-                    dialog={true}
-                    lookUp={false}
-                />
+                    <CmnObjattsL
+                        parameter={"inputTextValue"}
+                        cmnObj={cmnObj}
+                        handleCmnObjattsLDialogClose={handleCmnObjattsLDialogClose}
+                        setCmnObjattsLVisible={setCmnObjattsLVisible}
+                        dialog={true}
+                        lookUp={false}
+                    />
                 )}
-            </Dialog>            
+            </Dialog>
             <Dialog
                 header={translations[selectedLanguage].ObjlinkLista}
                 visible={cmnObjlinkLVisible}
                 style={{ width: '90%' }}
                 onHide={() => {
-                setCmnObjlinkLVisible(false);
-                setShowMyComponent(false);
+                    setCmnObjlinkLVisible(false);
+                    setShowMyComponent(false);
                 }}
             >
                 {showMyComponent && (
-                <CmnObjlinkL
-                    parameter={"inputTextValue"}
-                    cmnObj={cmnObj}
-                    handleCmnObjlinkLDialogClose={handleCmnObjlinkLDialogClose}
-                    setCmnObjlinkLVisible={setCmnObjlinkLVisible}
-                    dialog={true}
-                    lookUp={false}
-                />
+                    <CmnObjlinkL
+                        parameter={"inputTextValue"}
+                        cmnObj={cmnObj}
+                        handleCmnObjlinkLDialogClose={handleCmnObjlinkLDialogClose}
+                        setCmnObjlinkLVisible={setCmnObjlinkLVisible}
+                        dialog={true}
+                        lookUp={false}
+                    />
                 )}
-            </Dialog>            
+            </Dialog>
         </div>
 
     );
