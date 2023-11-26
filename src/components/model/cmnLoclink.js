@@ -17,6 +17,7 @@ import { Calendar } from "primereact/calendar";
 import DateFunction from "../../utilities/DateFunction.js"
 
 const CmnLoclink = (props) => {
+    console.log(props, "********************CmnLoclink********************")
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [cmnLoclink, setCmnLoclink] = useState(props.cmnLoclink);
@@ -24,12 +25,12 @@ const CmnLoclink = (props) => {
     const [cmnLoctpItem, setCmnLoctp1Item] = useState(null);
     const [cmnLoctp1Items, setCmnLoctp1Items] = useState(null);
     const [cmnLoc1Item, setCmnLoc1Item] = useState(null);
-    const [cmnLoc1Items, setCmnLoc1Items] = useState(null);    
+    const [cmnLoc1Items, setCmnLoc1Items] = useState(null);
     const [ddLocTp1Item, setDdLocTp1Item] = useState(null);
     const [ddLocTp1Items, setDdLocTp1Items] = useState(null);
     const [ddLoc1Item, setDdLoc1Item] = useState(null);
     const [ddLoc1Items, setDdLoc1Items] = useState(null);
-    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnLoclink.begda)));
+    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnLoclink.begda || DateFunction.currDate())));
     const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnLoclink.endda || '99991231')))
     const [onoff, setOnoff] = useState(props.cmnLoclink.onoff == 1);
     const [hijerarhija, setHijerarhija] = useState(props.cmnLoclink.hijerarhija == 1);
@@ -110,6 +111,33 @@ const CmnLoclink = (props) => {
         }
     };
 
+    const handleCreateAndAddNewClick = async () => {
+        try {
+            setSubmitted(true);
+            setSubmitted(true);
+            cmnLoclink.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
+            cmnLoclink.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
+
+            const cmnLoclinkService = new CmnLoclinkService();
+            const data = await cmnLoclinkService.postCmnLoclink(cmnLoclink);
+            cmnLoclink.id = data;
+
+            // Očisti cmnLoclink.id i cmnLoclink.loc1
+            const newCmnLoclink = { ...cmnLoclink, id: null, loc1: null };
+            setDdLoc1Item(null)
+
+            props.handleDialogClose({ obj: newCmnLoclink, loclinkTip: props.loclinkTip });
+            // Ne postavljaj setVisible(false) kako bi ostao otvoren za dodavanje novog unosa
+        } catch (err) {
+            toast.current.show({
+                severity: "error",
+                summary: "CmnLoclink ",
+                detail: `${err.response.data.error}`,
+                life: 5000,
+            });
+        }
+    };
+
     const handleSaveClick = async () => {
         try {
 
@@ -159,23 +187,23 @@ const CmnLoclink = (props) => {
             let foundItem = null
             val = (e.target && e.target.value && e.target.value.code) || '';
             switch (name) {
-                case "loctp1":                                       
+                case "loctp1":
                     setDdLocTp1Item(e.value);
                     foundItem = cmnLoctp1Items.find((item) => item.id === val);
                     setCmnLoctp1Item(foundItem || null);
                     cmnLoclink.cloctp1 = foundItem.code
-                    cmnLoclink.nloctp1 = e.value.name                   
+                    cmnLoclink.nloctp1 = e.value.name
                     break;
                 case "loc1":
                     setDdLoc1Item(e.value);
                     foundItem = cmnLoc1Items.find((item) => item.id === val);
-                    setCmnLoc1Item(foundItem || null);                    
+                    setCmnLoc1Item(foundItem || null);
                     cmnLoclink.cloc1 = foundItem.code
                     cmnLoclink.nloc1 = e.value.name
                     break;
                 default:
                     console.error("Pogresan naziv options polja")
-            }     
+            }
         } else if (type === "Calendar") {
             const dateVal = DateFunction.dateGetValue(e.value)
             val = (e.target && e.target.value) || '';
@@ -208,7 +236,7 @@ const CmnLoclink = (props) => {
         }
         let _cmnLoclink = { ...cmnLoclink };
         _cmnLoclink[`${name}`] = val;
-console.log(_cmnLoclink, "--------------------------------------------------------")
+        console.log(_cmnLoclink, "--------------------------------------------------------")
         setCmnLoclink(_cmnLoclink);
     };
 
@@ -294,7 +322,7 @@ console.log(_cmnLoclink, "------------------------------------------------------
                                 value={cmnLoclink.val} onChange={(e) => onInputChange(e, "text", 'val')}
                             />
                         </div>
-                    </div>                    
+                    </div>
                     <div className="flex flex-wrap gap-2">
                         <div className="p-fluid formgrid grid">
                             <div className="field col-12 md:col-7">
@@ -332,13 +360,22 @@ console.log(_cmnLoclink, "------------------------------------------------------
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
                             {(props.loclinkTip === 'CREATE') ? (
-                                <Button
-                                    label={translations[selectedLanguage].Create}
-                                    icon="pi pi-check"
-                                    onClick={handleCreateClick}
-                                    severity="success"
-                                    outlined
-                                />
+                                <>
+                                    <Button
+                                        label={translations[selectedLanguage].Create}
+                                        icon="pi pi-check"
+                                        onClick={handleCreateClick}
+                                        severity="success"
+                                        outlined
+                                    />
+                                    <Button
+                                        label={translations[selectedLanguage].CreateAndAddNew}
+                                        icon="pi pi-plus"
+                                        onClick={handleCreateAndAddNewClick}
+                                        severity="success"
+                                        outlined
+                                    />
+                                </>
                             ) : null}
                             {(props.loclinkTip !== 'CREATE') ? (
                                 <Button

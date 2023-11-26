@@ -94,6 +94,26 @@ const CmnLoc = (props) => {
         }
     };
 
+    const handleCreateAndAddNewClick = async () => {
+        try {
+            setSubmitted(true);
+            const cmnLocService = new CmnLocService();
+            const newCmnLoclink = { ...cmnLoc, id: null };
+            const data = await cmnLocService.postCmnLoc(newCmnLoclink);
+            cmnLoc.id = data;
+            if (cmnLoc.code=="") cmnLoc.code = cmnLoc.id
+            props.handleDialogClose({ obj: cmnLoc, locTip: props.locTip });
+            cmnLoc.code=""
+            //props.setVisible(false);
+        } catch (err) {
+            toast.current.show({
+                severity: 'error',
+                summary: 'CmnLoc ',
+                detail: `${err.response.data.error}`,
+                life: 5000
+            });
+        }
+    };
     const handleSaveClick = async () => {
         try {
             setSubmitted(true);
@@ -229,9 +249,9 @@ const CmnLoc = (props) => {
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-12">
                             <label htmlFor="latlongs">{translations[selectedLanguage].latlongs}</label>
-                            <InputTextarea id="latlongs" value={cmnLoc.latlongs} onChange={(e) => onInputChange(e, 'text', 'latlongs')} rows={5}/>
+                            <InputTextarea id="latlongs" value={cmnLoc.latlongs} onChange={(e) => onInputChange(e, 'text', 'latlongs')} rows={5} />
                         </div>
-                    </div>                    
+                    </div>
 
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-4">
@@ -246,7 +266,7 @@ const CmnLoc = (props) => {
                             <label htmlFor="originfillcolor">{translations[selectedLanguage].originfillcolor}</label>
                             <InputText id="originfillcolor" value={cmnLoc.originfillcolor} onChange={(e) => onInputChange(e, 'text', 'originfillcolor')} />
                         </div>
-                    </div>    
+                    </div>
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-4">
                             <label htmlFor="rownum">{translations[selectedLanguage].rownum}</label>
@@ -256,12 +276,25 @@ const CmnLoc = (props) => {
                             <label htmlFor="seatnum">{translations[selectedLanguage].seatnum}</label>
                             <InputText id="seatnum" value={cmnLoc.seatnum} onChange={(e) => onInputChange(e, 'text', 'seatnum')} />
                         </div>
-                    </div>                                     
+                    </div>
                     <div className="flex flex-wrap gap-1">
                         {props.dialog ? <Button label={translations[selectedLanguage].Cancel} icon="pi pi-times" className="p-button-outlined p-button-secondary" onClick={handleCancelClick} outlined /> : null}
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
-                            {props.locTip === 'CREATE' ? <Button label={translations[selectedLanguage].Create} icon="pi pi-check" onClick={handleCreateClick} severity="success" outlined /> : null}
+                            {props.locTip === 'CREATE' ?
+                                <>
+                                    <Button label={translations[selectedLanguage].Create}
+                                        icon="pi pi-check"
+                                        onClick={handleCreateClick}
+                                        severity="success"
+                                        outlined />
+                                    <Button label={translations[selectedLanguage].CreateAndAddNew}
+                                        icon="pi pi-plus"
+                                        onClick={handleCreateAndAddNewClick}
+                                        severity="success"
+                                        outlined />
+                                </>
+                                : null}
                             {props.locTip !== 'CREATE' ? <Button label={translations[selectedLanguage].Delete} icon="pi pi-trash" onClick={showDeleteDialog} className="p-button-outlined p-button-danger" outlined /> : null}
                             {props.locTip !== 'CREATE' ? <Button label={translations[selectedLanguage].Save} icon="pi pi-check" onClick={handleSaveClick} severity="success" outlined /> : null}
                         </div>

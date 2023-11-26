@@ -462,6 +462,10 @@ export const translations = {
         Toggle: "Затвор/Отвори",
         PaymenttpList: "Тип плаћања Листа",
         Paymenttp: "Тип плаћања",
+        code: "Шифра",
+        text: "Назив",
+        ntp: "Тип",
+        CreateAndAddNew: "Креирај и додај",
     }
   };
   
