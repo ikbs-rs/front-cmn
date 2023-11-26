@@ -523,7 +523,9 @@ const EmptyEntities =
   "cmn_terrloc": {
     "id": null,
     "terr": null,
-    "loc": null
+    "loc": null,
+    "begda": "",
+    "endda": ""
   },
   "cmn_terrtp": {
     "id": null,

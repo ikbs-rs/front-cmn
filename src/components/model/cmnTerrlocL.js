@@ -273,14 +273,14 @@ export default function CmnTerrlocL(props) {
           style={{ minWidth: '4rem' }}
         />
         <Column
-          field="cart"
+          field="cterr"
           header={translations[selectedLanguage].Code}
           sortable
           filter
           style={{ width: "20%" }}
         ></Column>
         <Column
-          field="nart"
+          field="nterr"
           header={translations[selectedLanguage].Text}
           sortable
           filter

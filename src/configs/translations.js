@@ -466,6 +466,8 @@ export const translations = {
         text: "Назив",
         ntp: "Тип",
         CreateAndAddNew: "Креирај и додај",
+        terr: "Територија",
+        LocterrList: "Територије локације Листа",
     }
   };
   

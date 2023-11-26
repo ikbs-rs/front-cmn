@@ -15,6 +15,7 @@ import './index.css';
 import { translations } from "../../configs/translations";
 import DateFunction from "../../utilities/DateFunction";
 import CmnLocartL from "./cmnLocartL"
+import CmnTerrlocL from "./cmnTerrlocL"
 import CmnLoclinkL from "./cmnLoclinkL"
 
 
@@ -34,6 +35,9 @@ export default function CmnLocL(props) {
   const [locTip, setLocTip] = useState('');
   const [cmnLocartLVisible, setCmnLocartLVisible] = useState(false);
   const [cmnLoclinkLVisible, setCmnLoclinkLVisible] = useState(false);
+
+  const [cmnTerrlocLVisible, setCmnTerrlocLVisible] = useState(false);
+
   let i = 0
   const handleCancelClick = () => {
     props.setCmnLocLVisible(false);
@@ -97,6 +101,10 @@ export default function CmnLocL(props) {
     const localObj = { newObj };
   }; 
 
+  const handleCmnTerrlocLDialogClose = (newObj) => {
+    const localObj = { newObj };
+  };
+
   const handleCmnLoclinkLDialogClose = (newObj) => {
     const localObj = { newObj };
   };
@@ -107,6 +115,10 @@ export default function CmnLocL(props) {
 
   const openLocart = () => {
     setCmnLocartDialog();
+  };
+
+  const openTerrloc = () => {
+    setCmnTerrlocDialog();
   };
 
   const openLocLink = () => {
@@ -174,7 +186,14 @@ export default function CmnLocL(props) {
     setShowMyComponent(true);
     setCmnLocartLVisible(true);
 
-  }   
+  }  
+
+  const setCmnTerrlocDialog = () => {
+    setShowMyComponent(true);
+    setCmnTerrlocLVisible(true);
+
+  } 
+
   const setCmnLoclinkLDialog = () => {
     setShowMyComponent(true);
     setCmnLoclinkLVisible(true);
@@ -196,7 +215,7 @@ export default function CmnLocL(props) {
           <Button label={translations[selectedLanguage].art} icon="pi pi-shield" onClick={openLocart} text raised disabled={!cmnLoc} />
         </div>     
         <div className="flex flex-wrap gap-1">
-          <Button label={translations[selectedLanguage].Terr} icon="pi pi-building" onClick={openLocart} text raised disabled={!cmnLoc} />
+          <Button label={translations[selectedLanguage].Terr} icon="pi pi-building" onClick={openTerrloc} text raised disabled={!cmnLoc} />
         </div>            
         <div className="flex-grow-1"></div>
         <b>{translations[selectedLanguage].LocationList}</b>
@@ -421,7 +440,27 @@ export default function CmnLocL(props) {
             lookUp={false}
           />
         )}
-      </Dialog>        
+      </Dialog>    
+      <Dialog
+        header={translations[selectedLanguage].LocterrList}
+        visible={cmnTerrlocLVisible}
+        style={{ width: '90%' }}
+        onHide={() => {
+          setCmnLocartLVisible(false);
+          setShowMyComponent(false);
+        }}
+      >
+        {showMyComponent && (
+          <CmnTerrlocL
+            parameter={"inputTextValue"}
+            cmnLoc={cmnLoc}
+            handleCmnTerrlocLDialogClose={handleCmnTerrlocLDialogClose}
+            setCmnTerrlocLVisible={setCmnTerrlocLVisible}
+            dialog={true}
+            lookUp={false}
+          />
+        )}
+      </Dialog>           
     </div>
   );
 }

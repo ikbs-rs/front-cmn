@@ -6,7 +6,7 @@ export class CmnTerrlocService {
 
     async getLocterrLista(objId) {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.TIC_BACK_URL}/cmn/terrloc/_v/lista/?stm=cmn_locterr_v&objid=${objId}&sl=${selectedLanguage}`;
+        const url = `${env.CMN_BACK_URL}/cmn/terrloc/_v/lista/?stm=cmn_locterr_v&objid=${objId}&sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
           Authorization: tokenLocal.token
@@ -23,7 +23,7 @@ export class CmnTerrlocService {
 
     async getCmnTerrlocs() {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.TIC_BACK_URL}/cmn/terrloc/?sl=${selectedLanguage}`;
+        const url = `${env.CMN_BACK_URL}/cmn/terrloc/?sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
             Authorization: tokenLocal.token
@@ -40,7 +40,7 @@ export class CmnTerrlocService {
 
     async getCmnTerrloc(objId) {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.TIC_BACK_URL}/cmn/terrloc/${objId}/?sl=${selectedLanguage}`;
+        const url = `${env.CMN_BACK_URL}/cmn/terrloc/${objId}/?sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
             Authorization: tokenLocal.token
@@ -65,7 +65,7 @@ export class CmnTerrlocService {
                     "Items must be filled!"
                 );
             }
-            const url = `${env.TIC_BACK_URL}/cmn/terrloc/?sl=${selectedLanguage}`;
+            const url = `${env.CMN_BACK_URL}/cmn/terrloc/?sl=${selectedLanguage}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ console.log("*-*-*jsonObj-*-*", url, newObj, jsonObj)
                     "Items must be filled!"
                 );
             }
-            const url = `${env.TIC_BACK_URL}/cmn/terrloc/?sl=${selectedLanguage}`;
+            const url = `${env.CMN_BACK_URL}/cmn/terrloc/?sl=${selectedLanguage}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ console.log("*-*-*jsonObj-*-*", url, newObj, jsonObj)
 
     async deleteCmnTerrloc(newObj) {
         try {
-            const url = `${env.TIC_BACK_URL}/cmn/terrloc/${newObj.id}`;
+            const url = `${env.CMN_BACK_URL}/cmn/terrloc/${newObj.id}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Authorization': tokenLocal.token
@@ -124,7 +124,7 @@ console.log("*-*-*jsonObj-*-*", url, newObj, jsonObj)
 
     async getTicArt() {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.TIC_BACK_URL}/tic/x/art/?sl=${selectedLanguage}`;
+        const url = `${env.CMN_BACK_URL}/tic/x/art/?sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
             Authorization: tokenLocal.token
@@ -148,7 +148,7 @@ console.log("*-*-*jsonObj-*-*", url, newObj, jsonObj)
                     "Items must be filled!"
                 );
             }
-            const url = `${env.TIC_BACK_URL}/tic/art/?sl=${selectedLanguage}`;
+            const url = `${env.CMN_BACK_URL}/tic/art/?sl=${selectedLanguage}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Content-Type': 'application/json',
@@ -168,7 +168,7 @@ console.log("*-*-*jsonObj-*-*", url, newObj, jsonObj)
 
     async deleteTicArt(newObj) {
         try {
-            const url = `${env.TIC_BACK_URL}/tic/art/${newObj.id}`;
+            const url = `${env.CMN_BACK_URL}/tic/art/${newObj.id}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Authorization': tokenLocal.token

@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { classNames } from 'primereact/utils';
-//import { CmnLocartService } from "../../service/model/CmnLocartService";
-import { CmnArtlocService } from "../../service/model/CmnArtlocService";
+//import { CmnTerrlocService } from "../../service/model/CmnTerrlocService";
+import { CmnTerrlocService } from "../../service/model/CmnTerrlocService";
+import { CmnTerrService } from "../../service/model/CmnTerrService";
 import './index.css';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -12,18 +13,18 @@ import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from "primereact/calendar";
 import DateFunction from "../../utilities/DateFunction"
 
-const CmnLocart = (props) => {
+const CmnTerrloc = (props) => {
     console.log("Props", props)
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
-    const [cmnLocart, setCmnLocart] = useState(props.cmnLocart);
+    const [cmnTerrloc, setCmnTerrloc] = useState(props.cmnTerrloc);
     const [submitted, setSubmitted] = useState(false);
-    const [ddCmnLocartItem, setDdCmnLocartItem] = useState(null);
-    const [ddCmnLocartItems, setDdCmnLocartItems] = useState(null);
-    const [cmnLocartItem, setCmnLocartItem] = useState(null);
-    const [cmnLocartItems, setCmnLocartItems] = useState(null);
-    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnLocart.begda || DateFunction.currDate())));
-    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnLocart.endda || DateFunction.currDate())))
+    const [ddCmnTerrlocItem, setDdCmnTerrlocItem] = useState(null);
+    const [ddCmnTerrlocItems, setDdCmnTerrlocItems] = useState(null);
+    const [cmnTerrlocItem, setCmnTerrlocItem] = useState(null);
+    const [cmnTerrlocItems, setCmnTerrlocItems] = useState(null);
+    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnTerrloc.begda || DateFunction.currDate())));
+    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnTerrloc.endda || '99991231')))
 
     const calendarRef = useRef(null);
 
@@ -32,20 +33,20 @@ const CmnLocart = (props) => {
     useEffect(() => {
         async function fetchData() {
             try {
-                const cmnArtlocService = new CmnArtlocService();
-                const data = await cmnArtlocService.getTicArt();
+                const cmnTerrService = new CmnTerrService();
+                const data = await cmnTerrService.getCmnTerrs();
 
-                setCmnLocartItems(data)
-                //console.log("******************", cmnLocartItem)
+                setCmnTerrlocItems(data)
+                //console.log("******************", cmnTerrlocItem)
 
                 const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
-                setDdCmnLocartItems(dataDD);
-                setDdCmnLocartItem(dataDD.find((item) => item.code === props.cmnLocart.art) || null);
-                if (props.cmnLocart.art) {
-                    const foundItem = data.find((item) => item.id === props.cmnLocart.art);
-                    setCmnLocartItem(foundItem || null);
-                    cmnLocart.cart = foundItem.code
-                    cmnLocart.nart = foundItem.textx
+                setDdCmnTerrlocItems(dataDD);
+                setDdCmnTerrlocItem(dataDD.find((item) => item.code === props.cmnTerrloc.terr) || null);
+                if (props.cmnTerrloc.terr) {
+                    const foundItem = data.find((item) => item.id === props.cmnTerrloc.terr);
+                    setCmnTerrlocItem(foundItem || null);
+                    cmnTerrloc.cterr = foundItem.code
+                    cmnTerrloc.nterr = foundItem.textx
                 }
 
             } catch (error) {
@@ -64,17 +65,17 @@ const CmnLocart = (props) => {
     const handleCreateClick = async () => {
         try {
             setSubmitted(true);
-            cmnLocart.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
-            cmnLocart.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
-            const cmnLocartService = new CmnArtlocService();
-            const data = await cmnLocartService.postCmnArtloc(cmnLocart);
-            cmnLocart.id = data
-            props.handleDialogClose({ obj: cmnLocart, locartTip: props.locartTip });
+            cmnTerrloc.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
+            cmnTerrloc.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
+            const cmnTerrlocService = new CmnTerrlocService();
+            const data = await cmnTerrlocService.postCmnTerrloc(cmnTerrloc);
+            cmnTerrloc.id = data
+            props.handleDialogClose({ obj: cmnTerrloc, terrlocTip: props.terrlocTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "CmnLocart ",
+                summary: "CmnTerrloc ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -84,17 +85,17 @@ const CmnLocart = (props) => {
     const handleSaveClick = async () => {
         try {
             setSubmitted(true);
-            cmnLocart.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
-            cmnLocart.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));            
-            const cmnLocartService = new CmnArtlocService();
+            cmnTerrloc.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
+            cmnTerrloc.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));            
+            const cmnTerrlocService = new CmnTerrlocService();
 
-            await cmnLocartService.putCmnArtloc(cmnLocart);
-            props.handleDialogClose({ obj: cmnLocart, locartTip: props.locartTip });
+            await cmnTerrlocService.putCmnTerrloc(cmnTerrloc);
+            props.handleDialogClose({ obj: cmnTerrloc, terrlocTip: props.terrlocTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "CmnLocart ",
+                summary: "CmnTerrloc ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -108,15 +109,15 @@ const CmnLocart = (props) => {
     const handleDeleteClick = async () => {
         try {
             setSubmitted(true);
-            const cmnLocartService = new CmnArtlocService();
-            await cmnLocartService.deleteCmnArtloc(cmnLocart);
-            props.handleDialogClose({ obj: cmnLocart, locartTip: 'DELETE' });
+            const cmnTerrlocService = new CmnTerrlocService();
+            await cmnTerrlocService.deleteCmnTerrloc(cmnTerrloc);
+            props.handleDialogClose({ obj: cmnTerrloc, terrlocTip: 'DELETE' });
             props.setVisible(false);
             hideDeleteDialog();
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "CmnLocart ",
+                summary: "CmnTerrloc ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -128,11 +129,11 @@ const CmnLocart = (props) => {
 
         if (type === "options") {
             val = (e.target && e.target.value && e.target.value.code) || '';
-            setDdCmnLocartItem(e.value);
-            const foundItem = cmnLocartItems.find((item) => item.id === val);
-            setCmnLocartItem(foundItem || null);
-            cmnLocart.nart = e.value.name
-            cmnLocart.cart = foundItem.code
+            setDdCmnTerrlocItem(e.value);
+            const foundItem = cmnTerrlocItems.find((item) => item.id === val);
+            setCmnTerrlocItem(foundItem || null);
+            cmnTerrloc.nterr = e.value.name
+            cmnTerrloc.cterr = foundItem.code
         } else if (type === "Calendar") {
             const dateVal = DateFunction.dateGetValue(e.value)
             console.log(dateVal, "***********************************")
@@ -140,11 +141,11 @@ const CmnLocart = (props) => {
             switch (name) {
                 case "begda":
                     setBegda(e.value)
-                    //cmnLocart.begda = DateFunction.formatDateToDBFormat(dateVal)
+                    //cmnTerrloc.begda = DateFunction.formatDateToDBFormat(dateVal)
                     break;
                 case "endda":
                     setEndda(e.value)
-                    //cmnLocart.endda = DateFunction.formatDateToDBFormat(dateVal)
+                    //cmnTerrloc.endda = DateFunction.formatDateToDBFormat(dateVal)
                     break;
                 default:
                     console.error("Pogresan naziv polja")
@@ -152,11 +153,11 @@ const CmnLocart = (props) => {
         } else {
             val = (e.target && e.target.value) || '';
         }
-        console.log(cmnLocart, "*****************cmnLocart******************")
-        let _cmnLocart = { ...cmnLocart };
-        _cmnLocart[`${name}`] = val;
-        console.log(cmnLocart, "*****************_cmnLocart******************")
-        setCmnLocart(_cmnLocart);
+        console.log(cmnTerrloc, "*****************cmnTerrloc******************")
+        let _cmnTerrloc = { ...cmnTerrloc };
+        _cmnTerrloc[`${name}`] = val;
+        console.log(cmnTerrloc, "*****************_cmnTerrloc******************")
+        setCmnTerrloc(_cmnTerrloc);
     };
 
     const hideDeleteDialog = () => {
@@ -191,17 +192,17 @@ const CmnLocart = (props) => {
                 <div className="card">
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-7">
-                            <label htmlFor="art">{translations[selectedLanguage].art} *</label>
-                            <Dropdown id="art"
-                                value={ddCmnLocartItem}
-                                options={ddCmnLocartItems}
-                                onChange={(e) => onInputChange(e, "options", 'art')}
+                            <label htmlFor="terr">{translations[selectedLanguage].terr} *</label>
+                            <Dropdown id="terr"
+                                value={ddCmnTerrlocItem}
+                                options={ddCmnTerrlocItems}
+                                onChange={(e) => onInputChange(e, "options", 'terr')}
                                 required
                                 optionLabel="name"
                                 placeholder="Select One"
-                                className={classNames({ 'p-invalid': submitted && !cmnLocart.art })}
+                                className={classNames({ 'p-invalid': submitted && !cmnTerrloc.terr })}
                             />
-                            {submitted && !cmnLocart.art && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnTerrloc.terr && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
                     </div>
 
@@ -240,7 +241,7 @@ const CmnLocart = (props) => {
                         ) : null}
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
-                            {(props.locartTip === 'CREATE') ? (
+                            {(props.terrlocTip === 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Create}
                                     icon="pi pi-check"
@@ -249,7 +250,7 @@ const CmnLocart = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.locartTip !== 'CREATE') ? (
+                            {(props.terrlocTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Delete}
                                     icon="pi pi-trash"
@@ -258,7 +259,7 @@ const CmnLocart = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.locartTip !== 'CREATE') ? (
+                            {(props.terrlocTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Save}
                                     icon="pi pi-check"
@@ -273,8 +274,8 @@ const CmnLocart = (props) => {
             </div>
             <DeleteDialog
                 visible={deleteDialogVisible}
-                inCmnLocart="delete"
-                item={cmnLocart.roll}
+                inCmnTerrloc="delete"
+                item={cmnTerrloc.roll}
                 onHide={hideDeleteDialog}
                 onDelete={handleDeleteClick}
             />
@@ -282,4 +283,4 @@ const CmnLocart = (props) => {
     );
 };
 
-export default CmnLocart;
+export default CmnTerrloc;
