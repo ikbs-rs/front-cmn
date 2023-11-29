@@ -82,7 +82,9 @@ const EmptyEntities =
     "text": "",
     "longtext": "",
     "tp": null,
-    "valid": "1"
+    "valid": "1",
+    "color": "",
+    "icon": ""
   },
   "cmn_locatt": {
     "id": null,
@@ -210,7 +212,9 @@ const EmptyEntities =
     "code": "",
     "text": "",
     "tp": null,
-    "valid": "1"
+    "valid": "1",
+    "color": "",
+    "icon": ""
   },
   "cmn_objatt": {
     "id": null,

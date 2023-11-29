@@ -75,6 +75,7 @@ export class CmnLocService {
 
   async postCmnLoc(newObj) {
     try {
+      console.log(newObj, "***************postCmnLoc***************")
       const selectedLanguage = localStorage.getItem('sl') || 'en'
       if (newObj.text.trim() === '' || newObj.valid === null) {
         throw new Error(
@@ -88,9 +89,8 @@ export class CmnLocService {
         'Authorization': tokenLocal.token
       };
       const jsonObj = JSON.stringify(newObj)
-
+      console.log(newObj, "**************"  , jsonObj, "****************")
       const response = await axios.post(url, jsonObj, { headers });
-      //console.log("**************"  , response, "****************")
       return response.data.items;
     } catch (error) {
       console.error(error);
@@ -114,6 +114,7 @@ export class CmnLocService {
         'Authorization': tokenLocal.token
       };
       const jsonObj = JSON.stringify(newObj)
+      console.log(newObj, "**************"  , jsonObj, "****************")
       const response = await axios.put(url, jsonObj, { headers });
       //console.log("**************"  , response, "****************")
       return response.data.items;
