@@ -444,7 +444,7 @@ export const translations = {
         graftp: "Graftp",
         latlongs: "Latlongs",
         radius: "Radius",
-        color: "Color",
+        color: "Боја",
         fillcolor: "Fillcolor",
         originfillcolor: "Originfillcolor",
         rownum: "Rownum",
@@ -468,6 +468,7 @@ export const translations = {
         CreateAndAddNew: "Креирај и додај",
         terr: "Територија",
         LocterrList: "Територије локације Листа",
+        icon: "Икона",
     }
   };
   

@@ -11,6 +11,7 @@ import { translations } from "../../configs/translations";
 import env from "../../configs/env"
 import axios from 'axios';
 import Token from "../../utilities/Token";
+import { ColorPicker } from 'primereact/colorpicker';
 
 const CmnObj = (props) => {
 
@@ -47,7 +48,7 @@ const CmnObj = (props) => {
                 const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
                 setDdTpItems(dataDD);
                 setDdTpItem(dataDD.find((item) => item.code === props.cmnObj.tp) || null);
-                
+
             } catch (error) {
                 console.error(error);
                 // Obrada greške ako je potrebna
@@ -203,6 +204,14 @@ const CmnObj = (props) => {
                                 className={classNames({ 'p-invalid': submitted && !cmnObj.valid })}
                             />
                             {submitted && !cmnObj.valid && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>
+
+                        <div className="field col-12 md:col-1">
+                            <div className="flex-2 flex flex-column align-items-left">
+                                <label htmlFor="color">{translations[selectedLanguage].color}</label>
+                                <ColorPicker format="hex" id="color" value={cmnObj.color} onChange={(e) => onInputChange(e, 'text', 'color')}  />
+                            </div>
+
                         </div>
                     </div>
 

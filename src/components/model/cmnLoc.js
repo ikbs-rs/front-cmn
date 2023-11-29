@@ -12,6 +12,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { InputTextarea } from "primereact/inputtextarea";
 import { Calendar } from 'primereact/calendar';
 import DateFunction from '../../utilities/DateFunction';
+import { ColorPicker } from 'primereact/colorpicker';
 
 const CmnLoc = (props) => {
     const selectedLanguage = localStorage.getItem('sl') || 'en';
@@ -101,9 +102,9 @@ const CmnLoc = (props) => {
             const newCmnLoclink = { ...cmnLoc, id: null };
             const data = await cmnLocService.postCmnLoc(newCmnLoclink);
             cmnLoc.id = data;
-            if (cmnLoc.code=="") cmnLoc.code = cmnLoc.id
+            if (cmnLoc.code == "") cmnLoc.code = cmnLoc.id
             props.handleDialogClose({ obj: cmnLoc, locTip: props.locTip });
-            cmnLoc.code=""
+            cmnLoc.code = ""
             //props.setVisible(false);
         } catch (err) {
             toast.current.show({
@@ -173,6 +174,7 @@ const CmnLoc = (props) => {
         }
         let _cmnLoc = { ...cmnLoc };
         _cmnLoc[`${name}`] = val;
+        console.log(e, "******************************onInputChange**********************************", _cmnLoc)
         setCmnLoc(_cmnLoc);
     };
 
@@ -255,10 +257,6 @@ const CmnLoc = (props) => {
 
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-4">
-                            <label htmlFor="color">{translations[selectedLanguage].color}</label>
-                            <InputText id="color" value={cmnLoc.color} onChange={(e) => onInputChange(e, 'text', 'color')} />
-                        </div>
-                        <div className="field col-12 md:col-4">
                             <label htmlFor="fillcolor">{translations[selectedLanguage].fillcolor}</label>
                             <InputText id="fillcolor" value={cmnLoc.fillcolor} onChange={(e) => onInputChange(e, 'text', 'fillcolor')} />
                         </div>
@@ -266,6 +264,13 @@ const CmnLoc = (props) => {
                             <label htmlFor="originfillcolor">{translations[selectedLanguage].originfillcolor}</label>
                             <InputText id="originfillcolor" value={cmnLoc.originfillcolor} onChange={(e) => onInputChange(e, 'text', 'originfillcolor')} />
                         </div>
+                        <div className="field col-12 md:col-1">
+                            <div className="flex-1 flex flex-column align-items-left">
+                                <label htmlFor="color">{translations[selectedLanguage].color}</label>
+                                <ColorPicker format="hex" id="color" value={cmnLoc.color} onChange={(e) => onInputChange(e, 'text', 'color')} className="mb-3" />
+                            </div>
+
+                        </div>                        
                     </div>
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-4">
@@ -275,6 +280,10 @@ const CmnLoc = (props) => {
                         <div className="field col-12 md:col-4">
                             <label htmlFor="seatnum">{translations[selectedLanguage].seatnum}</label>
                             <InputText id="seatnum" value={cmnLoc.seatnum} onChange={(e) => onInputChange(e, 'text', 'seatnum')} />
+                        </div>
+                        <div className="field col-12 md:col-4">
+                            <label htmlFor="icon">{translations[selectedLanguage].icon}</label>
+                            <InputText id="icon" value={cmnLoc.icon} onChange={(e) => onInputChange(e, 'text', 'icon')} />
                         </div>
                     </div>
                     <div className="flex flex-wrap gap-1">
