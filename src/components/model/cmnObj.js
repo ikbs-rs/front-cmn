@@ -14,7 +14,7 @@ import Token from "../../utilities/Token";
 import { ColorPicker } from 'primereact/colorpicker';
 
 const CmnObj = (props) => {
-
+console.log(props, "*props*************************************************CmnObj*************************************************************")
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [dropdownItem, setDropdownItem] = useState(null);
@@ -37,6 +37,7 @@ const CmnObj = (props) => {
     useEffect(() => {
         async function fetchData() {
             try {
+                const objtpID = props.cmnObj.tp == null ? props.cmnObjtpId : props.cmnObj.tp
                 const url = `${env.CMN_BACK_URL}/cmn/x/objtp/?sl=${selectedLanguage}`;
                 const tokenLocal = await Token.getTokensLS();
                 const headers = {
@@ -47,7 +48,7 @@ const CmnObj = (props) => {
                 const data = response.data.items;
                 const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
                 setDdTpItems(dataDD);
-                setDdTpItem(dataDD.find((item) => item.code === props.cmnObj.tp) || null);
+                setDdTpItem(dataDD.find((item) => item.code === objtpID) || null);
 
             } catch (error) {
                 console.error(error);

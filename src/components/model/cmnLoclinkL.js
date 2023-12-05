@@ -17,12 +17,13 @@ import DateFunction from "../../utilities/DateFunction";
 
 
 export default function CmnLoclinkL(props) {
-
+  console.log(props, "*********props*********************CmnLoclinkL***********************************")
   const objName = "cmn_loclink"
   const selectedLanguage = localStorage.getItem('sl') || 'en'
   const emptyCmnLoclink = EmptyEntities[objName]
   emptyCmnLoclink.loc2 = props.cmnLoc.id
   emptyCmnLoclink.loctp2 = props.cmnLoc.tp
+  emptyCmnLoclink.loctp1 = props.cmnLoctpId
   const [showMyComponent, setShowMyComponent] = useState(true);
   const [cmnLoclinks, setCmnLoclinks] = useState([]);
   const [cmnLoclink, setCmnLoclink] = useState(emptyCmnLoclink);
@@ -42,8 +43,10 @@ export default function CmnLoclinkL(props) {
       try {
         ++i
         if (i < 2) {
+          const loctpCode = props.loctpCode ? props.loctpCode : props.cmnLoc.loctpCode
           const cmnLoclinkService = new CmnLoclinkService();
-          const data = await cmnLoclinkService.getLista(props.cmnLoc.id);
+          console.log(props.loctpCode, "/////////////////////////////////////////////////////////////getListaLL////////////////////////////////////////////////////////////////////////")
+          const data = await cmnLoclinkService.getListaLL(props.cmnLoc.id, loctpCode);
           setCmnLoclinks(data);
           initFilters();
         }
@@ -145,8 +148,9 @@ export default function CmnLoclinkL(props) {
     return (
       <div className="flex card-container">
         <div className="flex flex-wrap gap-1" />
-        <Button label={translations[selectedLanguage].Cancel} icon="pi pi-times" onClick={handleCancelClick} text raised
-        />
+        {props.dialog && (
+          <Button label={translations[selectedLanguage].Cancel} icon="pi pi-times" onClick={handleCancelClick} text raised />
+        )}
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
@@ -263,27 +267,29 @@ export default function CmnLoclinkL(props) {
   return (
     <div className="card">
       <Toast ref={toast} />
-      <div className="col-12">
-        <div className="card">
-          <div className="p-fluid formgrid grid">
-            <div className="field col-12 md:col-6">
-              <label htmlFor="code">{translations[selectedLanguage].Code}</label>
-              <InputText id="code"
-                value={props.cmnLoc.code}
-                disabled={true}
-              />
-            </div>
-            <div className="field col-12 md:col-6">
-              <label htmlFor="text">{translations[selectedLanguage].Text}</label>
-              <InputText
-                id="text"
-                value={props.cmnLoc.textx}
-                disabled={true}
-              />
+      {!props.TabView && (
+        <div className="col-12">
+          <div className="card">
+            <div className="p-fluid formgrid grid">
+              <div className="field col-12 md:col-6">
+                <label htmlFor="code">{translations[selectedLanguage].Code}</label>
+                <InputText id="code"
+                  value={props.cmnLoc.code}
+                  disabled={true}
+                />
+              </div>
+              <div className="field col-12 md:col-6">
+                <label htmlFor="text">{translations[selectedLanguage].Text}</label>
+                <InputText
+                  id="text"
+                  value={props.cmnLoc.textx}
+                  disabled={true}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
       <DataTable
         dataKey="id"
         selectionMode="single"
@@ -396,6 +402,8 @@ export default function CmnLoclinkL(props) {
             setVisible={setVisible}
             dialog={true}
             loclinkTip={loclinkTip}
+            cmnLoctpId={props.cmnLoctpId}
+            loctpCode={props.loctpCode}
           />
         )}
         <div className="p-dialog-header-icons" style={{ display: 'none' }}>

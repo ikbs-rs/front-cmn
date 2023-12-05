@@ -26,7 +26,7 @@ const CmnLoclink = (props) => {
     const [cmnLoctp1Items, setCmnLoctp1Items] = useState(null);
     const [cmnLoc1Item, setCmnLoc1Item] = useState(null);
     const [cmnLoc1Items, setCmnLoc1Items] = useState(null);
-    const [ddLocTp1Item, setDdLocTp1Item] = useState(null);
+    const [ddLocTp1Item, setDdLocTp1Item] = useState(props.cmnLoctpId);
     const [ddLocTp1Items, setDdLocTp1Items] = useState(null);
     const [ddLoc1Item, setDdLoc1Item] = useState(null);
     const [ddLoc1Items, setDdLoc1Items] = useState(null);
@@ -49,10 +49,16 @@ const CmnLoclink = (props) => {
 
                 const response = await axios.get(url, { headers });
                 const data = response.data.items;
+
+                const loctpID = props.cmnLoclink.loctp1 == null ? props.cmnLoctpId : props.cmnLoclink.loctp1
                 setCmnLoctp1Items(data);
+                const _cmnLoctp1 = data.find((item) => item.id === loctpID) || null
+                console.log(_cmnLoctp1,"####################################################################################", data)
+                setCmnLoctp1Item(_cmnLoctp1);
+
                 const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
                 setDdLocTp1Items(dataDD);
-                setDdLocTp1Item(dataDD.find((item) => item.code === props.cmnLoclink.loctp1) || null);
+                setDdLocTp1Item(dataDD.find((item) => item.code === loctpID) || null);
             } catch (error) {
                 console.error(error);
                 // Obrada greške ako je potrebna
@@ -64,7 +70,8 @@ const CmnLoclink = (props) => {
     useEffect(() => {
         async function fetchData() {
             try {
-                const tp = cmnLoclink.loctp1 || -1
+                //const tp = cmnLoclink.loctp1 || -1
+                const tp = cmnLoclink.loctp1 == null ? props.cmnLoctpId : cmnLoclink.loctp1
                 const url = `${env.CMN_BACK_URL}/cmn/x/loc/getall/tp/${tp}/?sl=${selectedLanguage}`;
                 const tokenLocal = await Token.getTokensLS();
                 const headers = {
@@ -82,7 +89,7 @@ const CmnLoclink = (props) => {
             }
         }
         fetchData();
-    }, [cmnLoclink.loctp1]);
+    }, [cmnLoclink.loctp1, props.cmnLoctpId]);
     // Autocomplit>
 
     const handleCancelClick = () => {
@@ -200,6 +207,9 @@ const CmnLoclink = (props) => {
                     setCmnLoc1Item(foundItem || null);
                     cmnLoclink.cloc1 = foundItem.code
                     cmnLoclink.nloc1 = e.value.name
+                    cmnLoclink.cloctp1 = cmnLoclink.cloctp1||props.loctpCode
+                    cmnLoclink.nloctp1 = cmnLoclink.nloctp1||cmnLoctpItem.text
+                    
                     break;
                 default:
                     console.error("Pogresan naziv options polja")

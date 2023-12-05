@@ -21,6 +21,24 @@ export class CmnLocService {
     }
   }
 
+  async getListaLL(objId) {
+    const selectedLanguage = localStorage.getItem('sl') || 'en'
+    const url = `${env.CMN_BACK_URL}/cmn/x/loc/_v/lista/?stm=cmn_locll_v&objid=${objId}&sl=${selectedLanguage}`;
+    const tokenLocal = await Token.getTokensLS();
+    const headers = {
+      Authorization: tokenLocal.token
+    };
+
+    try {
+      const response = await axios.get(url, { headers });
+      console.log(url, "*****************getListaLL******************", response.data)
+      return response.data.item;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
   async getObjTree() {
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const url = `${env.CMN_BACK_URL}/cmn/x/loc/_v/lista/?stm=cmn_loctree_json_v&sl=${selectedLanguage}`;
@@ -65,7 +83,7 @@ export class CmnLocService {
 
     try {
       const response = await axios.get(url, { headers });
-      return response.data.items;
+      return response.data.items||response.data.item;
     } catch (error) {
       console.error(error);
       throw error;

@@ -21,6 +21,24 @@ export class CmnLoclinkService {
         }
     }
 
+    async getListaLL(objId, locCode) {
+        const selectedLanguage = localStorage.getItem('sl') || 'en'
+        const url = `${env.CMN_BACK_URL}/cmn/loclink/_v/fkey/?stm=cmn_loclinkll_v&item=${locCode}&id=${objId}&sl=${selectedLanguage}`;
+        const tokenLocal = await Token.getTokensLS();
+        const headers = {
+            Authorization: tokenLocal.token
+        };
+
+        try {
+            const response = await axios.get(url, { headers });
+            console.log(url, "******************************getListaLL*********************************", response.data.item)
+            return response.data.item;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
     async getCmnLoclinks() {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
         const url = `${env.CMN_BACK_URL}/cmn/loclink/?sl=${selectedLanguage}`;

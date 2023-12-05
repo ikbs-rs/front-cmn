@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useParams } from 'react-router-dom';
 import { classNames } from "primereact/utils";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -8,6 +9,7 @@ import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
 import { CmnLocService } from "../../service/model/CmnLocService";
+import { CmnLoctpService } from "../../service/model/CmnLoctpService";
 import CmnLoc from './cmnLoc';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
@@ -20,13 +22,17 @@ import CmnLoclinkL from "./cmnLoclinkL"
 
 
 export default function CmnLocL(props) {
-
+  const { loctpId: propsLocTpId } = props;
+  const { loctpId: routeLocTpId } = useParams();
+  const loctpCode = propsLocTpId || routeLocTpId;
+  const LOCATION_CODE = "-1"
   const objName = "cmn_loc"
   const selectedLanguage = localStorage.getItem('sl') || 'en'
   const emptyCmnLoc = EmptyEntities[objName]
   const [showMyComponent, setShowMyComponent] = useState(true);
   const [cmnLocs, setCmnLocs] = useState([]);
   const [cmnLoc, setCmnLoc] = useState(emptyCmnLoc);
+  const [cmnLoctpId, setCmnLoctpId] = useState(null);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
@@ -49,11 +55,26 @@ export default function CmnLocL(props) {
         ++i
         if (i < 2) {
           const cmnLocService = new CmnLocService();
-          const data = await cmnLocService.getLista();
+          const data = await cmnLocService.getListaLL(loctpCode);
           setCmnLocs(data);
 
           initFilters();
         }
+      } catch (error) {
+        console.error(error);
+        // Obrada greške ako je potrebna
+      }
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+          const cmnLoctpService = new CmnLoctpService();
+          const data = await cmnLoctpService.getIdByItem (loctpCode);
+          console.log(data, "**********CmnLoctpService************")
+          setCmnLoctpId(data.id);
       } catch (error) {
         console.error(error);
         // Obrada greške ako je potrebna
@@ -275,9 +296,11 @@ export default function CmnLocL(props) {
 
   // <--- Dialog
   const setCmnLocDialog = (cmnLoc) => {
+    setShowMyComponent(true)
     setVisible(true)
     setLocTip("CREATE")
-    setCmnLoc({ ...cmnLoc });
+    setCmnLoctpId(cmnLoctpId)
+    setCmnLoc({ ...cmnLoc, cmnLoctpId, loctpCode });
   }
   //  Dialog --->
 
@@ -322,8 +345,8 @@ export default function CmnLocL(props) {
         tableStyle={{ minWidth: "50rem" }}
         metaKeySelection={false}
         paginator
-        rows={10}
-        rowsPerPageOptions={[5, 10, 25, 50]}
+        rows={50}
+        rowsPerPageOptions={[10, 25, 50, 100]}
         onSelectionChange={(e) => setCmnLoc(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
@@ -379,7 +402,7 @@ export default function CmnLocL(props) {
       <Dialog
         header={translations[selectedLanguage].Location}
         visible={visible}
-        style={{ width: '60%' }}
+        style={{ width: '95%' }}
         onHide={() => {
           setVisible(false);
           setShowMyComponent(false);
@@ -388,11 +411,14 @@ export default function CmnLocL(props) {
         {showMyComponent && (
           <CmnLoc
             parameter={"inputTextValue"}
+            cmnLoctpId={cmnLoctpId}
+            loctpCode={loctpCode}
             cmnLoc={cmnLoc}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
             locTip={locTip}
+
           />
         )}
         <div className="p-dialog-header-icons" style={{ display: 'none' }}>
@@ -437,6 +463,8 @@ export default function CmnLocL(props) {
             handleCmnLoclinkLDialogClose={handleCmnLoclinkLDialogClose}
             setCmnLoclinkLVisible={setCmnLoclinkLVisible}
             dialog={true}
+            loctpCode={LOCATION_CODE}
+            cmnLoctpId={null} 
             lookUp={false}
           />
         )}

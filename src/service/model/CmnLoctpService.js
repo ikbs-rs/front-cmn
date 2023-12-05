@@ -37,7 +37,6 @@ export class CmnLoctpService {
     }
   }
 
-
   async postCmnLoctp(newObj) {
     try {
       const selectedLanguage = localStorage.getItem('sl') || 'en'
@@ -104,5 +103,24 @@ export class CmnLoctpService {
     }
 
   }
+
+  async getIdByItem(objId) {
+    const selectedLanguage = localStorage.getItem('sl') || 'en'
+    const url = `${env.CMN_BACK_URL}/cmn/x/loctp/getid/code/${objId}/?sl=${selectedLanguage}`;
+    const tokenLocal = await Token.getTokensLS();
+    const headers = {
+      Authorization: tokenLocal.token
+    };
+    
+    try {
+      console.log(url, "***************getIdByItem*******************")
+      const response = await axios.get(url, { headers });
+      return response.data.items||response.data.item;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+ 
 }
 

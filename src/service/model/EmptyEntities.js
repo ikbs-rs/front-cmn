@@ -122,7 +122,9 @@ const EmptyEntities =
     "begda": "",
     "endda": "99991231",
     "hijerarhija": null,
-    "onoff": null
+    "onoff": null,
+    "color": "",
+    "icon": ""
   },
   "cmn_loclinktp": {
     "id": null,

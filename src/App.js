@@ -11,9 +11,11 @@ import AppRightMenu from './AppRightMenu';
 
 import Um from './components/model/cmnUmL';
 import Loc from './components/model/cmnLocL';
+import LocW from './components/model/cmnLocW';
 import LocTP from './components/model/cmnLoctpL';
 import ObjTp from './components/model/cmnObjtpL';
 import Obj from './components/model/cmnObjL';
+import ObjW from './components/model/cmnObjW';
 import ObjD from './components/model/cmnObjDL';
 import ObjTree from './components/model/cmnObjTreeL';
 import LocTree from './components/model/cmnLocTreeL';
@@ -102,7 +104,10 @@ const App = () => {
                     icon: 'pi pi-fw pi-map',
                     items: [
                         { label: translations[selectedLanguage].Location_type, icon: 'pi pi-fw pi-clone', to: '/loctp' },
-                        { label: translations[selectedLanguage].Locations, icon: 'pi pi-fw pi-clone', to: '/loc'  },
+                        { label: translations[selectedLanguage].LocationsScene, icon: 'pi pi-fw pi-clone', to: '/locsc/XSC'  },
+                        { label: translations[selectedLanguage].LocationsSector, icon: 'pi pi-fw pi-clone', to: '/locsct/XSCT'  },
+                        { label: translations[selectedLanguage].LocationsSeatBlock, icon: 'pi pi-fw pi-clone', to: '/locsb/XSB'  },
+                        { label: translations[selectedLanguage].Locations, icon: 'pi pi-fw pi-clone', to: '/loc/-1'  },
                         { label: translations[selectedLanguage].LocTree, icon: 'pi pi-fw pi-clone', to: '/loctree' },
                       //d  { label: translations[selectedLanguage].Properties_location, icon: 'pi pi-fw pi-calendar' , to: '/locatt'},
                        // { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/loclinktp'}
@@ -129,7 +134,12 @@ const App = () => {
                     icon: 'pi pi-cog',
                     items: [
                         { action: 'objtpMenu', label: translations[selectedLanguage].Objects_type, icon: 'pi pi-clone', to: '/objtp' },
-                        { action: 'pobjMenu', label: translations[selectedLanguage].Objects, icon: 'pi pi-fw pi-clone', to: '/obj' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXPK, icon: 'pi pi-fw pi-clone', to: '/objpk/XPK' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXPM, icon: 'pi pi-fw pi-clone', to: '/objpm/XPM' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXORG, icon: 'pi pi-fw pi-clone', to: '/objorg/XORG' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXTCTP, icon: 'pi pi-fw pi-clone', to: '/objtctp/XTCTP' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXDOC, icon: 'pi pi-fw pi-clone', to: '/objdoc/XDOC' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].Objects, icon: 'pi pi-fw pi-clone', to: '/obj/-1' },                      
                         { action: 'objattMenu', label: translations[selectedLanguage].Properties_object, icon: 'pi pi-fw pi-clone', to: '/objatt' },
                         { action: 'objatttpMenu', label: translations[selectedLanguage].Group_of_properties, icon: 'pi pi-fw pi-clone', to: '/objatttp' },
                         //{ action: 'linkMenu', label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-exclamation-triangle', to: '/link' },
@@ -521,12 +531,21 @@ const App = () => {
 
                         
                         <Route path="/loctp" element={<LocTP />} />
-                        <Route path="/loc" element={<Loc />} />
+                        <Route path="/loc/:loctpId" element={<LocW />} />
+                        <Route path="/locsc/:loctpId" element={<LocW />} />
+                        <Route path="/locsct/:loctpId" element={<LocW />} />
+                        <Route path="/locsb/:loctpId" element={<LocW />} />                     
                         <Route path="/locatt" element={<Um />} />
                         <Route path="/loclinktp" element={<Um />} />
 
                         <Route path="/objtp" element={<ObjTp />} />
-                        <Route path="/obj" element={<Obj />} />
+                        <Route path="/objpk/:objtpCode" element={<ObjW />} />
+                        <Route path="/objpm/:objtpCode" element={<ObjW />} />
+                        <Route path="/objorg/:objtpCode" element={<ObjW />} />
+                        <Route path="/objtctp/:objtpCode" element={<ObjW />} />
+                        <Route path="/objdoc/:objtpCode" element={<ObjW />} />
+                        <Route path="/obj/:objtpCode" element={<ObjW />} />
+
                         <Route path="/objatttp" element={<ObjAttTp />} />
                         <Route path="/objatt" element={<ObjAtt />} />
                         <Route path="/link" element={<Link />} />

@@ -104,5 +104,24 @@ export class CmnObjtpService {
     }
 
   }
+
+  async getIdByItem(objId) {
+    const selectedLanguage = localStorage.getItem('sl') || 'en'
+    const url = `${env.CMN_BACK_URL}/cmn/x/objtp/getid/code/${objId}/?sl=${selectedLanguage}`;
+    const tokenLocal = await Token.getTokensLS();
+    const headers = {
+      Authorization: tokenLocal.token
+    };
+    
+    try {
+      console.log(url, "*0**************getIdByItem*******************")
+      const response = await axios.get(url, { headers });
+      console.log(response, "*1**************getIdByItem*******************")
+      return response.data.items||response.data.item;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }  
 }
 

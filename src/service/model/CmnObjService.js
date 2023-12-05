@@ -21,6 +21,23 @@ export class CmnObjService {
     }
   }
 
+  async getListaLL(objId) {
+    const selectedLanguage = localStorage.getItem('sl') || 'en'
+    const url = `${env.CMN_BACK_URL}/cmn/x/obj/_v/lista/?stm=cmn_objll_v&objid=${objId}&sl=${selectedLanguage}`;
+    const tokenLocal = await Token.getTokensLS();
+    const headers = {
+      Authorization: tokenLocal.token
+    };
+
+    try {
+      const response = await axios.get(url, { headers });
+      return response.data.item;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
   async getObjTree() {
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const url = `${env.CMN_BACK_URL}/cmn/x/obj/_v/lista/?stm=cmn_objtree_json_v&sl=${selectedLanguage}`;
@@ -65,6 +82,7 @@ export class CmnObjService {
 
     try {
       const response = await axios.get(url, { headers });
+      console.log(response.data.item, "************************getCmnObj**************************")
       return response.data.item;
     } catch (error) {
       console.error(error);

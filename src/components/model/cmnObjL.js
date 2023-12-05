@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useParams } from 'react-router-dom';
 import { classNames } from "primereact/utils";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -8,6 +9,7 @@ import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
 import './index.css';
+import { CmnObjtpService } from "../../service/model/CmnObjtpService";
 import { CmnObjService } from "../../service/model/CmnObjService";
 import CmnObj from './cmnObj';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
@@ -18,6 +20,10 @@ import CmnObjlinkL from './cmnObjlinkL';
 import CmnLocobjL from './cmnLocobjL';
 
 export default function CmnObjL(props) {
+  console.log(props, "#props###################################CmnObjL########################################")
+  const { objtpCode: propsObjTpCode } = props;
+  const { objtpCode: routeObjTpCode } = useParams();
+  const objtpCode = propsObjTpCode || routeObjTpCode;  
   let i = 0
   const objName = "cmn_obj"
   const selectedLanguage = localStorage.getItem('sl') || 'en'
@@ -34,6 +40,7 @@ export default function CmnObjL(props) {
   const [cmnLocobjLVisible, setCmnLocobjLVisible] = useState(false);
   const [visible, setVisible] = useState(false);
   const [objTip, setObjtpTip] = useState('');
+  const [cmnObjtpId, setCmnObjtpId] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -41,10 +48,27 @@ export default function CmnObjL(props) {
         ++i
         if (i < 2) {
           const cmnObjService = new CmnObjService();
-          const data = await cmnObjService.getLista();
+          const data = await cmnObjService.getListaLL(props.objtpCode);
           setCmnObjs(data);
           initFilters();
         }
+      } catch (error) {
+        console.error(error);
+        // Obrada greške ako je potrebna
+      }
+    }
+    fetchData();
+  }, []);
+
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+          const cmnObjtpService = new CmnObjtpService();
+          console.log(objtpCode, "*0*********CmnObjtpService************#########################")          
+          const data = await cmnObjtpService.getIdByItem (objtpCode);
+          console.log(data, "*1*********CmnObjtpService************#########################") 
+          setCmnObjtpId(data.id);
       } catch (error) {
         console.error(error);
         // Obrada greške ako je potrebna
@@ -372,6 +396,8 @@ export default function CmnObjL(props) {
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
+            cmnObjtpId={cmnObjtpId}
+            objtpCode={objtpCode}
             objTip={objTip}
           />
         )}
