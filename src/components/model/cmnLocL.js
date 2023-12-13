@@ -22,6 +22,7 @@ import CmnLoclinkL from "./cmnLoclinkL"
 
 
 export default function CmnLocL(props) {
+  console.log(props, "##############################props############################")
   const { loctpId: propsLocTpId } = props;
   const { loctpId: routeLocTpId } = useParams();
   const loctpCode = propsLocTpId || routeLocTpId;

@@ -347,6 +347,7 @@ const CmnLoc = (props) => {
                         </TabView>
                     </div>
                 )}
+                {false && (
                 <Fieldset legend={translations[selectedLanguage].Gafic} toggleable collapsed="true">
                 {/* <Panel header={translations[selectedLanguage].Gafic} toggleable collapsed="true"> */}
                     <div className="p-fluid formgrid grid">
@@ -393,7 +394,7 @@ const CmnLoc = (props) => {
                     </div>
                 {/* </Panel> */}
                 </Fieldset>
-
+             )}
 
             </div>
             <DeleteDialog visible={deleteDialogVisible} inCmnLoc="delete" item={cmnLoc.roll} onHide={hideDeleteDialog} onDelete={handleDeleteClick} />
