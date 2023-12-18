@@ -15,6 +15,7 @@ import LocW from './components/model/cmnLocW';
 import LocTP from './components/model/cmnLoctpL';
 import ObjTp from './components/model/cmnObjtpL';
 import Obj from './components/model/cmnObjL';
+import ObjWEnd from './components/model/cmnObjWEnd';
 import ObjW from './components/model/cmnObjW';
 import ObjD from './components/model/cmnObjDL';
 import ObjTree from './components/model/cmnObjTreeL';

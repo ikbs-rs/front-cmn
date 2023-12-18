@@ -5,7 +5,10 @@ import { Login } from './pages/Login';
 import { Error } from './pages/Error';
 import { NotFound } from './pages/NotFound';
 import LocEnd from './components/model/cmnLocL';
-import ObjEnd from './components/model/cmnObjL';
+import ObjEnd from './components/model/cmnObjWEnd';
+import ObjTpEnd from './components/model/cmnObjtpWEnd';
+import ObjAttEnd from './components/model/cmnObjattWEnd';
+import ObjAtttpEnd from './components/model/cmnObjatttpWEnd';
 import ParLEnd from './components/model/cmnParL';
 import ParEnd from './components/model/cmnObject';
 import { Access } from './pages/Access';
@@ -24,6 +27,9 @@ const AppWrapper = (props) => {
   const aa = params.get('endpoint')
   const objId = params.get('objid');
   const obj = params.get('obj');
+
+  const objtp=params.get('tp');
+  const objcode=params.get('objcode');
   
   localStorage.setItem('sl', sl || "en")
 
@@ -72,6 +78,9 @@ const AppWrapper = (props) => {
       <Route path="/access" element={<Access />} />
       <Route path="/locend" element={<LocEnd />} />
       <Route path="/objend" element={<ObjEnd />} />
+      <Route path="/objtpend" element={<ObjTpEnd />} />
+      <Route path="/objattend" element={<ObjAttEnd />} />
+      <Route path="/objatttpend" element={<ObjAtttpEnd />} />
       <Route path="/parlend" element={<ParLEnd />} />
       <Route path="/parend" element={<ParEnd objId={objId} />} />
       <Route path="*" element={
@@ -80,7 +89,13 @@ const AppWrapper = (props) => {
             if (aa === "locend") {
               return <LocEnd />;
             } else if (aa === "objend") {
-              return <ObjEnd />;    
+              return <ObjEnd objtp={objtp} objcode={objcode}/>; 
+            } else if (aa === "objtpend") {
+              return <ObjTpEnd />;                 
+            } else if (aa === "objattend") {
+              return <ObjAttEnd />;   
+            } else if (aa === "objatttpend") {
+              return <ObjAtttpEnd />;                            
             } else if (aa === "parlend") {
               return <ParLEnd />;  
             } else if (aa === "parend") {

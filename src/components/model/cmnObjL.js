@@ -20,7 +20,7 @@ import CmnObjlinkL from './cmnObjlinkL';
 import CmnLocobjL from './cmnLocobjL';
 
 export default function CmnObjL(props) {
-  console.log(props, "#props###################################CmnObjL########################################")
+  console.log(props, "#props################################### CmnObjL ########################################")
   const { objtpCode: propsObjTpCode } = props;
   const { objtpCode: routeObjTpCode } = useParams();
   const objtpCode = propsObjTpCode || routeObjTpCode;  
