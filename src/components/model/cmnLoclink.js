@@ -15,6 +15,8 @@ import axios from 'axios';
 import Token from "../../utilities/Token";
 import { Calendar } from "primereact/calendar";
 import DateFunction from "../../utilities/DateFunction.js"
+import CmnLocL from './cmnLocL';
+import { Dialog } from 'primereact/dialog';
 
 const CmnLoclink = (props) => {
     console.log(props, "********************CmnLoclink********************")
@@ -34,6 +36,11 @@ const CmnLoclink = (props) => {
     const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnLoclink.endda || '99991231')))
     const [onoff, setOnoff] = useState(props.cmnLoclink.onoff == 1);
     const [hijerarhija, setHijerarhija] = useState(props.cmnLoclink.hijerarhija == 1);
+
+    const [cmnLocLVisible, setCmnLocLVisible] = useState(false);
+    const [cmnLocRemoteLVisible, setCmnLocRemoteLVisible] = useState(false);
+    const [cmnLoc, setCmnLoc] = useState(null);
+    const [showMyComponent, setShowMyComponent] = useState(true);
 
     const calendarRef = useRef(null);
     const toast = useRef(null);
@@ -187,7 +194,47 @@ const CmnLoclink = (props) => {
             });
         }
     };
+/*********************************************************** */
+    const setCmnLocRemoteDialog = () => {
+        setCmnLocRemoteLVisible(true);
+    };
+    
+    const setCmnlocDialog = (destination) => {
+        setCmnLocLVisible(true);
+    };
+    
+    const handleLocClick = async (e, destination) => {
+        try {
+            if (destination === 'local') setCmnlocDialog();
+            else setCmnLocRemoteDialog();
+        } catch (error) {
+            console.error(error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Failed to fetch cmnLoc data',
+                life: 3000
+            });
+        }
+    };
 
+    const handleCmnLocLDialogClose = (newObj) => {
+        console.log(newObj, "11111111111111111111111111111111qqq1111111111111111111111111111111", newObj)
+        setCmnLoc(newObj);
+        let _cmnLoclink = {...cmnLoclink}
+        _cmnLoclink.loc1 = newObj.id;
+        _cmnLoclink.nloc1 = newObj.text;
+        _cmnLoclink.cloc1 = newObj.code;   
+        cmnLoclink.loc1 = newObj.id;
+        cmnLoclink.nloc1 = newObj.text;
+        cmnLoclink.cloc1 = newObj.code; 
+        //ticEventart.price = newObj.price;
+        //ticEventart.loc = newObj.loc1;
+        setCmnLoclink(_cmnLoclink)
+        //ticEventart.potrazuje = newObj.cena * ticEventart.output;
+        setCmnLocLVisible(false);
+    };    
+/************************************************************ */
     const onInputChange = (e, type, name, a) => {
         let val = ''
         if (type === "options") {
@@ -246,7 +293,7 @@ const CmnLoclink = (props) => {
         }
         let _cmnLoclink = { ...cmnLoclink };
         _cmnLoclink[`${name}`] = val;
-        console.log(_cmnLoclink, "--------------------------------------------------------")
+        console.log(_cmnLoclink, "--------------------------name------------------------------", name)
         setCmnLoclink(_cmnLoclink);
     };
 
@@ -281,7 +328,7 @@ const CmnLoclink = (props) => {
             <div className="col-12">
                 <div className="card">
                     <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-7">
+                        <div className="field col-12 md:col-8">
                             <label htmlFor="loctp1">{translations[selectedLanguage].LoctpText} *</label>
                             <Dropdown id="loctp1"
                                 value={ddLocTp1Item}
@@ -294,6 +341,30 @@ const CmnLoclink = (props) => {
                             />
                             {submitted && !cmnLoclink.loctp1 && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
+
+                        <div className="field col-12 md:col-5">
+                            <label htmlFor="cloc1">{translations[selectedLanguage].cloc}</label>
+                            <div className="p-inputgroup flex-1">
+                                <InputText id="cloc1" value={cmnLoclink.cloc1}
+                                    onChange={(e) => onInputChange(e, 'text', 'cloc1')}
+                                    required
+                                    className={classNames({ 'p-invalid': submitted && !cmnLoclink.cloc1 })} />
+                                <Button icon="pi pi-search" onClick={(e) => handleLocClick(e, 'local')} className="p-button" />
+                                {/*<Button icon="pi pi-search" onClick={(e) => handleArtClick(e, 'remote')} className="p-button-success" />*/}
+                            </div>
+                            {submitted && !cmnLoclink.cloc1 && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>
+                        <div className="field col-12 md:col-7">
+                            <label htmlFor="nloc1">{translations[selectedLanguage].nloc}</label>
+                            <InputText id="nloc1" 
+                                value={cmnLoclink.nloc1} 
+                                onChange={(e) => onInputChange(e, 'text', 'nloc1')} 
+                                required 
+                                className={classNames({ 'p-invalid': submitted && !cmnLoclink.nloc1 })} 
+                            />
+                            {submitted && !cmnLoclink.nloc1 && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>
+{/* 
                         <div className="field col-12 md:col-7">
                             <label htmlFor="loc1">{translations[selectedLanguage].LocText} *</label>
                             <Dropdown id="loc1"
@@ -306,7 +377,10 @@ const CmnLoclink = (props) => {
                                 className={classNames({ 'p-invalid': submitted && !cmnLoclink.loc1 })}
                             />
                             {submitted && !cmnLoclink.loc1 && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
-                        </div>
+                        </div> 
+*/}
+
+
                     </div>
                     <div className="flex flex-wrap gap-1">
                         <div className="p-fluid formgrid grid">
@@ -416,6 +490,25 @@ const CmnLoclink = (props) => {
                 onHide={hideDeleteDialog}
                 onDelete={handleDeleteClick}
             />
+            <Dialog
+                header={translations[selectedLanguage].LocList}
+                visible={cmnLocLVisible}
+                style={{ width: '90%', height: '1400px' }}
+                onHide={() => {
+                    setCmnLocLVisible(false);
+                    setShowMyComponent(false);
+                }}
+            >
+                {cmnLocLVisible &&
+                    <CmnLocL
+                        parameter={'inputTextValue'}
+                        loctpId={cmnLoclink.cloctp1}
+                        onTaskComplete={handleCmnLocLDialogClose}
+                        setCmnLocLVisible={setCmnLocLVisible}
+                        dialog={true}
+                        lookUp={true}
+                    />}
+            </Dialog>            
         </div>
     );
 };

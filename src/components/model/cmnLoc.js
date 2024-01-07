@@ -134,8 +134,9 @@ const CmnLoc = (props) => {
             const cmnLocService = new CmnLocService();
             const data = await cmnLocService.postCmnLoc(cmnLoc);
             cmnLoc.id = data;
+            if (cmnLoc.code == ""||cmnLoc.code == ""||!cmnLoc.code) cmnLoc.code = cmnLoc.id
             props.handleDialogClose({ obj: cmnLoc, locTip: locTip });
-            //props.setVisible(false);
+            props.setVisible(false);
             setLocTip("UPDATE")
         } catch (err) {
             toast.current.show({
@@ -154,7 +155,7 @@ const CmnLoc = (props) => {
             const newCmnLoclink = { ...cmnLoc, id: null };
             const data = await cmnLocService.postCmnLoc(newCmnLoclink);
             cmnLoc.id = data;
-            if (cmnLoc.code == "") cmnLoc.code = cmnLoc.id
+            if (cmnLoc.code == ""||cmnLoc.code == ""||!cmnLoc.code) cmnLoc.code = cmnLoc.id
             props.handleDialogClose({ obj: cmnLoc, locTip: locTip });
             cmnLoc.code = ""
             cmnLoc.id = null
@@ -243,8 +244,11 @@ const CmnLoc = (props) => {
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-3">
                             <label htmlFor="code">{translations[selectedLanguage].Code}</label>
-                            <InputText id="code" autoFocus value={cmnLoc.code} onChange={(e) => onInputChange(e, 'text', 'code')} required className={classNames({ 'p-invalid': submitted && !cmnLoc.code })} />
-                            {submitted && !cmnLoc.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            <InputText id="code" autoFocus value={cmnLoc.code} onChange={(e) => onInputChange(e, 'text', 'code')} 
+                            required 
+                            // className={classNames({ 'p-invalid': submitted && !cmnLoc.code })} 
+                            />
+                            {/* {submitted && !cmnLoc.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>} */}
                         </div>
                         <div className="field col-12 md:col-8">
                             <label htmlFor="text">{translations[selectedLanguage].Text}</label>

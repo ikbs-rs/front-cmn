@@ -18,6 +18,7 @@ import { translations } from "../../configs/translations";
 import CmnObjattsL from './cmnObjattsL';
 import CmnObjlinkL from './cmnObjlinkL';
 import CmnLocobjL from './cmnLocobjL';
+import CmnObjParL from './cmnObjparL';
 
 export default function CmnObjL(props) {
   console.log(props, "#props################################### CmnObjL ########################################")
@@ -38,6 +39,8 @@ export default function CmnObjL(props) {
   const [cmnObjattsLVisible, setCmnObjattsLVisible] = useState(false);
   const [cmnObjlinkLVisible, setCmnObjlinkLVisible] = useState(false);
   const [cmnLocobjLVisible, setCmnLocobjLVisible] = useState(false);
+  const [cmnObjparLVisible, setCmnObjparLVisible] = useState(false);
+  
   const [visible, setVisible] = useState(false);
   const [objTip, setObjtpTip] = useState('');
   const [cmnObjtpId, setCmnObjtpId] = useState(null);
@@ -112,6 +115,10 @@ export default function CmnObjL(props) {
     const localObj = { newObj };
   };
 
+  const handleCmnObjparLDialogClose = (newObj) => {
+    const localObj = { newObj };
+  };  
+  
   const findIndexById = (id) => {
     let index = -1;
 
@@ -141,6 +148,10 @@ export default function CmnObjL(props) {
     setCmnLocobjLDialog();
   };
 
+  const openObjPar = () => {
+    setCmnObjparLDialog();
+  };  
+  
   const onRowSelect = (event) => {
     toast.current.show({
       severity: "info",
@@ -204,6 +215,9 @@ export default function CmnObjL(props) {
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].Place} icon="pi pi-sitemap" onClick={openLocObj} text raised disabled={!cmnObj} />
         </div>
+        <div className="flex flex-wrap gap-1">
+          <Button label={translations[selectedLanguage].BList} icon="pi pi-android" onClick={openObjPar} text raised disabled={!cmnObj} />
+        </div>        
         <div className="flex-grow-1" />
         <b>{translations[selectedLanguage].ObjList}</b>
         <div className="flex-grow-1"></div>
@@ -279,6 +293,13 @@ export default function CmnObjL(props) {
     setCmnLocobjLVisible(true);
 
   }
+
+  const setCmnObjparLDialog = () => {
+    setShowMyComponent(true);
+    setCmnObjparLVisible(true);
+
+  }
+  
   //  Dialog --->
 
   const header = renderHeader();
@@ -462,6 +483,26 @@ export default function CmnObjL(props) {
           />
         )}
       </Dialog>      
+      <Dialog
+        header={translations[selectedLanguage].ObjparLista}
+        visible={cmnObjparLVisible}
+        style={{ width: '70%' }}
+        onHide={() => {
+          setCmnObjparLVisible(false);
+          setShowMyComponent(false);
+        }}
+      >
+        {showMyComponent && (
+          <CmnObjParL
+            parameter={"inputTextValue"}
+            cmnObj={cmnObj}
+            handleCmnObjparLDialogClose={handleCmnObjparLDialogClose}
+            setCmnObjparLVisible={setCmnObjparLVisible}
+            dialog={true}
+            lookUp={false}
+          />
+        )}
+      </Dialog>           
     </div>
   );
 }

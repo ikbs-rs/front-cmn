@@ -285,6 +285,15 @@ const EmptyEntities =
     "begda": "",
     "endda": ""
   },
+  "cmn_objpar": {
+    "id": null,
+    "site": null,
+    "obj": null,
+    "par": null,
+    "begda": "",
+    "endda": "",
+    "value": ""
+  },
   "cmn_objtp": {
     "id": null,
     "site": null,
@@ -325,7 +334,8 @@ const EmptyEntities =
     "idnum": "",
     "pdvnum": "",
     "begda": "",
-    "endda": ""
+    "endda": "",
+    "docid": ""
   },
   "cmn_paraccount": {
     "id": null,

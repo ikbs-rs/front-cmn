@@ -480,6 +480,12 @@ export const translations = {
         ObjectsXTCTP: "Тип улазнице",
         ObjectsXDOC: "ИД документа",
         drawing: "Цртање",
+        BList: "Црне листе",
+        ObjparLista: "Црна листа посетилаца ",
+        Objpar: "Посетилац",
+        ObjectsXBL: "Црне листе посетилаца",
+        cloc: "Локација",
+        nloc: "..."
     }
   };
   

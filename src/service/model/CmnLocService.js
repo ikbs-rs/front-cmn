@@ -120,7 +120,7 @@ export class CmnLocService {
   async putCmnLoc(newObj) {
     try {
       const selectedLanguage = localStorage.getItem('sl') || 'en'
-      if (newObj.code.trim() === '' || newObj.text.trim() === '' || newObj.valid === null) {
+      if ( newObj.text.trim() === '' || newObj.valid === null) {
         throw new Error(
           "Items must be filled!"
         );

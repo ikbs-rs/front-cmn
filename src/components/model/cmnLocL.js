@@ -50,6 +50,15 @@ export default function CmnLocL(props) {
     props.setCmnLocLVisible(false);
   };
 
+  const handleConfirmClick = () => {
+    if (cmnLoc) {
+      console.log("###############--handleConfirmClick--###################")
+        props.onTaskComplete(cmnLoc);
+    } else {
+        toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'No row selected', life: 3000 });
+    }
+};
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -226,7 +235,15 @@ export default function CmnLocL(props) {
     return (
       <div className="flex card-container">
         <div className="flex flex-wrap gap-1" />
-        {(props.dialog) ? (<Button label={translations[selectedLanguage].Cancel} icon="pi pi-times" onClick={handleCancelClick} text raised />): null}
+        {props.lookUp && (
+                    <>
+                        <div className="flex flex-wrap gap-1" />
+                        <Button label={translations[selectedLanguage].Cancel} icon="pi pi-times" onClick={handleCancelClick} text raised />
+                        <div className="flex flex-wrap gap-1" />
+                        <Button label={translations[selectedLanguage].Confirm} icon="pi pi-times" onClick={handleConfirmClick} text raised disabled={!cmnLoc} />
+                    </>
+        )}
+        {/* {(props.dialog) ? (<Button label={translations[selectedLanguage].Cancel} icon="pi pi-times" onClick={handleCancelClick} text raised />): null} */}
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
