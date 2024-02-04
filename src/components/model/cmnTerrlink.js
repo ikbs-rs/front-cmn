@@ -23,7 +23,7 @@ const CmnTerrlink = (props) => {
     const [cmnTerrlinkItem, setCmnTerrlinkItem] = useState(null);
     const [cmnTerrlinkItems, setCmnTerrlinkItems] = useState(null);
     const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnTerrlink.begda || DateFunction.currDate())));
-    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnTerrlink.endda || DateFunction.currDate())))
+    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnTerrlink.endda || '99991231')))
 
     const calendarRef = useRef(null);
 

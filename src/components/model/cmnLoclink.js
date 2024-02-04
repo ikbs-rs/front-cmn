@@ -15,8 +15,11 @@ import axios from 'axios';
 import Token from "../../utilities/Token";
 import { Calendar } from "primereact/calendar";
 import DateFunction from "../../utilities/DateFunction.js"
+import CmnLocL from './cmnLocL';
+import { Dialog } from 'primereact/dialog';
 
 const CmnLoclink = (props) => {
+    console.log(props, "********************CmnLoclink********************")
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [cmnLoclink, setCmnLoclink] = useState(props.cmnLoclink);
@@ -24,15 +27,20 @@ const CmnLoclink = (props) => {
     const [cmnLoctpItem, setCmnLoctp1Item] = useState(null);
     const [cmnLoctp1Items, setCmnLoctp1Items] = useState(null);
     const [cmnLoc1Item, setCmnLoc1Item] = useState(null);
-    const [cmnLoc1Items, setCmnLoc1Items] = useState(null);    
-    const [ddLocTp1Item, setDdLocTp1Item] = useState(null);
+    const [cmnLoc1Items, setCmnLoc1Items] = useState(null);
+    const [ddLocTp1Item, setDdLocTp1Item] = useState(props.cmnLoctpId);
     const [ddLocTp1Items, setDdLocTp1Items] = useState(null);
     const [ddLoc1Item, setDdLoc1Item] = useState(null);
     const [ddLoc1Items, setDdLoc1Items] = useState(null);
-    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnLoclink.begda)));
+    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnLoclink.begda || DateFunction.currDate())));
     const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnLoclink.endda || '99991231')))
     const [onoff, setOnoff] = useState(props.cmnLoclink.onoff == 1);
     const [hijerarhija, setHijerarhija] = useState(props.cmnLoclink.hijerarhija == 1);
+
+    const [cmnLocLVisible, setCmnLocLVisible] = useState(false);
+    const [cmnLocRemoteLVisible, setCmnLocRemoteLVisible] = useState(false);
+    const [cmnLoc, setCmnLoc] = useState(null);
+    const [showMyComponent, setShowMyComponent] = useState(true);
 
     const calendarRef = useRef(null);
     const toast = useRef(null);
@@ -48,10 +56,16 @@ const CmnLoclink = (props) => {
 
                 const response = await axios.get(url, { headers });
                 const data = response.data.items;
+
+                const loctpID = props.cmnLoclink.loctp1 == null ? props.cmnLoctpId : props.cmnLoclink.loctp1
                 setCmnLoctp1Items(data);
+                const _cmnLoctp1 = data.find((item) => item.id === loctpID) || null
+                console.log(_cmnLoctp1,"####################################################################################", data)
+                setCmnLoctp1Item(_cmnLoctp1);
+
                 const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
                 setDdLocTp1Items(dataDD);
-                setDdLocTp1Item(dataDD.find((item) => item.code === props.cmnLoclink.loctp1) || null);
+                setDdLocTp1Item(dataDD.find((item) => item.code === loctpID) || null);
             } catch (error) {
                 console.error(error);
                 // Obrada greške ako je potrebna
@@ -63,7 +77,8 @@ const CmnLoclink = (props) => {
     useEffect(() => {
         async function fetchData() {
             try {
-                const tp = cmnLoclink.loctp1 || -1
+                //const tp = cmnLoclink.loctp1 || -1
+                const tp = cmnLoclink.loctp1 == null ? props.cmnLoctpId : cmnLoclink.loctp1
                 const url = `${env.CMN_BACK_URL}/cmn/x/loc/getall/tp/${tp}/?sl=${selectedLanguage}`;
                 const tokenLocal = await Token.getTokensLS();
                 const headers = {
@@ -81,7 +96,7 @@ const CmnLoclink = (props) => {
             }
         }
         fetchData();
-    }, [cmnLoclink.loctp1]);
+    }, [cmnLoclink.loctp1, props.cmnLoctpId]);
     // Autocomplit>
 
     const handleCancelClick = () => {
@@ -100,6 +115,33 @@ const CmnLoclink = (props) => {
             cmnLoclink.id = data
             props.handleDialogClose({ obj: cmnLoclink, loclinkTip: props.loclinkTip });
             props.setVisible(false);
+        } catch (err) {
+            toast.current.show({
+                severity: "error",
+                summary: "CmnLoclink ",
+                detail: `${err.response.data.error}`,
+                life: 5000,
+            });
+        }
+    };
+
+    const handleCreateAndAddNewClick = async () => {
+        try {
+            setSubmitted(true);
+            setSubmitted(true);
+            cmnLoclink.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
+            cmnLoclink.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
+
+            const cmnLoclinkService = new CmnLoclinkService();
+            const data = await cmnLoclinkService.postCmnLoclink(cmnLoclink);
+            cmnLoclink.id = data;
+
+            // Očisti cmnLoclink.id i cmnLoclink.loc1
+            const newCmnLoclink = { ...cmnLoclink, id: null, loc1: null };
+            setDdLoc1Item(null)
+
+            props.handleDialogClose({ obj: newCmnLoclink, loclinkTip: props.loclinkTip });
+            // Ne postavljaj setVisible(false) kako bi ostao otvoren za dodavanje novog unosa
         } catch (err) {
             toast.current.show({
                 severity: "error",
@@ -152,30 +194,73 @@ const CmnLoclink = (props) => {
             });
         }
     };
+/*********************************************************** */
+    const setCmnLocRemoteDialog = () => {
+        setCmnLocRemoteLVisible(true);
+    };
+    
+    const setCmnlocDialog = (destination) => {
+        setCmnLocLVisible(true);
+    };
+    
+    const handleLocClick = async (e, destination) => {
+        try {
+            if (destination === 'local') setCmnlocDialog();
+            else setCmnLocRemoteDialog();
+        } catch (error) {
+            console.error(error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Failed to fetch cmnLoc data',
+                life: 3000
+            });
+        }
+    };
 
+    const handleCmnLocLDialogClose = (newObj) => {
+        console.log(newObj, "11111111111111111111111111111111qqq1111111111111111111111111111111", newObj)
+        setCmnLoc(newObj);
+        let _cmnLoclink = {...cmnLoclink}
+        _cmnLoclink.loc1 = newObj.id;
+        _cmnLoclink.nloc1 = newObj.text;
+        _cmnLoclink.cloc1 = newObj.code;   
+        cmnLoclink.loc1 = newObj.id;
+        cmnLoclink.nloc1 = newObj.text;
+        cmnLoclink.cloc1 = newObj.code; 
+        //ticEventart.price = newObj.price;
+        //ticEventart.loc = newObj.loc1;
+        setCmnLoclink(_cmnLoclink)
+        //ticEventart.potrazuje = newObj.cena * ticEventart.output;
+        setCmnLocLVisible(false);
+    };    
+/************************************************************ */
     const onInputChange = (e, type, name, a) => {
         let val = ''
         if (type === "options") {
             let foundItem = null
             val = (e.target && e.target.value && e.target.value.code) || '';
             switch (name) {
-                case "loctp1":                                       
+                case "loctp1":
                     setDdLocTp1Item(e.value);
                     foundItem = cmnLoctp1Items.find((item) => item.id === val);
                     setCmnLoctp1Item(foundItem || null);
                     cmnLoclink.cloctp1 = foundItem.code
-                    cmnLoclink.nloctp1 = e.value.name                   
+                    cmnLoclink.nloctp1 = e.value.name
                     break;
                 case "loc1":
                     setDdLoc1Item(e.value);
                     foundItem = cmnLoc1Items.find((item) => item.id === val);
-                    setCmnLoc1Item(foundItem || null);                    
+                    setCmnLoc1Item(foundItem || null);
                     cmnLoclink.cloc1 = foundItem.code
                     cmnLoclink.nloc1 = e.value.name
+                    cmnLoclink.cloctp1 = cmnLoclink.cloctp1||props.loctpCode
+                    cmnLoclink.nloctp1 = cmnLoclink.nloctp1||cmnLoctpItem.text
+                    
                     break;
                 default:
                     console.error("Pogresan naziv options polja")
-            }     
+            }
         } else if (type === "Calendar") {
             const dateVal = DateFunction.dateGetValue(e.value)
             val = (e.target && e.target.value) || '';
@@ -208,7 +293,7 @@ const CmnLoclink = (props) => {
         }
         let _cmnLoclink = { ...cmnLoclink };
         _cmnLoclink[`${name}`] = val;
-console.log(_cmnLoclink, "--------------------------------------------------------")
+        console.log(_cmnLoclink, "--------------------------name------------------------------", name)
         setCmnLoclink(_cmnLoclink);
     };
 
@@ -243,7 +328,7 @@ console.log(_cmnLoclink, "------------------------------------------------------
             <div className="col-12">
                 <div className="card">
                     <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-7">
+                        <div className="field col-12 md:col-8">
                             <label htmlFor="loctp1">{translations[selectedLanguage].LoctpText} *</label>
                             <Dropdown id="loctp1"
                                 value={ddLocTp1Item}
@@ -256,6 +341,30 @@ console.log(_cmnLoclink, "------------------------------------------------------
                             />
                             {submitted && !cmnLoclink.loctp1 && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
+
+                        <div className="field col-12 md:col-5">
+                            <label htmlFor="cloc1">{translations[selectedLanguage].cloc}</label>
+                            <div className="p-inputgroup flex-1">
+                                <InputText id="cloc1" value={cmnLoclink.cloc1}
+                                    onChange={(e) => onInputChange(e, 'text', 'cloc1')}
+                                    required
+                                    className={classNames({ 'p-invalid': submitted && !cmnLoclink.cloc1 })} />
+                                <Button icon="pi pi-search" onClick={(e) => handleLocClick(e, 'local')} className="p-button" />
+                                {/*<Button icon="pi pi-search" onClick={(e) => handleArtClick(e, 'remote')} className="p-button-success" />*/}
+                            </div>
+                            {submitted && !cmnLoclink.cloc1 && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>
+                        <div className="field col-12 md:col-7">
+                            <label htmlFor="nloc1">{translations[selectedLanguage].nloc}</label>
+                            <InputText id="nloc1" 
+                                value={cmnLoclink.nloc1} 
+                                onChange={(e) => onInputChange(e, 'text', 'nloc1')} 
+                                required 
+                                className={classNames({ 'p-invalid': submitted && !cmnLoclink.nloc1 })} 
+                            />
+                            {submitted && !cmnLoclink.nloc1 && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>
+{/* 
                         <div className="field col-12 md:col-7">
                             <label htmlFor="loc1">{translations[selectedLanguage].LocText} *</label>
                             <Dropdown id="loc1"
@@ -268,7 +377,10 @@ console.log(_cmnLoclink, "------------------------------------------------------
                                 className={classNames({ 'p-invalid': submitted && !cmnLoclink.loc1 })}
                             />
                             {submitted && !cmnLoclink.loc1 && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
-                        </div>
+                        </div> 
+*/}
+
+
                     </div>
                     <div className="flex flex-wrap gap-1">
                         <div className="p-fluid formgrid grid">
@@ -294,7 +406,7 @@ console.log(_cmnLoclink, "------------------------------------------------------
                                 value={cmnLoclink.val} onChange={(e) => onInputChange(e, "text", 'val')}
                             />
                         </div>
-                    </div>                    
+                    </div>
                     <div className="flex flex-wrap gap-2">
                         <div className="p-fluid formgrid grid">
                             <div className="field col-12 md:col-7">
@@ -332,13 +444,22 @@ console.log(_cmnLoclink, "------------------------------------------------------
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
                             {(props.loclinkTip === 'CREATE') ? (
-                                <Button
-                                    label={translations[selectedLanguage].Create}
-                                    icon="pi pi-check"
-                                    onClick={handleCreateClick}
-                                    severity="success"
-                                    outlined
-                                />
+                                <>
+                                    <Button
+                                        label={translations[selectedLanguage].Create}
+                                        icon="pi pi-check"
+                                        onClick={handleCreateClick}
+                                        severity="success"
+                                        outlined
+                                    />
+                                    <Button
+                                        label={translations[selectedLanguage].CreateAndAddNew}
+                                        icon="pi pi-plus"
+                                        onClick={handleCreateAndAddNewClick}
+                                        severity="success"
+                                        outlined
+                                    />
+                                </>
                             ) : null}
                             {(props.loclinkTip !== 'CREATE') ? (
                                 <Button
@@ -369,6 +490,25 @@ console.log(_cmnLoclink, "------------------------------------------------------
                 onHide={hideDeleteDialog}
                 onDelete={handleDeleteClick}
             />
+            <Dialog
+                header={translations[selectedLanguage].LocList}
+                visible={cmnLocLVisible}
+                style={{ width: '90%', height: '1400px' }}
+                onHide={() => {
+                    setCmnLocLVisible(false);
+                    setShowMyComponent(false);
+                }}
+            >
+                {cmnLocLVisible &&
+                    <CmnLocL
+                        parameter={'inputTextValue'}
+                        loctpId={cmnLoclink.cloctp1}
+                        onTaskComplete={handleCmnLocLDialogClose}
+                        setCmnLocLVisible={setCmnLocLVisible}
+                        dialog={true}
+                        lookUp={true}
+                    />}
+            </Dialog>            
         </div>
     );
 };

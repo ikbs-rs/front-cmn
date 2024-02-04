@@ -1,29 +1,27 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { classNames } from 'primereact/utils';
-import { CmnParattsService } from "../../service/model/CmnParattsService";
-import { CmnParattService } from "../../service/model/CmnParattService";
+import { CmnObjparService } from "../../service/model/CmnObjparService.js";
 import './index.css';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Toast } from "primereact/toast";
-import DeleteDialog from '../dialog/DeleteDialog';
-import { translations } from "../../configs/translations";
+import DeleteDialog from '../dialog/DeleteDialog.js';
+import { translations } from "../../configs/translations.js";
 import { Dropdown } from 'primereact/dropdown';
+import { CmnParService } from "../../service/model/CmnParService.js"
+import { InputSwitch } from "primereact/inputswitch";
 import { Calendar } from "primereact/calendar";
-import DateFunction from "../../utilities/DateFunction"
+import DateFunction from "../../utilities/DateFunction.js"
 
-const CmnParatts = (props) => {
-
+const CmnObjpar = (props) => {
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
-    const [cmnParatts, setCmnParatts] = useState(props.cmnParatts);
+    const [cmnObjpar, setCmnObjpar] = useState(props.cmnObjpar);
     const [submitted, setSubmitted] = useState(false);
-    const [ddCmnParattsItem, setDdCmnParattsItem] = useState(null);
-    const [ddCmnParattsItems, setDdCmnParattsItems] = useState(null);
-    const [cmnParattsItem, setCmnParattsItem] = useState(null);
-    const [cmnParattsItems, setCmnParattsItems] = useState(null);
-    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnParatts.begda || DateFunction.currDate())));
-    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnParatts.endda || '99991231')))
+    const [ddCmnParItem, setDdCmnParItem] = useState(null);
+    const [ddCmnParItems, setDdCmnParItems] = useState(null);
+    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnObjpar.begda)));
+    const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate(props.cmnObjpar.endda || '99991231')))
 
     const calendarRef = useRef(null);
 
@@ -32,22 +30,11 @@ const CmnParatts = (props) => {
     useEffect(() => {
         async function fetchData() {
             try {
-                const cmnParattService = new CmnParattService();
-                const data = await cmnParattService.getCmnParatts();
-
-                setCmnParattsItems(data)
-                //console.log("******************", cmnParattsItem)
-
+                const cmnParService = new CmnParService();
+                const data = await cmnParService.getCmnObjpar();
                 const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
-                setDdCmnParattsItems(dataDD);
-                setDdCmnParattsItem(dataDD.find((item) => item.code === props.cmnParatts.att) || null);
-                if (props.cmnParatts.att) {
-                    const foundItem = data.find((item) => item.id === props.cmnParatts.att);
-                    setCmnParattsItem(foundItem || null);
-                    cmnParatts.ctp = foundItem.code
-                    cmnParatts.ntp = foundItem.textx
-                }
-
+                setDdCmnParItems(dataDD);
+                setDdCmnParItem(dataDD.find((item) => item.code === props.cmnObjpar.par) || null);
             } catch (error) {
                 console.error(error);
                 // Obrada greške ako je potrebna
@@ -64,17 +51,19 @@ const CmnParatts = (props) => {
     const handleCreateClick = async () => {
         try {
             setSubmitted(true);
-            cmnParatts.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
-            cmnParatts.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
-            const cmnParattsService = new CmnParattsService();
-            const data = await cmnParattsService.postCmnParatts(cmnParatts);
-            cmnParatts.id = data
-            props.handleDialogClose({ obj: cmnParatts, parattsTip: props.parattsTip });
+            setSubmitted(true);
+            cmnObjpar.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
+            cmnObjpar.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
+
+            const cmnObjparService = new CmnObjparService();
+            const data = await cmnObjparService.postCmnObjpar(cmnObjpar);
+            cmnObjpar.id = data
+            props.handleDialogClose({ obj: cmnObjpar, objparTip: props.objparTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "CmnParatts ",
+                summary: "CmnPar ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -83,18 +72,19 @@ const CmnParatts = (props) => {
 
     const handleSaveClick = async () => {
         try {
-            setSubmitted(true);
-            cmnParatts.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
-            cmnParatts.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));            
-            const cmnParattsService = new CmnParattsService();
 
-            await cmnParattsService.putCmnParatts(cmnParatts);
-            props.handleDialogClose({ obj: cmnParatts, parattsTip: props.parattsTip });
+
+            cmnObjpar.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
+            cmnObjpar.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
+            const cmnObjparService = new CmnObjparService();
+
+            await cmnObjparService.putCmnObjpar(cmnObjpar);
+            props.handleDialogClose({ obj: cmnObjpar, objparTip: props.objparTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "CmnParatts ",
+                summary: "CmnPar ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -108,15 +98,15 @@ const CmnParatts = (props) => {
     const handleDeleteClick = async () => {
         try {
             setSubmitted(true);
-            const cmnParattsService = new CmnParattsService();
-            await cmnParattsService.deleteCmnParatts(cmnParatts);
-            props.handleDialogClose({ obj: cmnParatts, parattsTip: 'DELETE' });
+            const cmnObjparService = new CmnObjparService();
+            await cmnObjparService.deleteCmnObjpar(cmnObjpar);
+            props.handleDialogClose({ obj: cmnObjpar, objparTip: 'DELETE' });
             props.setVisible(false);
             hideDeleteDialog();
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "CmnParatts ",
+                summary: "CmnPar ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -125,26 +115,24 @@ const CmnParatts = (props) => {
 
     const onInputChange = (e, type, name, a) => {
         let val = ''
-
         if (type === "options") {
+            setDdCmnParItem(e.value);
+            cmnObjpar.otext = e.value.name
+            cmnObjpar.npar = e.value.name
+            cmnObjpar.ocode = e.value.code
+            cmnObjpar.cpar = e.value.code
             val = (e.target && e.target.value && e.target.value.code) || '';
-            setDdCmnParattsItem(e.value);
-            const foundItem = cmnParattsItems.find((item) => item.id === val);
-            setCmnParattsItem(foundItem || null);
-            cmnParatts.ntp = e.value.name
-            cmnParatts.ctp = foundItem.code
         } else if (type === "Calendar") {
-            //const dateVal = DateFunction.dateGetValue(e.value)
-
+            const dateVal = DateFunction.dateGetValue(e.value)
             val = (e.target && e.target.value) || '';
             switch (name) {
                 case "begda":
                     setBegda(e.value)
-                    //cmnParatts.begda = DateFunction.formatDateToDBFormat(dateVal)
+                    cmnObjpar.begda = DateFunction.formatDateToDBFormat(dateVal)
                     break;
                 case "endda":
                     setEndda(e.value)
-                    //cmnParatts.endda = DateFunction.formatDateToDBFormat(dateVal)
+                    cmnObjpar.endda = DateFunction.formatDateToDBFormat(dateVal)
                     break;
                 default:
                     console.error("Pogresan naziv polja")
@@ -152,9 +140,10 @@ const CmnParatts = (props) => {
         } else {
             val = (e.target && e.target.value) || '';
         }
-        let _cmnParatts = { ...cmnParatts };
-        _cmnParatts[`${name}`] = val;
-        setCmnParatts(_cmnParatts);
+        let _cmnObjpar = { ...cmnObjpar };
+        _cmnObjpar[`${name}`] = val;
+
+        setCmnObjpar(_cmnObjpar);
     };
 
     const hideDeleteDialog = () => {
@@ -170,15 +159,15 @@ const CmnParatts = (props) => {
                         <div className="field col-12 md:col-5">
                             <label htmlFor="code">{translations[selectedLanguage].Code}</label>
                             <InputText id="code"
-                                value={props.cmnPar.code}
+                                value={props.cmnObj.code}
                                 disabled={true}
                             />
                         </div>
                         <div className="field col-12 md:col-7">
                             <label htmlFor="text">{translations[selectedLanguage].Text}</label>
                             <InputText
-                                id="text"
-                                value={props.cmnPar.text}
+                                id="textx"
+                                value={props.cmnObj.textx}
                                 disabled={true}
                             />
                         </div>
@@ -189,49 +178,51 @@ const CmnParatts = (props) => {
                 <div className="card">
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-7">
-                            <label htmlFor="att">{translations[selectedLanguage].Attribute} *</label>
-                            <Dropdown id="att"
-                                value={ddCmnParattsItem}
-                                options={ddCmnParattsItems}
-                                onChange={(e) => onInputChange(e, "options", 'att')}
+                            <label htmlFor="par">{translations[selectedLanguage].Attribute} *</label>
+                            <Dropdown id="par"
+                                value={ddCmnParItem}
+                                options={ddCmnParItems}
+                                onChange={(e) => onInputChange(e, "options", 'par')}
                                 required
                                 optionLabel="name"
                                 placeholder="Select One"
-                                className={classNames({ 'p-invalid': submitted && !cmnParatts.att })}
+                                className={classNames({ 'p-invalid': submitted && !cmnObjpar.par })}
                             />
-                            {submitted && !cmnParatts.att && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnObjpar.par && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                        <div className="p-fluid formgrid grid">
+                            <div className="field col-12 md:col-7">
+                                <label htmlFor="begda">{translations[selectedLanguage].Begda}</label>
+                                <Calendar
+                                    value={begda}
+                                    onChange={(e) => onInputChange(e, "Calendar", 'begda', this)}
+                                    showIcon
+                                    dateFormat="dd.mm.yy"
+                                />
+                            </div>
+                        </div>
+                        <div className="p-fluid formgrid grid">
+                            <div className="field col-12 md:col-7">
+                                <label htmlFor="roenddal">{translations[selectedLanguage].Endda}</label>
+                                <Calendar
+                                    value={endda}
+                                    onChange={(e) => onInputChange(e, "Calendar", 'endda')}
+                                    showIcon
+                                    dateFormat="dd.mm.yy"
+                                />
+                            </div>
                         </div>
                     </div>
 
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-11">
-                            <label htmlFor="text">{translations[selectedLanguage].Value}</label>
+                            <label htmlFor="value">{translations[selectedLanguage].Value}</label>
                             <InputText
-                                id="text"
-                                value={cmnParatts.text} onChange={(e) => onInputChange(e, "text", 'text')}
-                            />
-                        </div>
-                    </div>
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-5">
-                            <label htmlFor="begda">{translations[selectedLanguage].Begda} *</label>
-                            <Calendar
-                                value={begda}
-                                onChange={(e) => onInputChange(e, "Calendar", 'begda', this)}
-                                showIcon
-                                dateFormat="dd.mm.yy"
-                            />
-
-                        </div>
-                    </div>
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-5">
-                            <label htmlFor="roenddal">{translations[selectedLanguage].Endda} *</label>
-                            <Calendar
-                                value={endda}
-                                onChange={(e) => onInputChange(e, "Calendar", 'endda')}
-                                showIcon
-                                dateFormat="dd.mm.yy"
+                                id="value"
+                                value={cmnObjpar.value} onChange={(e) => onInputChange(e, "text", 'value')}
                             />
                         </div>
                     </div>
@@ -247,7 +238,7 @@ const CmnParatts = (props) => {
                         ) : null}
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
-                            {(props.parattsTip === 'CREATE') ? (
+                            {(props.objparTip === 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Create}
                                     icon="pi pi-check"
@@ -256,7 +247,7 @@ const CmnParatts = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.parattsTip !== 'CREATE') ? (
+                            {(props.objparTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Delete}
                                     icon="pi pi-trash"
@@ -265,7 +256,7 @@ const CmnParatts = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.parattsTip !== 'CREATE') ? (
+                            {(props.objparTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Save}
                                     icon="pi pi-check"
@@ -280,8 +271,8 @@ const CmnParatts = (props) => {
             </div>
             <DeleteDialog
                 visible={deleteDialogVisible}
-                inCmnParatts="delete"
-                item={cmnParatts.roll}
+                inCmnPar="delete"
+                item={cmnObjpar.roll}
                 onHide={hideDeleteDialog}
                 onDelete={handleDeleteClick}
             />
@@ -289,4 +280,4 @@ const CmnParatts = (props) => {
     );
 };
 
-export default CmnParatts;
+export default CmnObjpar;

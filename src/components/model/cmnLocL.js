@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useParams } from 'react-router-dom';
 import { classNames } from "primereact/utils";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -8,6 +9,7 @@ import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
 import { CmnLocService } from "../../service/model/CmnLocService";
+import { CmnLoctpService } from "../../service/model/CmnLoctpService";
 import CmnLoc from './cmnLoc';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
@@ -15,17 +17,23 @@ import './index.css';
 import { translations } from "../../configs/translations";
 import DateFunction from "../../utilities/DateFunction";
 import CmnLocartL from "./cmnLocartL"
+import CmnTerrlocL from "./cmnTerrlocL"
 import CmnLoclinkL from "./cmnLoclinkL"
 
 
 export default function CmnLocL(props) {
-
+  console.log(props, "##############################props############################")
+  const { loctpId: propsLocTpId } = props;
+  const { loctpId: routeLocTpId } = useParams();
+  const loctpCode = propsLocTpId || routeLocTpId;
+  const LOCATION_CODE = "-1"
   const objName = "cmn_loc"
   const selectedLanguage = localStorage.getItem('sl') || 'en'
   const emptyCmnLoc = EmptyEntities[objName]
   const [showMyComponent, setShowMyComponent] = useState(true);
   const [cmnLocs, setCmnLocs] = useState([]);
   const [cmnLoc, setCmnLoc] = useState(emptyCmnLoc);
+  const [cmnLoctpId, setCmnLoctpId] = useState(null);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
@@ -34,10 +42,22 @@ export default function CmnLocL(props) {
   const [locTip, setLocTip] = useState('');
   const [cmnLocartLVisible, setCmnLocartLVisible] = useState(false);
   const [cmnLoclinkLVisible, setCmnLoclinkLVisible] = useState(false);
+
+  const [cmnTerrlocLVisible, setCmnTerrlocLVisible] = useState(false);
+
   let i = 0
   const handleCancelClick = () => {
     props.setCmnLocLVisible(false);
   };
+
+  const handleConfirmClick = () => {
+    if (cmnLoc) {
+      console.log("###############--handleConfirmClick--###################")
+        props.onTaskComplete(cmnLoc);
+    } else {
+        toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'No row selected', life: 3000 });
+    }
+};
 
   useEffect(() => {
     async function fetchData() {
@@ -45,11 +65,26 @@ export default function CmnLocL(props) {
         ++i
         if (i < 2) {
           const cmnLocService = new CmnLocService();
-          const data = await cmnLocService.getLista();
+          const data = await cmnLocService.getListaLL(loctpCode);
           setCmnLocs(data);
 
           initFilters();
         }
+      } catch (error) {
+        console.error(error);
+        // Obrada greške ako je potrebna
+      }
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+          const cmnLoctpService = new CmnLoctpService();
+          const data = await cmnLoctpService.getIdByItem (loctpCode);
+          console.log(data, "**********CmnLoctpService************")
+          setCmnLoctpId(data.id);
       } catch (error) {
         console.error(error);
         // Obrada greške ako je potrebna
@@ -97,6 +132,10 @@ export default function CmnLocL(props) {
     const localObj = { newObj };
   }; 
 
+  const handleCmnTerrlocLDialogClose = (newObj) => {
+    const localObj = { newObj };
+  };
+
   const handleCmnLoclinkLDialogClose = (newObj) => {
     const localObj = { newObj };
   };
@@ -107,6 +146,10 @@ export default function CmnLocL(props) {
 
   const openLocart = () => {
     setCmnLocartDialog();
+  };
+
+  const openTerrloc = () => {
+    setCmnTerrlocDialog();
   };
 
   const openLocLink = () => {
@@ -174,7 +217,14 @@ export default function CmnLocL(props) {
     setShowMyComponent(true);
     setCmnLocartLVisible(true);
 
-  }   
+  }  
+
+  const setCmnTerrlocDialog = () => {
+    setShowMyComponent(true);
+    setCmnTerrlocLVisible(true);
+
+  } 
+
   const setCmnLoclinkLDialog = () => {
     setShowMyComponent(true);
     setCmnLoclinkLVisible(true);
@@ -185,8 +235,15 @@ export default function CmnLocL(props) {
     return (
       <div className="flex card-container">
         <div className="flex flex-wrap gap-1" />
-        <Button label={translations[selectedLanguage].Cancel} icon="pi pi-times" onClick={handleCancelClick} text raised
-        />
+        {props.lookUp && (
+                    <>
+                        <div className="flex flex-wrap gap-1" />
+                        <Button label={translations[selectedLanguage].Cancel} icon="pi pi-times" onClick={handleCancelClick} text raised />
+                        <div className="flex flex-wrap gap-1" />
+                        <Button label={translations[selectedLanguage].Confirm} icon="pi pi-times" onClick={handleConfirmClick} text raised disabled={!cmnLoc} />
+                    </>
+        )}
+        {/* {(props.dialog) ? (<Button label={translations[selectedLanguage].Cancel} icon="pi pi-times" onClick={handleCancelClick} text raised />): null} */}
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
@@ -197,7 +254,7 @@ export default function CmnLocL(props) {
           <Button label={translations[selectedLanguage].art} icon="pi pi-shield" onClick={openLocart} text raised disabled={!cmnLoc} />
         </div>     
         <div className="flex flex-wrap gap-1">
-          <Button label={translations[selectedLanguage].Terr} icon="pi pi-building" onClick={openLocart} text raised disabled={!cmnLoc} />
+          <Button label={translations[selectedLanguage].Terr} icon="pi pi-building" onClick={openTerrloc} text raised disabled={!cmnLoc} />
         </div>            
         <div className="flex-grow-1"></div>
         <b>{translations[selectedLanguage].LocationList}</b>
@@ -257,9 +314,11 @@ export default function CmnLocL(props) {
 
   // <--- Dialog
   const setCmnLocDialog = (cmnLoc) => {
+    setShowMyComponent(true)
     setVisible(true)
     setLocTip("CREATE")
-    setCmnLoc({ ...cmnLoc });
+    setCmnLoctpId(cmnLoctpId)
+    setCmnLoc({ ...cmnLoc, cmnLoctpId, loctpCode });
   }
   //  Dialog --->
 
@@ -304,8 +363,8 @@ export default function CmnLocL(props) {
         tableStyle={{ minWidth: "50rem" }}
         metaKeySelection={false}
         paginator
-        rows={10}
-        rowsPerPageOptions={[5, 10, 25, 50]}
+        rows={50}
+        rowsPerPageOptions={[10, 25, 50, 100]}
         onSelectionChange={(e) => setCmnLoc(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
@@ -361,7 +420,7 @@ export default function CmnLocL(props) {
       <Dialog
         header={translations[selectedLanguage].Location}
         visible={visible}
-        style={{ width: '60%' }}
+        style={{ width: '95%' }}
         onHide={() => {
           setVisible(false);
           setShowMyComponent(false);
@@ -370,11 +429,14 @@ export default function CmnLocL(props) {
         {showMyComponent && (
           <CmnLoc
             parameter={"inputTextValue"}
+            cmnLoctpId={cmnLoctpId}
+            loctpCode={loctpCode}
             cmnLoc={cmnLoc}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
             locTip={locTip}
+
           />
         )}
         <div className="p-dialog-header-icons" style={{ display: 'none' }}>
@@ -419,10 +481,32 @@ export default function CmnLocL(props) {
             handleCmnLoclinkLDialogClose={handleCmnLoclinkLDialogClose}
             setCmnLoclinkLVisible={setCmnLoclinkLVisible}
             dialog={true}
+            loctpCode={LOCATION_CODE}
+            cmnLoctpId={null} 
             lookUp={false}
           />
         )}
-      </Dialog>        
+      </Dialog>    
+      <Dialog
+        header={translations[selectedLanguage].LocterrList}
+        visible={cmnTerrlocLVisible}
+        style={{ width: '90%' }}
+        onHide={() => {
+          setCmnLocartLVisible(false);
+          setShowMyComponent(false);
+        }}
+      >
+        {showMyComponent && (
+          <CmnTerrlocL
+            parameter={"inputTextValue"}
+            cmnLoc={cmnLoc}
+            handleCmnTerrlocLDialogClose={handleCmnTerrlocLDialogClose}
+            setCmnTerrlocLVisible={setCmnTerrlocLVisible}
+            dialog={true}
+            lookUp={false}
+          />
+        )}
+      </Dialog>           
     </div>
   );
 }

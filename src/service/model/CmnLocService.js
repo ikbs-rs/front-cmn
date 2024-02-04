@@ -21,6 +21,24 @@ export class CmnLocService {
     }
   }
 
+  async getListaLL(objId) {
+    const selectedLanguage = localStorage.getItem('sl') || 'en'
+    const url = `${env.CMN_BACK_URL}/cmn/x/loc/_v/lista/?stm=cmn_locll_v&objid=${objId}&sl=${selectedLanguage}`;
+    const tokenLocal = await Token.getTokensLS();
+    const headers = {
+      Authorization: tokenLocal.token
+    };
+
+    try {
+      const response = await axios.get(url, { headers });
+      console.log(url, "*****************getListaLL******************", response.data)
+      return response.data.item;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
   async getObjTree() {
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const url = `${env.CMN_BACK_URL}/cmn/x/loc/_v/lista/?stm=cmn_loctree_json_v&sl=${selectedLanguage}`;
@@ -65,7 +83,7 @@ export class CmnLocService {
 
     try {
       const response = await axios.get(url, { headers });
-      return response.data.items;
+      return response.data.items||response.data.item;
     } catch (error) {
       console.error(error);
       throw error;
@@ -75,8 +93,9 @@ export class CmnLocService {
 
   async postCmnLoc(newObj) {
     try {
+      console.log(newObj, "***************postCmnLoc***************")
       const selectedLanguage = localStorage.getItem('sl') || 'en'
-      if (newObj.code.trim() === '' || newObj.text.trim() === '' || newObj.valid === null) {
+      if (newObj.text.trim() === '' || newObj.valid === null) {
         throw new Error(
           "Items must be filled!"
         );
@@ -88,9 +107,8 @@ export class CmnLocService {
         'Authorization': tokenLocal.token
       };
       const jsonObj = JSON.stringify(newObj)
-
+      console.log(newObj, "**************"  , jsonObj, "****************")
       const response = await axios.post(url, jsonObj, { headers });
-      //console.log("**************"  , response, "****************")
       return response.data.items;
     } catch (error) {
       console.error(error);
@@ -102,7 +120,7 @@ export class CmnLocService {
   async putCmnLoc(newObj) {
     try {
       const selectedLanguage = localStorage.getItem('sl') || 'en'
-      if (newObj.code.trim() === '' || newObj.text.trim() === '' || newObj.valid === null) {
+      if ( newObj.text.trim() === '' || newObj.valid === null) {
         throw new Error(
           "Items must be filled!"
         );
@@ -114,6 +132,7 @@ export class CmnLocService {
         'Authorization': tokenLocal.token
       };
       const jsonObj = JSON.stringify(newObj)
+      console.log(newObj, "**************"  , jsonObj, "****************")
       const response = await axios.put(url, jsonObj, { headers });
       //console.log("**************"  , response, "****************")
       return response.data.items;

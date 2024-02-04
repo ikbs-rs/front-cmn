@@ -11,9 +11,12 @@ import AppRightMenu from './AppRightMenu';
 
 import Um from './components/model/cmnUmL';
 import Loc from './components/model/cmnLocL';
+import LocW from './components/model/cmnLocW';
 import LocTP from './components/model/cmnLoctpL';
 import ObjTp from './components/model/cmnObjtpL';
 import Obj from './components/model/cmnObjL';
+import ObjWEnd from './components/model/cmnObjWEnd';
+import ObjW from './components/model/cmnObjW';
 import ObjD from './components/model/cmnObjDL';
 import ObjTree from './components/model/cmnObjTreeL';
 import LocTree from './components/model/cmnLocTreeL';
@@ -28,6 +31,7 @@ import Terrtp from './components/model/cmnTerrtpL';
 import Terr from './components/model/cmnTerrL';
 import Terratt from './components/model/cmnTerrattL';
 import Curr from './components/model/cmnCurrL';
+import Paymenttp from './components/model/cmnPaymenttpL';
 import Tgp from './components/model/cmnTgpL';
 import Tax from './components/model/cmnTaxL';
 
@@ -79,29 +83,32 @@ const App = () => {
             items: [
                 {
                     label: translations[selectedLanguage].Business_partners_administration,
-                    icon: 'pi pi-fw pi-bars',
+                    icon: 'pi pi-fw pi-user',
                     items: [
-                        { action: 'partpMenu', label: translations[selectedLanguage].Type_partners, icon: 'pi pi-fw pi-calendar', to: '/partp' },
-                        { action: 'parpMenu', label: translations[selectedLanguage].Business_partners, icon: 'pi pi-fw pi-calendar', to: '/par'  },
-                        { action: 'parattpMenu', label: translations[selectedLanguage].Properties_partners, icon: 'pi pi-fw pi-calendar' , to: '/paratt'},
+                        { action: 'partpMenu', label: translations[selectedLanguage].Type_partners, icon: 'pi pi-fw pi-clone', to: '/partp' },
+                        { action: 'parpMenu', label: translations[selectedLanguage].Business_partners, icon: 'pi pi-fw pi-clone', to: '/par'  },
+                        { action: 'parattpMenu', label: translations[selectedLanguage].Properties_partners, icon: 'pi pi-fw pi-clone' , to: '/paratt'},
                     ]
                 },
                 {
                     label: translations[selectedLanguage].Territorial_administration,
-                    icon: 'pi pi-fw pi-bars',
+                    icon: 'pi pi-fw pi-globe',
                     items: [
-                        { label: translations[selectedLanguage].Type_of_territory, icon: 'pi pi-fw pi-calendar', to: '/terrtp' },
-                        { label: translations[selectedLanguage].Territory, icon: 'pi pi-fw pi-calendar', to: '/terr'  },
-                        { label: translations[selectedLanguage].Properties_territory, icon: 'pi pi-fw pi-table' , to: '/terratt'}
+                        { label: translations[selectedLanguage].Type_of_territory, icon: 'pi pi-fw pi-clone', to: '/terrtp' },
+                        { label: translations[selectedLanguage].Territory, icon: 'pi pi-fw pi-clone', to: '/terr'  },
+                        { label: translations[selectedLanguage].Properties_territory, icon: 'pi pi-fw pi-clone' , to: '/terratt'}
                        // { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/terrtp'}
                     ]
                 },
                 {
                     label: translations[selectedLanguage].Location_administration,
-                    icon: 'pi pi-fw pi-bars',
+                    icon: 'pi pi-fw pi-map',
                     items: [
-                        { label: translations[selectedLanguage].Location_type, icon: 'pi pi-fw pi-calendar', to: '/loctp' },
-                        { label: translations[selectedLanguage].Locations, icon: 'pi pi-fw pi-calendar', to: '/loc'  },
+                        { label: translations[selectedLanguage].Location_type, icon: 'pi pi-fw pi-clone', to: '/loctp' },
+                        { label: translations[selectedLanguage].LocationsScene, icon: 'pi pi-fw pi-clone', to: '/locsc/XSC'  },
+                        { label: translations[selectedLanguage].LocationsSector, icon: 'pi pi-fw pi-clone', to: '/locsct/XSCT'  },
+                        { label: translations[selectedLanguage].LocationsSeatBlock, icon: 'pi pi-fw pi-clone', to: '/locsb/XSB'  },
+                        { label: translations[selectedLanguage].Locations, icon: 'pi pi-fw pi-clone', to: '/loc/-1'  },
                         { label: translations[selectedLanguage].LocTree, icon: 'pi pi-fw pi-clone', to: '/loctree' },
                       //d  { label: translations[selectedLanguage].Properties_location, icon: 'pi pi-fw pi-calendar' , to: '/locatt'},
                        // { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/loclinktp'}
@@ -109,38 +116,45 @@ const App = () => {
                 },
                 {
                     label: translations[selectedLanguage].Currency_administration,
-                    icon: 'pi pi-fw pi-bars',
+                    icon: 'pi pi-fw pi-dollar',
                     items: [
-                        { label: translations[selectedLanguage].Currency, icon: 'pi pi-fw pi-calendar' , to: '/curr'},
+                        { label: translations[selectedLanguage].Currency, icon: 'pi pi-fw pi-clone' , to: '/curr'},
+                        { label: translations[selectedLanguage].Paymenttp, icon: 'pi pi-fw pi-clone' , to: '/paymenttp'},
                     ]
                 },
                 {
                     label: translations[selectedLanguage].Tax_system,
-                    icon: 'pi pi-fw pi-bars',
+                    icon: 'pi pi-fw pi-percentage',
                     items: [
-                        { label: translations[selectedLanguage].Tariff_groups, icon: 'pi pi-fw pi-calendar' , to: '/tgp'},
-                        { label: translations[selectedLanguage].Taxes, icon: 'pi pi-fw pi-calendar' , to: '/tax'}
+                        { label: translations[selectedLanguage].Tariff_groups, icon: 'pi pi-fw pi-clone' , to: '/tgp'},
+                        { label: translations[selectedLanguage].Taxes, icon: 'pi pi-fw pi-clone' , to: '/tax'}
                     ]
                 },
                 {
                     label: translations[selectedLanguage].Objects_administration,
-                    icon: 'pi pi-prime',
+                    icon: 'pi pi-cog',
                     items: [
-                        { action: 'objtpMenu', label: translations[selectedLanguage].Objects_type, icon: 'pi pi-database', to: '/objtp' },
-                        { action: 'pobjMenu', label: translations[selectedLanguage].Objects, icon: 'pi pi-fw pi-clone', to: '/obj' },
+                        { action: 'objtpMenu', label: translations[selectedLanguage].Objects_type, icon: 'pi pi-clone', to: '/objtp' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXPK, icon: 'pi pi-fw pi-clone', to: '/objpk/XPK' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXPM, icon: 'pi pi-fw pi-clone', to: '/objpm/XPM' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXORG, icon: 'pi pi-fw pi-clone', to: '/objorg/XORG' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXTCTP, icon: 'pi pi-fw pi-clone', to: '/objtctp/XTCTP' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXDOC, icon: 'pi pi-fw pi-clone', to: '/objdoc/XDOC' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXBL, icon: 'pi pi-fw pi-clone', to: '/objdoc/XBL' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].Objects, icon: 'pi pi-fw pi-clone', to: '/obj/-1' },                      
                         { action: 'objattMenu', label: translations[selectedLanguage].Properties_object, icon: 'pi pi-fw pi-clone', to: '/objatt' },
                         { action: 'objatttpMenu', label: translations[selectedLanguage].Group_of_properties, icon: 'pi pi-fw pi-clone', to: '/objatttp' },
-                        { action: 'linkMenu', label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-exclamation-triangle', to: '/link' },
+                        //{ action: 'linkMenu', label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-exclamation-triangle', to: '/link' },
                         { action: 'objtreeMenu', label: translations[selectedLanguage].ObjectsTree, icon: 'pi pi-fw pi-clone', to: '/objtree' },
-                        { action: 'objconMenu', label: translations[selectedLanguage].ObjCon, icon: 'pi pi-fw pi-clone', to: '/objcon' },
-                        { action: 'objdMenu', label: translations[selectedLanguage].ObjectsD, icon: 'pi pi-fw pi-clone', to: '/objd' },
+                        // { action: 'objconMenu', label: translations[selectedLanguage].ObjCon, icon: 'pi pi-fw pi-clone', to: '/objcon' },
+                        // { action: 'objdMenu', label: translations[selectedLanguage].ObjectsD, icon: 'pi pi-fw pi-clone', to: '/objd' },
                     ]
                 },
                 {
                     label: translations[selectedLanguage].Other,
-                    icon: 'pi pi-prime',
+                    icon: 'pi pi-table',
                     items: [
-                        { label: translations[selectedLanguage].Program_modules, icon: 'pi pi-database', to: '/module' },
+                        { label: translations[selectedLanguage].Program_modules, icon: 'pi pi-clone', to: '/module' },
                   //      { label: translations[selectedLanguage].Menu_administration, icon: 'pi pi-fw pi-clone', to: '/menu' },
                         { label: translations[selectedLanguage].Units_of_measurement, icon: 'pi pi-fw pi-clone', to: '/um' },
                     ]
@@ -513,17 +527,27 @@ const App = () => {
                         <Route path="/terr" element={<Terr />} />
                         <Route path="/terratt" element={<Terratt />} />
                         <Route path="/curr" element={<Curr />} />
+                        <Route path="/paymenttp" element={<Paymenttp />} />
                         <Route path="/tgp" element={<Tgp />} />
                         <Route path="/tax" element={<Tax />} />
 
                         
                         <Route path="/loctp" element={<LocTP />} />
-                        <Route path="/loc" element={<Loc />} />
+                        <Route path="/loc/:loctpId" element={<LocW />} />
+                        <Route path="/locsc/:loctpId" element={<LocW />} />
+                        <Route path="/locsct/:loctpId" element={<LocW />} />
+                        <Route path="/locsb/:loctpId" element={<LocW />} />                     
                         <Route path="/locatt" element={<Um />} />
                         <Route path="/loclinktp" element={<Um />} />
 
                         <Route path="/objtp" element={<ObjTp />} />
-                        <Route path="/obj" element={<Obj />} />
+                        <Route path="/objpk/:objtpCode" element={<ObjW />} />
+                        <Route path="/objpm/:objtpCode" element={<ObjW />} />
+                        <Route path="/objorg/:objtpCode" element={<ObjW />} />
+                        <Route path="/objtctp/:objtpCode" element={<ObjW />} />
+                        <Route path="/objdoc/:objtpCode" element={<ObjW />} />
+                        <Route path="/obj/:objtpCode" element={<ObjW />} />
+
                         <Route path="/objatttp" element={<ObjAttTp />} />
                         <Route path="/objatt" element={<ObjAtt />} />
                         <Route path="/link" element={<Link />} />

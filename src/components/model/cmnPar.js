@@ -10,10 +10,11 @@ import DeleteDialog from '../dialog/DeleteDialog';
 import { translations } from "../../configs/translations";
 import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from "primereact/calendar";
-import DateFunction from "../../utilities/DateFunction"
+import DateFunction from "../../utilities/DateFunction";
+import env from '../../configs/env';
 
 const CmnPar = (props) => {
-//console.log(props, "*-*-*-*-*-*-*-*****CmnPar-*-*-*-*-*-*-*-*-*-*-*-*-*-*")
+    //console.log(props, "*-*-*-*-*-*-*-*****CmnPar-*-*-*-*-*-*-*-*-*-*-*-*-*-*")
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [cmnPar, setCmnPar] = useState(props.cmnPar);
@@ -65,13 +66,13 @@ const CmnPar = (props) => {
             const dataToSend = { type: 'dataFromIframe', visible: false };
             sendToParent(dataToSend);
         } else {
-            props.setVisible(false);  
+            props.setVisible(false);
         }
-      };    
-      const sendToParent = (data) => {
-        const parentOrigin = 'http://ws10.ems.local:8354'; // Promenite ovo na stvarni izvor roditeljskog dokumenta
+    };
+    const sendToParent = (data) => {
+        const parentOrigin = `${env.DOMEN}`; // Promenite ovo na stvarni izvor roditeljskog dokumenta
         window.parent.postMessage(data, parentOrigin);
-      }
+    }
     const handleCreateClick = async () => {
         try {
             setSubmitted(true);
@@ -80,6 +81,9 @@ const CmnPar = (props) => {
             const cmnParService = new CmnParService();
             const data = await cmnParService.postCmnPar(cmnPar);
             cmnPar.id = data
+            if (cmnPar.code === null || cmnPar.code === "") {
+                cmnPar.code = cmnPar.id;
+            }
             props.handleDialogClose({ obj: cmnPar, parTip: props.parTip });
             props.setVisible(false);
         } catch (err) {
@@ -301,15 +305,15 @@ const CmnPar = (props) => {
                     </div>
 
                     <div className="flex flex-wrap gap-1">
-                        
-                            <Button
-                                label={translations[selectedLanguage].Cancel}
-                                icon="pi pi-times"
-                                className="p-button-outlined p-button-secondary"
-                                onClick={handleCancelClick}
-                                outlined
-                            />
-                
+
+                        <Button
+                            label={translations[selectedLanguage].Cancel}
+                            icon="pi pi-times"
+                            className="p-button-outlined p-button-secondary"
+                            onClick={handleCancelClick}
+                            outlined
+                        />
+
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
                             {(props.parTip === 'CREATE') ? (

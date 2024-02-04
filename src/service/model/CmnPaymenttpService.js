@@ -2,62 +2,10 @@ import axios from 'axios';
 import env from "../../configs/env"
 import Token from "../../utilities/Token";
 
-export class CmnObjService {
-
-  async getLista() {
+export class CmnPaymenttpService {
+  async getCmnPaymenttps() {
     const selectedLanguage = localStorage.getItem('sl') || 'en'
-    const url = `${env.CMN_BACK_URL}/cmn/x/obj/_v/lista/?stm=cmn_obj_v&sl=${selectedLanguage}`;
-    const tokenLocal = await Token.getTokensLS();
-    const headers = {
-      Authorization: tokenLocal.token
-    };
-
-    try {
-      const response = await axios.get(url, { headers });
-      return response.data.item;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-
-  async getListaLL(objId) {
-    const selectedLanguage = localStorage.getItem('sl') || 'en'
-    const url = `${env.CMN_BACK_URL}/cmn/x/obj/_v/lista/?stm=cmn_objll_v&objid=${objId}&sl=${selectedLanguage}`;
-    const tokenLocal = await Token.getTokensLS();
-    const headers = {
-      Authorization: tokenLocal.token
-    };
-
-    try {
-      const response = await axios.get(url, { headers });
-      return response.data.item;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-
-  async getObjTree() {
-    const selectedLanguage = localStorage.getItem('sl') || 'en'
-    const url = `${env.CMN_BACK_URL}/cmn/x/obj/_v/lista/?stm=cmn_objtree_json_v&sl=${selectedLanguage}`;
-    const tokenLocal = await Token.getTokensLS();
-    const headers = {
-      Authorization: tokenLocal.token
-    };
-
-    try {
-      const response = await axios.get(url, { headers });
-      return response.data.item;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-
-  async getCmnObjs() {
-    const selectedLanguage = localStorage.getItem('sl') || 'en'
-    const url = `${env.CMN_BACK_URL}/cmn/x/obj/?sl=${selectedLanguage}`;
+    const url = `${env.CMN_BACK_URL}/cmn/x/paymenttp/?sl=${selectedLanguage}`;
     const tokenLocal = await Token.getTokensLS();
     const headers = {
       Authorization: tokenLocal.token
@@ -72,18 +20,17 @@ export class CmnObjService {
     }
   }
 
-  async getCmnObj(objId) {
+  async getCmnPaymenttp(objId) {
     const selectedLanguage = localStorage.getItem('sl') || 'en'
-    const url = `${env.CMN_BACK_URL}/cmn/x/obj/${objId}/?sl=${selectedLanguage}`;
+    const url = `${env.CMN_BACK_URL}/cmn/x/paymenttp/${objId}/?sl=${selectedLanguage}`;
     const tokenLocal = await Token.getTokensLS();
     const headers = {
       Authorization: tokenLocal.token
     };
-
+    
     try {
       const response = await axios.get(url, { headers });
-      console.log(response.data.item, "************************getCmnObj**************************")
-      return response.data.item;
+      return response.data.items;
     } catch (error) {
       console.error(error);
       throw error;
@@ -91,7 +38,7 @@ export class CmnObjService {
   }
 
 
-  async postCmnObj(newObj) {
+  async postCmnPaymenttp(newObj) {
     try {
       const selectedLanguage = localStorage.getItem('sl') || 'en'
       if (newObj.code.trim() === '' || newObj.text.trim() === '' || newObj.valid === null) {
@@ -99,14 +46,13 @@ export class CmnObjService {
           "Items must be filled!"
         );
       }
-      const url = `${env.CMN_BACK_URL}/cmn/x/obj/?sl=${selectedLanguage}`;
+      const url = `${env.CMN_BACK_URL}/cmn/x/paymenttp/?sl=${selectedLanguage}`;
       const tokenLocal = await Token.getTokensLS();
       const headers = {
         'Content-Type': 'application/json',
         'Authorization': tokenLocal.token
       };
       const jsonObj = JSON.stringify(newObj)
-
       const response = await axios.post(url, jsonObj, { headers });
       //console.log("**************"  , response, "****************")
       return response.data.items;
@@ -117,7 +63,7 @@ export class CmnObjService {
 
   }
 
-  async putCmnObj(newObj) {
+  async putCmnPaymenttp(newObj) {
     try {
       const selectedLanguage = localStorage.getItem('sl') || 'en'
       if (newObj.code.trim() === '' || newObj.text.trim() === '' || newObj.valid === null) {
@@ -125,7 +71,7 @@ export class CmnObjService {
           "Items must be filled!"
         );
       }
-      const url = `${env.CMN_BACK_URL}/cmn/x/obj/?sl=${selectedLanguage}`;
+      const url = `${env.CMN_BACK_URL}/cmn/x/paymenttp/?sl=${selectedLanguage}`;
       const tokenLocal = await Token.getTokensLS();
       const headers = {
         'Content-Type': 'application/json',
@@ -142,9 +88,9 @@ export class CmnObjService {
 
   }
 
-  async deleteCmnObj(newObj) {
+  async deleteCmnPaymenttp(newObj) {
     try {
-      const url = `${env.CMN_BACK_URL}/cmn/x/obj/${newObj.id}`;
+      const url = `${env.CMN_BACK_URL}/cmn/x/paymenttp/${newObj.id}`;
       const tokenLocal = await Token.getTokensLS();
       const headers = {
         'Authorization': tokenLocal.token

@@ -82,7 +82,9 @@ const EmptyEntities =
     "text": "",
     "longtext": "",
     "tp": null,
-    "valid": "1"
+    "valid": "1",
+    "color": "",
+    "icon": ""
   },
   "cmn_locatt": {
     "id": null,
@@ -120,7 +122,9 @@ const EmptyEntities =
     "begda": "",
     "endda": "99991231",
     "hijerarhija": null,
-    "onoff": null
+    "onoff": null,
+    "color": "",
+    "icon": ""
   },
   "cmn_loclinktp": {
     "id": null,
@@ -210,7 +214,9 @@ const EmptyEntities =
     "code": "",
     "text": "",
     "tp": null,
-    "valid": "1"
+    "valid": "1",
+    "color": "",
+    "icon": ""
   },
   "cmn_objatt": {
     "id": null,
@@ -279,6 +285,15 @@ const EmptyEntities =
     "begda": "",
     "endda": ""
   },
+  "cmn_objpar": {
+    "id": null,
+    "site": null,
+    "obj": null,
+    "par": null,
+    "begda": "",
+    "endda": "",
+    "value": ""
+  },
   "cmn_objtp": {
     "id": null,
     "site": null,
@@ -319,7 +334,8 @@ const EmptyEntities =
     "idnum": "",
     "pdvnum": "",
     "begda": "",
-    "endda": ""
+    "endda": "",
+    "docid": ""
   },
   "cmn_paraccount": {
     "id": null,
@@ -398,7 +414,8 @@ const EmptyEntities =
     "site": null,
     "code": "",
     "text": "",
-    "valid": "1"
+    "valid": "1",
+		"xcode": ""
   },
   "cmn_partpx": {
     "id": null,
@@ -523,7 +540,9 @@ const EmptyEntities =
   "cmn_terrloc": {
     "id": null,
     "terr": null,
-    "loc": null
+    "loc": null,
+    "begda": "",
+    "endda": ""
   },
   "cmn_terrtp": {
     "id": null,

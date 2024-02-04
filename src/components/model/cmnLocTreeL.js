@@ -12,10 +12,14 @@ import { Toast } from "primereact/toast";
 import { ContextMenu } from 'primereact/contextmenu';
 import { InputText } from 'primereact/inputtext';
 import CmnLocobjL from './cmnLocobjL';
+import CmnLoclinkL from "./cmnLoclinkL";
+import { EmptyEntities } from '../../service/model/EmptyEntities';
 
 export default function CmnLocTreeL() {
+    console.log("Ulaz")
     let i = 0
     const objName = "cmn_obj"
+    const emptyCmnObj = EmptyEntities[objName]
     const preprocessData = (data) => {
         const rootNode = data[0]; // Assuming your data contains only one root node
 
@@ -23,17 +27,22 @@ export default function CmnLocTreeL() {
             return {
                 key: node.id,
                 data: {
-                    parentid: node.parentid,
+                    parent_id: node.parent_id,
+                    loclink: node.loclink,
                     site: node.site,
-                    code: node.code,
-                    text: node.text,
                     tp: node.tp,
-                    textx: node.textx,
+                    loctp1: node.loctp1,                    
+                    loctp2: node.loctp2,
+                    val: node.val,
+                    begda: node.begda,
+                    endda: node.endda,
+                    hijerarhija: node.hijerarhija,
+                    onoff: node.onoff,
+                    color: node.color,
+                    icon: node.icon,
+                    text: node.text,
                     ctp: node.ctp,
-                    ntp: node.ntp,
-                    lang: node.lang,
-                    grammcase: node.grammcase,
-                    valid: node.valid
+                    ntp: node.ntp                  
                 },
                 children: node.children ? node.children.map(preprocessNode) : [],
             };
@@ -44,6 +53,7 @@ export default function CmnLocTreeL() {
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [nodes, setNodes] = useState([]);
     const [locTip, setLocTip] = useState("");
+    const [objTip, setObjTip] = useState("");
     const [cmnLoc, setCmnLoc] = useState({});
     const [visible, setVisible] = useState(false);
     const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
@@ -53,6 +63,13 @@ export default function CmnLocTreeL() {
     const [selectedNodeData, setSelectedNodeData] = useState(null);
     const [cmnLocobjLVisible, setCmnLocobjLVisible] = useState(false);
     const [showMyComponent, setShowMyComponent] = useState(true);
+    const [cmnLoclinkLVisible, setCmnLoclinkLVisible] = useState(false);
+
+    const [refreshing, setRefreshing] = useState(false);
+    const [reloadTimer, setReloadTimer] = useState(null);
+    let [key, setKey] = useState(0);
+    let [cmnLocData, setCmnLocData] = useState({})
+
 
     const [globalFilter, setGlobalFilter] = useState('');
     const cm = useRef(null);
@@ -107,17 +124,44 @@ export default function CmnLocTreeL() {
                 if (i < 2) {
                     const cmnLocService = new CmnLocService();
                     const data = await cmnLocService.getObjTree();
-
+console.log(data, "*******************************getObjTree***********************************")
                     const processedData = preprocessData(data); // Preprocess the data
                     setNodes(processedData);
+                    setRefreshing(false);
                 }
             } catch (error) {
                 console.error(error);
                 // Obrada greške ako je potrebna
+                setRefreshing(false);
             }
         }
         fetchData();
-    }, []);
+    }, [refreshing]);
+
+
+
+    const handleReload = () => {
+        setRefreshing(true); // Označava da je započeto ažuriranje
+        //fetchData();
+
+        // Pokrenite tajmer za automatsko ažuriranje (na primer, svakih 60 sekundi)
+        const timer = setInterval(() => {
+            //fetchData();
+            setRefreshing(true);
+        }, 60000); // 60 sekundi
+
+        setReloadTimer(timer);
+    };
+
+    const getCmnLocation = async (newObj) => {
+        const cmnLocService = new CmnLocService();
+        const data = await cmnLocService.getCmnLoc(newObj.id);
+
+        data.cmnLoctpId = newObj.tp 
+        data.loctpCode = "-1"
+
+        return data
+    };
 
     const handleDialogClose = (newObj) => {
         const localObj = { newObj };
@@ -145,6 +189,12 @@ export default function CmnLocTreeL() {
         const localObj = { newObj };
     };
 
+    const handleCmnLoclinkLDialogClose = (newObj) => {
+        console.log("Zatvorio")
+        const localObj = { newObj };
+        setRefreshing(true);
+    };
+
     const findIndexById = (id) => {
         let index = -1;
 
@@ -158,49 +208,76 @@ export default function CmnLocTreeL() {
         return index;
     };
 
-    const setCmnLocDialog = (cmnLoc) => {
+    const setCmnLocDialog = (newObj) => {
+        console.log(newObj, "***********************setCmnLocDialog****************************newObj*")
         setVisible(true)
-        setCmnLoc({ ...cmnLoc });
+        setCmnLoc(newObj);
     }
 
-    const setCmnLocobjLDialog = (cmnLoc) => {
+    const setCmnLocobjLDialog = (newObj) => {
         setShowMyComponent(true);
         setCmnLocobjLVisible(true);
-        setCmnLoc({ ...cmnLoc });
+        setCmnLoc({ ...newObj });
     }
+
+    const setCmnLoclinkLDialog = (newObj) => {
+        setCmnLoc({ ...newObj });
+        setShowMyComponent(true);
+        setCmnLoclinkLVisible(true);
+
+    }
+
+    const openNew = () => {
+        setLocTip("CREATE");
+        setCmnLocDialog(emptyCmnObj);
+    };
 
     const actionTemplate = (rowData) => {
         const convertToOriginalFormat = (node) => {
+            console.log(node, "***********************actionTemplate*****************************")
             return {
                 id: node.key,
-                parentid: node.data.parentid,
+                parent_id: node.data.parent_id,
+                loclink: node.data.loclink,
                 site: null,
-                code: node.data.code,
-                text: node.data.text,
-                textx: node.data.text,
                 tp: node.data.tp,
-                ctp: node.data.tp,
-                ntp: node.data.tp,
-                lang: selectedLanguage,
-                grammcase: node.data.grammcase,
-                valid: node.data.valid
+                loctp1: node.data.loctp1,                    
+                loctp2: node.data.loctp2,
+                val: node.data.val,
+                begda: node.data.begda,
+                endda: node.data.endda,
+                hijerarhija: node.data.hijerarhija,
+                onoff: node.data.onoff,
+                color: node.data.color,
+                icon: node.data.icon,
+                text: node.data.text,
+                ctp: node.data.ctp,
+                ntp: node.data.ntp 
             };
         };
         return (
             <div className="flex flex-wrap gap-2">
-                {/** 
                 <Button type="button" icon="pi pi-sitemap" severity="danger" rounded raised
-                    onClick={() => {
-                        const cmnLocData = convertToOriginalFormat(rowData); // Convert rowData to the desired format
-                        setCmnLocobjLDialog(cmnLocData);
+                    onClick={ async () => {
+                        const _cmnLocData = convertToOriginalFormat(rowData); // Convert rowData to the desired format
+                        const data = await getCmnLocation(_cmnLocData)
+                        console.log(cmnLocData, "$$$$$$$$$$$$$####$$$$$$$$$$$$$$$$$$$###$$$$$$$$$$$$$$$$$$$$$$####$$$$$$$$$$$$$$$$$", rowData)
+                        // setCmnLocobjLDialog(cmnLocData);
+                        setCmnLoclinkLDialog(data);
                         setLocTip("UPDATE");
-                    }}                
+                    }}
                 ></Button>
-                */}
                 <Button type="button" icon="pi pi-pencil" severity="secondary" rounded raised
-                    onClick={() => {
-                        const cmnLocData = convertToOriginalFormat(rowData); // Convert rowData to the desired format
-                        setCmnLocDialog(cmnLocData);
+                    onClick={async () => {
+                        //setKey(++key)
+                        const _cmnLocData = convertToOriginalFormat(rowData); // Convert rowData to the desired format
+                        setCmnLocData(_cmnLocData)
+                        console.log(_cmnLocData.id, "$$1111111$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$data$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+                        
+                        const data = await getCmnLocation(_cmnLocData)
+
+                        console.log(data, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$data$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", rowData)
+                        setCmnLocDialog(data);
                         setLocTip("UPDATE");
                     }}
                 ></Button>
@@ -230,14 +307,14 @@ export default function CmnLocTreeL() {
         return (
             <div className="flex card-container">
                 <div className="flex flex-wrap gap-1">
-                    <Button label={translations[selectedLanguage].Task1} icon="pi pi-plus" severity="success" onClick={console.log("Prvo")} text raised />
+                    <Button label={translations[selectedLanguage].Task1} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
                 </div>
-                <div className="flex flex-wrap gap-1">
+                {/* <div className="flex flex-wrap gap-1">
                     <Button label={translations[selectedLanguage].Task2} icon="pi pi-shield" onClick={console.log("Prvo")} text raised disabled={!cmnLoc} />
                 </div>
                 <div className="flex flex-wrap gap-1">
                     <Button label={translations[selectedLanguage].Task3} icon="pi pi-sitemap" onClick={console.log("Prvo")} text raised disabled={!cmnLoc} />
-                </div>
+                </div> */}
                 <div className="flex-grow-1" />
                 <b>{translations[selectedLanguage].LocList}</b>
                 <div className="flex-grow-1"></div>
@@ -259,7 +336,10 @@ export default function CmnLocTreeL() {
     //const header = <div className="text-xl font-bold">Object tree</div>;
     const footer = (
         <div className="flex justify-content-start">
-            <Button icon="pi pi-refresh" label="Reload" severity="warning" text raised />
+            <Button icon="pi pi-refresh" label="Reload" severity="warning" text raised
+                onClick={handleReload}
+                disabled={refreshing}
+            />
         </div>
     );
 
@@ -280,7 +360,7 @@ export default function CmnLocTreeL() {
                 scrollable scrollHeight="720px" tableStyle={{ minWidth: '50rem' }}
             >
                 <Column field="text" header="Text" expander style={{ width: "40%" }}></Column>
-                <Column field="code" header="Code" style={{ width: "20%" }}></Column>
+                {/* <Column field="code" header="Code" style={{ width: "20%" }}></Column> */}
                 <Column field="ntp" header="Tp" style={{ width: "30%" }}></Column>
                 {/**                 */}
                 <Column body={actionTemplate} headerClassName="w-10rem" style={{ width: "10%" }} />
@@ -303,6 +383,28 @@ export default function CmnLocTreeL() {
                         setVisible={setVisible}
                         dialog={true}
                         locTip={locTip}
+                        cmnLoctpId={"-1"}
+                        loctpCode={"-1"}
+                    />
+                )}
+            </Dialog>
+            <Dialog
+                header={translations[selectedLanguage].LoclinkList}
+                visible={cmnLoclinkLVisible}
+                style={{ width: '90%' }}
+                onHide={() => {
+                    setCmnLoclinkLVisible(false);
+                    setShowMyComponent(false);
+                }}
+            >
+                {showMyComponent && (
+                    <CmnLoclinkL
+                        parameter={"inputTextValue"}
+                        cmnLoc={cmnLoc}
+                        handleCmnLoclinkLDialogClose={handleCmnLoclinkLDialogClose}
+                        setCmnLoclinkLVisible={setCmnLoclinkLVisible}
+                        dialog={true}
+                        lookUp={false}
                     />
                 )}
             </Dialog>

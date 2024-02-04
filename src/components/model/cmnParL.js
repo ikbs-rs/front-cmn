@@ -352,7 +352,7 @@ export default function CmnParL(props) {
         tableStyle={{ minWidth: "50rem" }}
         metaKeySelection={false}
         paginator
-        rows={10}
+        rows={25}
         rowsPerPageOptions={[5, 10, 25, 50]}
         onSelectionChange={(e) => setCmnPar(e.value)}
         onRowSelect={onRowSelect}
@@ -381,7 +381,7 @@ export default function CmnParL(props) {
         ></Column>
         <Column
           field="ntp"
-          header={translations[selectedLanguage].Text}
+          header={translations[selectedLanguage].ntp}
           sortable
           filter
           style={{ width: "35%" }}

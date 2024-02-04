@@ -2,46 +2,28 @@ import axios from 'axios';
 import env from "../../configs/env"
 import Token from "../../utilities/Token";
 
-export class CmnLoclinkService {
+export class CmnObjparService {
 
     async getLista(objId) {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.CMN_BACK_URL}/cmn/loclink/_v/fkey/?stm=cmn_loclink_v&id=${objId}&sl=${selectedLanguage}`;
+        const url = `${env.CMN_BACK_URL}/cmn/link/_v/fkey/?stm=cmn_objpar_v&id=${objId}&sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
-            Authorization: tokenLocal.token
+          Authorization: tokenLocal.token
         };
-
+    
         try {
-            const response = await axios.get(url, { headers });
-            return response.data.item;
+          const response = await axios.get(url, { headers });
+          return response.data.item;
         } catch (error) {
-            console.error(error);
-            throw error;
+          console.error(error);
+          throw error;
         }
-    }
+      }
 
-    async getListaLL(objId, locCode) {
+    async getCmnObjpars() {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.CMN_BACK_URL}/cmn/loclink/_v/fkey/?stm=cmn_loclinkll_v&item=${locCode}&id=${objId}&sl=${selectedLanguage}`;
-        const tokenLocal = await Token.getTokensLS();
-        const headers = {
-            Authorization: tokenLocal.token
-        };
-
-        try {
-            const response = await axios.get(url, { headers });
-            console.log(url, "******************************getListaLL*********************************", response.data.item)
-            return response.data.item;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    }
-
-    async getCmnLoclinks() {
-        const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.CMN_BACK_URL}/cmn/loclink/?sl=${selectedLanguage}`;
+        const url = `${env.CMN_BACK_URL}/cmn/objpar/?sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
             Authorization: tokenLocal.token
@@ -56,9 +38,9 @@ export class CmnLoclinkService {
         }
     }
 
-    async getCmnLoclink(objId) {
+    async getCmnObjpar(objId) {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.CMN_BACK_URL}/cmn/loclink/${objId}/?sl=${selectedLanguage}`;
+        const url = `${env.CMN_BACK_URL}/cmn/objpar/${objId}/?sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
             Authorization: tokenLocal.token
@@ -74,22 +56,22 @@ export class CmnLoclinkService {
     }
 
 
-    async postCmnLoclink(newObj) {
+    async postCmnObjpar(newObj) {
         try {
             const selectedLanguage = localStorage.getItem('sl') || 'en'
-            if (newObj.obj === null || newObj.objtp === null) {
+            if (newObj.action === null || newObj.roll === null) {
                 throw new Error(
                     "Items must be filled!"
                 );
             }
-            const url = `${env.CMN_BACK_URL}/cmn/loclink/?sl=${selectedLanguage}`;
+            const url = `${env.CMN_BACK_URL}/cmn/objpar/?sl=${selectedLanguage}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': tokenLocal.token
             };
             const jsonObj = JSON.stringify(newObj)
-            console.log(newObj, "--------jsonObj---------", url)
+
             const response = await axios.post(url, jsonObj, { headers });
             return response.data.items;
         } catch (error) {
@@ -98,15 +80,15 @@ export class CmnLoclinkService {
         }
     }
 
-    async putCmnLoclink(newObj) {
+    async putCmnObjpar(newObj) {
         try {
             const selectedLanguage = localStorage.getItem('sl') || 'en'
-            if (newObj.obj === null || newObj.objtp === null) {
+            if (newObj.action === null || newObj.roll === null)  {
                 throw new Error(
                     "Items must be filled!"
                 );
             }
-            const url = `${env.CMN_BACK_URL}/cmn/loclink/?sl=${selectedLanguage}`;
+            const url = `${env.CMN_BACK_URL}/cmn/objpar/?sl=${selectedLanguage}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Content-Type': 'application/json',
@@ -123,9 +105,9 @@ export class CmnLoclinkService {
 
     }
 
-    async deleteCmnLoclink(newObj) {
+    async deleteCmnObjpar(newObj) {
         try {
-            const url = `${env.CMN_BACK_URL}/cmn/loclink/${newObj.id}`;
+            const url = `${env.CMN_BACK_URL}/cmn/objpar/${newObj.id}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Authorization': tokenLocal.token

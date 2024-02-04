@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { classNames } from 'primereact/utils';
-import { CmnObjService } from "../../service/model/CmnObjService";
+import { CmnPaymenttpService } from "../../service/model/CmnPaymenttpService";
 import './index.css';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -8,20 +8,13 @@ import { Dropdown } from 'primereact/dropdown';
 import { Toast } from "primereact/toast";
 import DeleteDialog from '../dialog/DeleteDialog';
 import { translations } from "../../configs/translations";
-import env from "../../configs/env"
-import axios from 'axios';
-import Token from "../../utilities/Token";
-import { ColorPicker } from 'primereact/colorpicker';
 
-const CmnObj = (props) => {
-console.log(props, "*props*************************************************CmnObj*************************************************************")
-    const selectedLanguage = localStorage.getItem('sl') || 'en'
+const CmnPaymenttp = (props) => {
+    const selectedLanguage = localStorage.getItem('sl')||'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [dropdownItem, setDropdownItem] = useState(null);
     const [dropdownItems, setDropdownItems] = useState(null);
-    const [cmnObj, setCmnObj] = useState(props.cmnObj);
-    const [ddTpItem, setDdTpItem] = useState(null);
-    const [ddTpItems, setDdTpItems] = useState(null);
+    const [cmnPaymenttp, setCmnPaymenttp] = useState(props.cmnPaymenttp);
     const [submitted, setSubmitted] = useState(false);
 
     const toast = useRef(null);
@@ -31,31 +24,7 @@ console.log(props, "*props*************************************************CmnOb
     ];
 
     useEffect(() => {
-        setDropdownItem(findDropdownItemByCode(props.cmnObj.valid));
-    }, []);
-
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const objtpID = props.cmnObj.tp == null ? props.cmnObjtpId : props.cmnObj.tp
-                const url = `${env.CMN_BACK_URL}/cmn/x/objtp/?sl=${selectedLanguage}`;
-                const tokenLocal = await Token.getTokensLS();
-                const headers = {
-                    Authorization: tokenLocal.token
-                };
-
-                const response = await axios.get(url, { headers });
-                const data = response.data.items;
-                const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
-                setDdTpItems(dataDD);
-                setDdTpItem(dataDD.find((item) => item.code === objtpID) || null);
-
-            } catch (error) {
-                console.error(error);
-                // Obrada greške ako je potrebna
-            }
-        }
-        fetchData();
+        setDropdownItem(findDropdownItemByCode(props.cmnPaymenttp.valid));
     }, []);
 
     const findDropdownItemByCode = (code) => {
@@ -73,11 +42,11 @@ console.log(props, "*props*************************************************CmnOb
 
     const handleCreateClick = async () => {
         try {
-            setSubmitted(true);
-            const cmnObjService = new CmnObjService();
-            const data = await cmnObjService.postCmnObj(cmnObj);
-            cmnObj.id = data
-            props.handleDialogClose({ obj: cmnObj, objTip: props.objTip });
+            setSubmitted(true);            
+                const cmnPaymenttpService = new CmnPaymenttpService();
+                const data = await cmnPaymenttpService.postCmnPaymenttp(cmnPaymenttp);
+                cmnPaymenttp.id = data
+                props.handleDialogClose({ obj: cmnPaymenttp, paymenttpTip: props.paymenttpTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
@@ -92,9 +61,9 @@ console.log(props, "*props*************************************************CmnOb
     const handleSaveClick = async () => {
         try {
             setSubmitted(true);
-            const cmnObjService = new CmnObjService();
-            await cmnObjService.putCmnObj(cmnObj);
-            props.handleDialogClose({ obj: cmnObj, objTip: props.objTip });
+            const cmnPaymenttpService = new CmnPaymenttpService();
+            await cmnPaymenttpService.putCmnPaymenttp(cmnPaymenttp);
+            props.handleDialogClose({ obj: cmnPaymenttp, paymenttpTip: props.paymenttpTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
@@ -113,9 +82,9 @@ console.log(props, "*props*************************************************CmnOb
     const handleDeleteClick = async () => {
         try {
             setSubmitted(true);
-            const cmnObjService = new CmnObjService();
-            await cmnObjService.deleteCmnObj(cmnObj);
-            props.handleDialogClose({ obj: cmnObj, objTip: 'DELETE' });
+            const cmnPaymenttpService = new CmnPaymenttpService();
+            await cmnPaymenttpService.deleteCmnPaymenttp(cmnPaymenttp);
+            props.handleDialogClose({ obj: cmnPaymenttp, paymenttpTip: 'DELETE' });
             props.setVisible(false);
             hideDeleteDialog();
         } catch (err) {
@@ -131,24 +100,17 @@ console.log(props, "*props*************************************************CmnOb
     const onInputChange = (e, type, name) => {
         let val = ''
         if (type === "options") {
-
-            if (name == "tp") {
-                setDdTpItem(e.value);
-                cmnObj.ctp = e.value.code
-                cmnObj.ntp = e.value.name
-            } else {
-                setDropdownItem(e.value);
-            }
+            setDropdownItem(e.value);
             val = (e.target && e.target.value && e.target.value.code) || '';
         } else {
             val = (e.target && e.target.value) || '';
         }
 
-        let _cmnObj = { ...cmnObj };
-        _cmnObj[`${name}`] = val;
-        if (name === `textx`) _cmnObj[`text`] = val
+        let _cmnPaymenttp = { ...cmnPaymenttp };
+        _cmnPaymenttp[`${name}`] = val;
+        if (name===`textx`) _cmnPaymenttp[`text`] = val
 
-        setCmnObj(_cmnObj);
+        setCmnPaymenttp(_cmnPaymenttp);
     };
 
     const hideDeleteDialog = () => {
@@ -164,36 +126,23 @@ console.log(props, "*props*************************************************CmnOb
                         <div className="field col-12 md:col-7">
                             <label htmlFor="code">{translations[selectedLanguage].Code}</label>
                             <InputText id="code" autoFocus
-                                value={cmnObj.code} onChange={(e) => onInputChange(e, "text", 'code')}
+                                value={cmnPaymenttp.code} onChange={(e) => onInputChange(e, "text", 'code')}
                                 required
-                                className={classNames({ 'p-invalid': submitted && !cmnObj.code })}
+                                className={classNames({ 'p-invalid': submitted && !cmnPaymenttp.code })}
                             />
-                            {submitted && !cmnObj.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnPaymenttp.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
-                        <div className="field col-12 md:col-9">
+                        <div className="field col-12 md:col-12">
                             <label htmlFor="textx">{translations[selectedLanguage].Text}</label>
                             <InputText
                                 id="textx"
-                                value={cmnObj.textx} onChange={(e) => onInputChange(e, "text", 'textx')}
+                                value={cmnPaymenttp.textx} onChange={(e) => onInputChange(e, "text", 'textx')}
                                 required
-                                className={classNames({ 'p-invalid': submitted && !cmnObj.textx })}
+                                className={classNames({ 'p-invalid': submitted && !cmnPaymenttp.textx })}
                             />
-                            {submitted && !cmnObj.textx && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
-                        </div>
-                        <div className="field col-12 md:col-8">
-                            <label htmlFor="tp">{translations[selectedLanguage].ObjtpText} *</label>
-                            <Dropdown id="tp"
-                                value={ddTpItem}
-                                options={ddTpItems}
-                                onChange={(e) => onInputChange(e, "options", 'tp')}
-                                required
-                                optionLabel="name"
-                                placeholder="Select One"
-                                className={classNames({ 'p-invalid': submitted && !cmnObj.tp })}
-                            />
-                            {submitted && !cmnObj.tp && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
-                        </div>
-                        <div className="field col-12 md:col-5">
+                            {submitted && !cmnPaymenttp.textx && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>                       
+                        <div className="field col-12 md:col-4">
                             <label htmlFor="valid">{translations[selectedLanguage].Valid}</label>
                             <Dropdown id="valid"
                                 value={dropdownItem}
@@ -202,18 +151,10 @@ console.log(props, "*props*************************************************CmnOb
                                 required
                                 optionLabel="name"
                                 placeholder="Select One"
-                                className={classNames({ 'p-invalid': submitted && !cmnObj.valid })}
+                                className={classNames({ 'p-invalid': submitted && !cmnPaymenttp.valid })}
                             />
-                            {submitted && !cmnObj.valid && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
-                        </div>
-
-                        <div className="field col-12 md:col-1">
-                            <div className="flex-2 flex flex-column align-items-left">
-                                <label htmlFor="color">{translations[selectedLanguage].color}</label>
-                                <ColorPicker format="hex" id="color" value={cmnObj.color} onChange={(e) => onInputChange(e, 'text', 'color')}  />
-                            </div>
-
-                        </div>
+                            {submitted && !cmnPaymenttp.valid && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                        </div>                        
                     </div>
 
                     <div className="flex flex-wrap gap-1">
@@ -228,7 +169,7 @@ console.log(props, "*props*************************************************CmnOb
                         ) : null}
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
-                            {(props.objTip === 'CREATE') ? (
+                            {(props.paymenttpTip === 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Create}
                                     icon="pi pi-check"
@@ -237,7 +178,7 @@ console.log(props, "*props*************************************************CmnOb
                                     outlined
                                 />
                             ) : null}
-                            {(props.objTip !== 'CREATE') ? (
+                            {(props.paymenttpTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Delete}
                                     icon="pi pi-trash"
@@ -245,8 +186,8 @@ console.log(props, "*props*************************************************CmnOb
                                     className="p-button-outlined p-button-danger"
                                     outlined
                                 />
-                            ) : null}
-                            {(props.objTip !== 'CREATE') ? (
+                            ) : null}                            
+                            {(props.paymenttpTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Save}
                                     icon="pi pi-check"
@@ -262,7 +203,7 @@ console.log(props, "*props*************************************************CmnOb
             <DeleteDialog
                 visible={deleteDialogVisible}
                 inAction="delete"
-                item={cmnObj.text}
+                item={cmnPaymenttp.text}
                 onHide={hideDeleteDialog}
                 onDelete={handleDeleteClick}
             />
@@ -270,4 +211,4 @@ console.log(props, "*props*************************************************CmnOb
     );
 };
 
-export default CmnObj;
+export default CmnPaymenttp;
