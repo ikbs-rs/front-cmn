@@ -414,7 +414,8 @@ const EmptyEntities =
     "site": null,
     "code": "",
     "text": "",
-    "valid": "1"
+    "valid": "1",
+		"xcode": ""
   },
   "cmn_partpx": {
     "id": null,

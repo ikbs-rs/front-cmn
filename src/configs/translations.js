@@ -485,7 +485,8 @@ export const translations = {
         Objpar: "Посетилац",
         ObjectsXBL: "Црне листе посетилаца",
         cloc: "Локација",
-        nloc: "..."
+        nloc: "...",
+        XCode: "Код",
     }
   };
   
