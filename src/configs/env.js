@@ -1,14 +1,13 @@
 const env = {
-    DOMEN: 'https://dev.app.ems.rs',
-    START_URL: 'https://dev.app.ems.rs/start/',
-    ADM_URL: 'https://dev.app.ems.rs/adm/',
-    CMN_URL: 'https://dev.app.ems.rs/cmn/',
-    TIC_URL: 'https://dev.app.ems.rs/tic/',
-    JWT_BACK_URL: 'https://dev.app.ems.rs/badm',
-    ADM_BACK_URL: 'https://dev.app.ems.rs/badm',
-    CMN_BACK_URL: 'https://dev.app.ems.rs/bcmn',
-    TIC_BACK_URL: 'https://dev.app.ems.rs/btic',
-    IMG_BACK_URL: 'https://dev.app.ems.rs/bimg',
+    DOMEN: 'http://brztest.ems.local:8351',
+    START_URL: 'http://brztest.ems.local:8351/start/',
+    ADM_URL: 'http://brztest.ems.local:8352/adm/',
+    CMN_URL: 'http://brztest.ems.local:8353/cmn/',
+    TIC_URL: 'http://brztest.ems.local:8354/tic/',
+    JWT_BACK_URL: 'http://brztest.ems.local:8302/badm',
+    ADM_BACK_URL: 'http://brztest.ems.local:8302/badm',
+    CMN_BACK_URL: 'http://brztest.ems.local:8303/bcmn',
+    TIC_BACK_URL: 'http://brztest.ems.local:8304/btic',
   };
   
   export default env;
