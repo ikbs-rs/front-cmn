@@ -54,6 +54,7 @@ const App = () => {
     const dispatch = useDispatch();
     const urlParams = new URLSearchParams(window.location.search);
     let selectedLanguage = localStorage.getItem('sl')
+    const site = env.SITE
     //let selectedLanguage = urlParams.get('sl');
     const [layoutMode, setLayoutMode] = useState('static');
     const [lightMenu, setLightMenu] = useState(true);
@@ -110,7 +111,7 @@ const App = () => {
                         { label: translations[selectedLanguage].entrance, icon: 'pi pi-fw pi-clone', to: '/locsb/XSB'  },
                         { label: translations[selectedLanguage].LocationsSeatBlock, icon: 'pi pi-fw pi-clone', to: '/locssb/XSSB'  },
                         { label: translations[selectedLanguage].Locations, icon: 'pi pi-fw pi-clone', to: '/loc/-1'  },
-                        { label: translations[selectedLanguage].LocTree, icon: 'pi pi-fw pi-clone', to: '/loctree' },
+                        { site: site, label: translations[selectedLanguage].LocTree, icon: 'pi pi-fw pi-clone', to: '/loctree' },
                       //d  { label: translations[selectedLanguage].Properties_location, icon: 'pi pi-fw pi-calendar' , to: '/locatt'},
                        // { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/loclinktp'}
                     ]
@@ -200,7 +201,7 @@ const App = () => {
                         }
                     }
         
-                    if (await checkPermissions(item.action)) {
+                    if (await checkPermissions(item.action) && item.site!='EMS') {
                         // Dodajemo samo ako ima akciju ili podmeni
                         filteredMenuL.push(filteredItem);
                     }                    
