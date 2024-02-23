@@ -113,7 +113,7 @@ export class CmnLoctpService {
     };
     
     try {
-      console.log(url, "***************getIdByItem*******************")
+      //console.log(url, "***************getIdByItem*******************!!!!!")
       const response = await axios.get(url, { headers });
       return response.data.items||response.data.item;
     } catch (error) {

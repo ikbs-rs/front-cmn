@@ -487,6 +487,9 @@ export const translations = {
         cloc: "Локација",
         nloc: "...",
         XCode: "Код",
+        entrance: "Улаз",
+        LocationsEntrance: "Улази",
+        Confirm: "Потврди",
     }
   };
   

@@ -17,16 +17,21 @@ import DateFunction from "../../utilities/DateFunction";
 
 
 export default function CmnLoclinkL(props) {
-  console.log(props, "*********props*********************CmnLoclinkL***********************************")
+  // console.log(props, "*********props*********************CmnLoclinkL***********************************@@@@@@", props.cmnLoctpId)
   const objName = "cmn_loclink"
   const selectedLanguage = localStorage.getItem('sl') || 'en'
   const emptyCmnLoclink = EmptyEntities[objName]
   emptyCmnLoclink.loc2 = props.cmnLoc.id
   emptyCmnLoclink.loctp2 = props.cmnLoc.tp
   emptyCmnLoclink.loctp1 = props.cmnLoctpId
+
   const [showMyComponent, setShowMyComponent] = useState(true);
   const [cmnLoclinks, setCmnLoclinks] = useState([]);
   const [cmnLoclink, setCmnLoclink] = useState(emptyCmnLoclink);
+  if (!cmnLoclink?.cloctp1) {
+    setCmnLoclink({ ...cmnLoclink, cloctp1: props.loctpCode });
+  }
+  // setCmnLoclink(_cmnLoclink)
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);

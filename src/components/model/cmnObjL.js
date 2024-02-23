@@ -216,8 +216,10 @@ export default function CmnObjL(props) {
           <Button label={translations[selectedLanguage].Place} icon="pi pi-sitemap" onClick={openLocObj} text raised disabled={!cmnObj} />
         </div>
         <div className="flex flex-wrap gap-1">
+        {props.objtpCode==='XBL' && (
           <Button label={translations[selectedLanguage].BList} icon="pi pi-android" onClick={openObjPar} text raised disabled={!cmnObj} />
-        </div>        
+        )}
+          </div>        
         <div className="flex-grow-1" />
         <b>{translations[selectedLanguage].ObjList}</b>
         <div className="flex-grow-1"></div>

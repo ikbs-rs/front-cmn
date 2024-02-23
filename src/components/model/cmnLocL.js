@@ -22,9 +22,10 @@ import CmnLoclinkL from "./cmnLoclinkL"
 
 
 export default function CmnLocL(props) {
-  console.log(props, "##############################props############################")
+  console.log(props, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!props!!!!!!!!!!!!!!!!!!!!!!!!!!!!", useParams())
   const { loctpId: propsLocTpId } = props;
   const { loctpId: routeLocTpId } = useParams();
+  console.log(propsLocTpId, routeLocTpId, "@@@@@@@@@@@@")
   const loctpCode = propsLocTpId || routeLocTpId;
   const LOCATION_CODE = "-1"
   const objName = "cmn_loc"
@@ -428,7 +429,7 @@ export default function CmnLocL(props) {
       >
         {showMyComponent && (
           <CmnLoc
-            parameter={"inputTextValue"}
+            parameter={props}
             cmnLoctpId={cmnLoctpId}
             loctpCode={loctpCode}
             cmnLoc={cmnLoc}

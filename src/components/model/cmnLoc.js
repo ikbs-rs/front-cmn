@@ -20,10 +20,12 @@ import { Fieldset } from 'primereact/fieldset';
 import { TabView, TabPanel } from 'primereact/tabview';
 
 const CmnLoc = (props) => {
-    console.log(props, "****$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$###########$$$$$$$$$$$$$$$##############################", props.loctpCode == "XSC")
+
+    // console.log(props, "****$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$###########$$$$$$$$$$$$$$$##############################", props.loctpCode == "XSC")
     const selectedLanguage = localStorage.getItem('sl') || 'en';
     const SECTOR_CODE = 'XSCT'
-    const SEATBLOCK_CODE = 'XSB'
+    const SEAT_CODE = 'XSB'
+    const SEATBLOCK_CODE = 'XSSB'    
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [cmnLoc, setCmnLoc] = useState(props.cmnLoc);
     const [submitted, setSubmitted] = useState(false);
@@ -34,8 +36,9 @@ const CmnLoc = (props) => {
     const [dropdownItem, setDropdownItem] = useState(null);
     const [dropdownItems, setDropdownItems] = useState(null);
     const [locTip, setLocTip] = useState(props.locTip);
-    const [cmnSectotId, setCmnSectorId] = useState(null);
+    const [cmnSectorId, setCmnSectorId] = useState(null);
     const [cmnSeatblockId, setCmnSeatblockId] = useState(null);
+    const [cmnSeatId, setCmnSeatId] = useState(null);
 
     const calendarRef = useRef(null);
 
@@ -65,10 +68,10 @@ const CmnLoc = (props) => {
                 const _cmnLoc = { ...cmnLoc }
                 _cmnLoc.tp = loctpID
                 setCmnLoc(_cmnLoc)
-                console.log(cmnLoc, "************_cmnLoc****************", _cmnLoc, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", loctpID)
+                //console.log(cmnLoc, "************_cmnLoc****************", _cmnLoc, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", loctpID)
                 if (loctpID) {
                     const foundItem = data.find((item) => item.id === loctpID);
-                    console.log(foundItem, "$$$$$$$$$$$$$$$$$$$$$$$$$foundItem$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", loctpID)
+                    //console.log(foundItem, "$$$$$$$$$$$$$$$$$$$$$$$$$foundItem$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", loctpID)
                     setCmnLocItem(foundItem || null);
                     if (foundItem) {
                         cmnLoc.ctp = foundItem.code || null;
@@ -87,7 +90,7 @@ const CmnLoc = (props) => {
         async function fetchData() {
             try {
                 const cmnLoctpService = new CmnLoctpService();
-                console.log("***cmnLocL*******CmnLoctpService************&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+                //console.log("***cmnLocL*******CmnLoctpService************&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
                 const data = await cmnLoctpService.getIdByItem(SECTOR_CODE);
 
                 setCmnSectorId(data.id);
@@ -103,7 +106,7 @@ const CmnLoc = (props) => {
         async function fetchData() {
             try {
                 const cmnLoctpService = new CmnLoctpService();
-                console.log("***cmnLocL*******CmnLoctpService************&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+                //console.log("***cmnLocL*******CmnLoctpService************&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
                 const data = await cmnLoctpService.getIdByItem(SEATBLOCK_CODE);
 
                 setCmnSeatblockId(data.id);
@@ -114,6 +117,23 @@ const CmnLoc = (props) => {
         }
         fetchData();
     }, []);
+
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const cmnLoctpService = new CmnLoctpService();
+                //console.log("***cmnLocL*******CmnLoctpService************&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+                const data = await cmnLoctpService.getIdByItem(SEAT_CODE);
+
+                setCmnSeatId(data.id);
+            } catch (error) {
+                console.error(error);
+                // Obrada greške ako je potrebna
+            }
+        }
+        fetchData();
+    }, []);    
     // Autocomplit>
 
     const findDropdownItemByCode = (code) => {
@@ -334,14 +354,19 @@ const CmnLoc = (props) => {
                             {props.loctpCode == "XSC" && (
 
                                 <TabPanel header={translations[selectedLanguage].LocationsSector}>
-                                    <LoclinkL key={"XSCT"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={cmnSectotId} TabView={true} dialog={false} loctpCode={SECTOR_CODE} />
+                                    <LoclinkL key={"XSCT"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={cmnSectorId} TabView={true} dialog={false} loctpCode={SECTOR_CODE} />
+                                </TabPanel>
+                            )}
+                            {props.loctpCode == "XSC" && (
+                                <TabPanel header={translations[selectedLanguage].LocationsEntrance}>
+                                    <LoclinkL key={"XSB"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={cmnSeatId} TabView={true} dialog={false} loctpCode={SEAT_CODE} />
                                 </TabPanel>
                             )}
                             {props.loctpCode == "XSC" && (
                                 <TabPanel header={translations[selectedLanguage].LocationsSeatBlock}>
-                                    <LoclinkL key={"III"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={cmnSeatblockId} TabView={true} dialog={false} loctpCode={SEATBLOCK_CODE} />
+                                    <LoclinkL key={"XSSB"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={cmnSeatblockId} TabView={true} dialog={false} loctpCode={SEATBLOCK_CODE} />
                                 </TabPanel>
-                            )}
+                            )}                            
                             <TabPanel header={translations[selectedLanguage].Locations}>
                                 <LoclinkL key={"III"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={null} TabView={true} dialog={false} loctpCode={"-1"} />
                             </TabPanel>

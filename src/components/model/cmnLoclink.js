@@ -19,7 +19,7 @@ import CmnLocL from './cmnLocL';
 import { Dialog } from 'primereact/dialog';
 
 const CmnLoclink = (props) => {
-    console.log(props, "********************CmnLoclink********************")
+    console.log(props, "@@@@@********************CmnLoclink********************")
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [cmnLoclink, setCmnLoclink] = useState(props.cmnLoclink);

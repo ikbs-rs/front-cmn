@@ -107,7 +107,8 @@ const App = () => {
                         { label: translations[selectedLanguage].Location_type, icon: 'pi pi-fw pi-clone', to: '/loctp' },
                         { label: translations[selectedLanguage].LocationsScene, icon: 'pi pi-fw pi-clone', to: '/locsc/XSC'  },
                         { label: translations[selectedLanguage].LocationsSector, icon: 'pi pi-fw pi-clone', to: '/locsct/XSCT'  },
-                        { label: translations[selectedLanguage].LocationsSeatBlock, icon: 'pi pi-fw pi-clone', to: '/locsb/XSB'  },
+                        { label: translations[selectedLanguage].entrance, icon: 'pi pi-fw pi-clone', to: '/locsb/XSB'  },
+                        { label: translations[selectedLanguage].LocationsSeatBlock, icon: 'pi pi-fw pi-clone', to: '/locssb/XSSB'  },
                         { label: translations[selectedLanguage].Locations, icon: 'pi pi-fw pi-clone', to: '/loc/-1'  },
                         { label: translations[selectedLanguage].LocTree, icon: 'pi pi-fw pi-clone', to: '/loctree' },
                       //d  { label: translations[selectedLanguage].Properties_location, icon: 'pi pi-fw pi-calendar' , to: '/locatt'},
@@ -140,7 +141,7 @@ const App = () => {
                         { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXORG, icon: 'pi pi-fw pi-clone', to: '/objorg/XORG' },
                         { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXTCTP, icon: 'pi pi-fw pi-clone', to: '/objtctp/XTCTP' },
                         { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXDOC, icon: 'pi pi-fw pi-clone', to: '/objdoc/XDOC' },
-                        { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXBL, icon: 'pi pi-fw pi-clone', to: '/objdoc/XBL' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXBL, icon: 'pi pi-fw pi-clone', to: '/objbl/XBL' },
                         { action: 'pobjMenu', label: translations[selectedLanguage].Objects, icon: 'pi pi-fw pi-clone', to: '/obj/-1' },                      
                         { action: 'objattMenu', label: translations[selectedLanguage].Properties_object, icon: 'pi pi-fw pi-clone', to: '/objatt' },
                         { action: 'objatttpMenu', label: translations[selectedLanguage].Group_of_properties, icon: 'pi pi-fw pi-clone', to: '/objatttp' },
@@ -536,7 +537,8 @@ const App = () => {
                         <Route path="/loc/:loctpId" element={<LocW />} />
                         <Route path="/locsc/:loctpId" element={<LocW />} />
                         <Route path="/locsct/:loctpId" element={<LocW />} />
-                        <Route path="/locsb/:loctpId" element={<LocW />} />                     
+                        <Route path="/locsb/:loctpId" element={<LocW />} />  
+                        <Route path="/locssb/:loctpId" element={<LocW />} />                     
                         <Route path="/locatt" element={<Um />} />
                         <Route path="/loclinktp" element={<Um />} />
 
@@ -546,6 +548,7 @@ const App = () => {
                         <Route path="/objorg/:objtpCode" element={<ObjW />} />
                         <Route path="/objtctp/:objtpCode" element={<ObjW />} />
                         <Route path="/objdoc/:objtpCode" element={<ObjW />} />
+                        <Route path="/objbl/:objtpCode" element={<ObjW />} />
                         <Route path="/obj/:objtpCode" element={<ObjW />} />
 
                         <Route path="/objatttp" element={<ObjAttTp />} />
