@@ -1,4 +1,6 @@
 const env = {
+    DOMEN: 'https://82.117.213.106',
+    SITE: 'TIC',
     START_URL: 'https://82.117.213.106/start/',
     ADM_URL: 'https://82.117.213.106/adm/',
     CMN_URL: 'https://82.117.213.106/cmn/',
