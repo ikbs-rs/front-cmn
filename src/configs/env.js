@@ -1,6 +1,4 @@
 const env = {
-    DOMEN: 'https://82.117.213.106',
-    SITE: 'TIC',
     START_URL: 'http://brztest.ems.local/ems/',
     ADM_URL: 'http://brztest.ems.local/adm/',
     CMN_URL: 'http://brztest.ems.local/cmn/',
