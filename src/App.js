@@ -106,6 +106,7 @@ const App = () => {
                     icon: 'pi pi-fw pi-map',
                     items: [
                         { label: translations[selectedLanguage].Location_type, icon: 'pi pi-fw pi-clone', to: '/loctp' },
+                        { label: translations[selectedLanguage].LocationsVenue, icon: 'pi pi-fw pi-clone', to: '/locsc/XV'  },
                         { label: translations[selectedLanguage].LocationsScene, icon: 'pi pi-fw pi-clone', to: '/locsc/XSC'  },
                         { label: translations[selectedLanguage].LocationsSector, icon: 'pi pi-fw pi-clone', to: '/locsct/XSCT'  },
                         { label: translations[selectedLanguage].entrance, icon: 'pi pi-fw pi-clone', to: '/locsb/XSB'  },

@@ -365,7 +365,7 @@ export default function CmnLocL(props) {
         metaKeySelection={false}
         paginator
         rows={50}
-        rowsPerPageOptions={[10, 25, 50, 100]}
+        rowsPerPageOptions={[50, 75, 100, 200]}
         onSelectionChange={(e) => setCmnLoc(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}

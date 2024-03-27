@@ -469,7 +469,8 @@ export const translations = {
         terr: "Територија",
         LocterrList: "Територије локације Листа",
         icon: "Икона",
-        LocationsScene: "Место одржавања",
+        LocationsVenue: "Место одржавања",
+        LocationsScene: "Хала/Сцена",
         LocationsSector: "Сектори",
         LocationsSeatBlock: "Улазни блокови седења",
         Gafic: "Графика",
@@ -490,6 +491,10 @@ export const translations = {
         entrance: "Улаз",
         LocationsEntrance: "Улази",
         Confirm: "Потврди",
+        Loclinkgrp: "Листа локација",
+        GrpLink: "Групно повезивање",
+        Copy: "Копирај",
+        Add: "Додај",
     }
   };
   
