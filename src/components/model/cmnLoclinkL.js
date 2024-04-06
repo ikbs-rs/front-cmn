@@ -382,6 +382,7 @@ export default function CmnLoclinkL(props) {
       <DataTable
         key={componentKey}
         dataKey="id"
+        size={"small"}
         selectionMode="single"
         selection={cmnLoclink}
         loading={loading}

@@ -352,6 +352,7 @@ export default function CmnLoclinkgrpL(props) {
       </div> */}
       <DataTable  
         value={cmnLoclinkgrps}
+        size={"small"}
         selectionMode={rowClick ? null : "checkbox"}
         selection={selectedProducts}
         onSelectionChange={(e) => setSelectedProducts(e.value)}

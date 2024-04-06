@@ -350,6 +350,7 @@ export default function CmnLocL(props) {
       <Toast ref={toast} />
       <DataTable
         dataKey="id"
+        size={"small"}
         selectionMode="single"
         selection={cmnLoc}
         loading={loading}
