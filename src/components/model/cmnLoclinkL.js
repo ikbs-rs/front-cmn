@@ -8,16 +8,19 @@ import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
 import { CmnLoclinkService } from "../../service/model/CmnLoclinkService";
+import { CmnLoctpService } from "../../service/model/CmnLoctpService";
 import CmnLoclink from './cmnLoclink';
+import CmnLoclinkgrpL from './cmnLoclinkgrpL';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
 import './index.css';
 import { translations } from "../../configs/translations";
 import DateFunction from "../../utilities/DateFunction";
+import { Dropdown } from 'primereact/dropdown';
 
 
 export default function CmnLoclinkL(props) {
-  // console.log(props, "*********props*********************CmnLoclinkL***********************************@@@@@@", props.cmnLoctpId)
+  console.log(props, "*********props*********************CmnLoclinkL***********************************@@@@@@", props.cmnLoctpId)
   const objName = "cmn_loclink"
   const selectedLanguage = localStorage.getItem('sl') || 'en'
   const emptyCmnLoclink = EmptyEntities[objName]
@@ -37,7 +40,20 @@ export default function CmnLoclinkL(props) {
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
+  
+  const [cmnLoclinkgrpLVisible, setCmnLoclinkgrpLVisible] = useState(false);
   const [loclinkTip, setLoclinkTip] = useState('');
+
+  let [refresh, setRefresh] = useState(null);
+  const [componentKey, setComponentKey] = useState(0);
+  const [ddCmnLoctpItem, setDdCmnLoctpItem] = useState(null);
+  const [ddCmnLoctpItems, setDdCmnLoctpItems] = useState(null);
+  const [cmnLoctp, setCmnLoctp] = useState({});
+  const [cmnLoctps, setCmnLoctps] = useState([]);
+  const [refCode, setRefCode] = useState(props.loctpCode);
+  
+
+
   let i = 0
   const handleCancelClick = () => {
     props.setCmnLoclinkLVisible(false);
@@ -48,7 +64,7 @@ export default function CmnLoclinkL(props) {
       try {
         ++i
         if (i < 2) {
-          const loctpCode = props.loctpCode ? props.loctpCode : props.cmnLoc.loctpCode
+          let loctpCode = props.loctpCode ? refCode : props.cmnLoc.loctpCode
           const cmnLoclinkService = new CmnLoclinkService();
           console.log(props.loctpCode, "/////////////////////////////////////////////////////////////getListaLL////////////////////////////////////////////////////////////////////////")
           const data = await cmnLoclinkService.getListaLL(props.cmnLoc.id, loctpCode);
@@ -61,7 +77,32 @@ export default function CmnLoclinkL(props) {
       }
     }
     fetchData();
-  }, []);
+  }, [refresh, componentKey, refCode]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const cmnLoctpService = new CmnLoctpService();
+        const data = await cmnLoctpService.getCmnLoctps();
+
+        setCmnLoctps(data)
+        //console.log("******************", ticLoctpItem)
+
+        const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
+        setDdCmnLoctpItems(dataDD);
+        //setDdTicLoctpItem(dataDD.find((item) => item.code === props.ticEventatt.tp) || null);
+      } catch (error) {
+        console.error(error);
+        // Obrada greške ako je potrebna
+      }
+    }
+    fetchData();
+  }, []);  
+  
+  const handleCmnLoclinkgrpLDialogClose = (newObj) => {
+    const localObj = { newObj };
+    setRefresh(++refresh);
+  }
 
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
@@ -71,6 +112,8 @@ export default function CmnLoclinkL(props) {
     //setSubmitted(true);
     if (localObj.newObj.loclinkTip === "CREATE") {
       _cmnLoclinks.push(_cmnLoclink);
+      setRefresh(newObj.id);
+      setComponentKey((prevKey) => prevKey + 1);
     } else if (localObj.newObj.loclinkTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
       _cmnLoclinks[index] = _cmnLoclink;
@@ -101,7 +144,11 @@ export default function CmnLoclinkL(props) {
   const openNew = () => {
     setCmnLoclinkDialog(emptyCmnLoclink);
   };
+  
 
+  const openGrpLink = () => {
+    setCmnLoclinkgrpDialog();
+  };  
   const onRowSelect = (event) => {
     toast.current.show({
       severity: "info",
@@ -119,6 +166,20 @@ export default function CmnLoclinkL(props) {
       life: 3000,
     });
   };
+
+  const onLoctpChange = (e) => {
+    let _cmnLoclink = { ...cmnLoclink };
+    let val = (e.target && e.target.value && e.target.value.code) || '';
+    setDdCmnLoctpItem(e.value);
+    const foundItem = cmnLoctps.find((item) => item.id === val);
+    setCmnLoctp(foundItem || null);
+    _cmnLoclink.tp = val;
+    //emptyTicEventloc.tp = val;
+    setCmnLoclink(_cmnLoclink);
+    setRefCode(foundItem?.code||'-1')
+    setRefresh(++refresh);
+  }
+
   // <heder za filter
   const initFilters = () => {
     setFilters({
@@ -159,9 +220,28 @@ export default function CmnLoclinkL(props) {
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
+        <div className="flex flex-wrap gap-1">
+          <Button label={translations[selectedLanguage].GrpLink} icon="pi pi-plus" severity="warning" onClick={openGrpLink} text raised  />
+        </div>        
         <div className="flex-grow-1"></div>
         <b>{translations[selectedLanguage].LoclinkList}</b>
         <div className="flex-grow-1"></div>
+
+        {props.loctpCode==-1 && (
+        <div className="flex-grow-1 ">
+          <label htmlFor="tp">{translations[selectedLanguage].Type} *</label>
+          <Dropdown id="tp"
+            value={ddCmnLoctpItem}
+            options={ddCmnLoctpItems}
+            onChange={(e) => onLoctpChange(e)}
+            showClear
+            optionLabel="name"
+            placeholder="Select One"
+          />
+        </div>
+        )}
+        
+
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
             <i className="pi pi-search" />
@@ -245,6 +325,10 @@ export default function CmnLoclinkL(props) {
     setLoclinkTip("CREATE")
     setCmnLoclink({ ...cmnLoclink });
   }
+    
+  const setCmnLoclinkgrpDialog = () => {
+    setCmnLoclinkgrpLVisible(true)
+  }  
   //  Dialog --->
 
   const header = renderHeader();
@@ -296,7 +380,9 @@ export default function CmnLoclinkL(props) {
         </div>
       )}
       <DataTable
+        key={componentKey}
         dataKey="id"
+        size={"small"}
         selectionMode="single"
         selection={cmnLoclink}
         loading={loading}
@@ -311,8 +397,8 @@ export default function CmnLoclinkL(props) {
         tableStyle={{ minWidth: "50rem" }}
         metaKeySelection={false}
         paginator
-        rows={10}
-        rowsPerPageOptions={[5, 10, 25, 50]}
+        rows={50}
+        rowsPerPageOptions={[50, 100, 250, 500]}
         onSelectionChange={(e) => setCmnLoclink(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
@@ -411,6 +497,33 @@ export default function CmnLoclinkL(props) {
             loctpCode={props.loctpCode}
           />
         )}
+        <div className="p-dialog-header-icons" style={{ display: 'none' }}>
+          <button className="p-dialog-header-close p-link">
+            <span className="p-dialog-header-close-icon pi pi-times"></span>
+          </button>
+        </div>
+      </Dialog>        
+        <Dialog
+        header={translations[selectedLanguage].Loclinkgrp}
+        visible={cmnLoclinkgrpLVisible}
+        style={{ width: '60%' }}
+        onHide={() => {
+          setCmnLoclinkgrpLVisible(false);
+          setShowMyComponent(false);
+        }}
+      >
+        {showMyComponent && (
+          <CmnLoclinkgrpL
+            parameter={"inputTextValue"}
+            cmnLoc={props.cmnLoc}
+            // handleDialogClose={handleDialogClose}
+            handleCmnLoclinkgrpLDialogClose={handleCmnLoclinkgrpLDialogClose}
+            setCmnLoclinkgrpLVisible={setCmnLoclinkgrpLVisible}
+            dialog={true}
+            cmnLoctpId={props.cmnLoctpId}
+            loctpCode={props.loctpCode}
+          />
+        )}        
         <div className="p-dialog-header-icons" style={{ display: 'none' }}>
           <button className="p-dialog-header-close p-link">
             <span className="p-dialog-header-close-icon pi pi-times"></span>
