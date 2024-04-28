@@ -193,7 +193,7 @@ const CmnPar = (props) => {
                             <label htmlFor="text">{translations[selectedLanguage].Text}</label>
                             <InputText
                                 id="text"
-                                value={cmnPar.text} onChange={(e) => onInputChange(e, "text", 'text')}
+                                value={cmnPar.textx} onChange={(e) => onInputChange(e, "text", 'text')}
                                 required
                                 className={classNames({ 'p-invalid': submitted && !cmnPar.text })}
                             />
@@ -222,7 +222,7 @@ const CmnPar = (props) => {
                             />
                         </div>
 
-                        <div className="field col-12 md:col-7">
+                        <div className="field col-12 md:col-5">
                             <label htmlFor="address">{translations[selectedLanguage].address}</label>
                             <InputText
                                 id="address"
@@ -231,11 +231,19 @@ const CmnPar = (props) => {
 
                         </div>
 
-                        <div className="field col-12 md:col-5">
+                        <div className="field col-12 md:col-4">
                             <label htmlFor="place">{translations[selectedLanguage].place}</label>
                             <InputText
                                 id="place"
                                 value={cmnPar.place} onChange={(e) => onInputChange(e, "text", 'place')}
+                            />
+                        </div>
+
+                        <div className="field col-12 md:col-3">
+                            <label htmlFor="country">{translations[selectedLanguage].country}</label>
+                            <InputText
+                                id="country"
+                                value={cmnPar.country} onChange={(e) => onInputChange(e, "text", 'country')}
                             />
                         </div>
 
@@ -247,13 +255,20 @@ const CmnPar = (props) => {
                                 value={cmnPar.postcode} onChange={(e) => onInputChange(e, "text", 'postcode')}
                             />
                         </div>
-                        <div className="field col-12 md:col-8">
+                        <div className="field col-12 md:col-4">
                             <label htmlFor="tel">{translations[selectedLanguage].tel}</label>
                             <InputText
                                 id="tel"
                                 value={cmnPar.tel} onChange={(e) => onInputChange(e, "text", 'tel')}
                             />
                         </div>
+                        <div className="field col-12 md:col-4">
+                            <label htmlFor="email">{translations[selectedLanguage].email}</label>
+                            <InputText
+                                id="email"
+                                value={cmnPar.email} onChange={(e) => onInputChange(e, "text", 'email')}
+                            />
+                        </div>                        
                         <div className="field col-12 md:col-6">
                             <label htmlFor="activity">{translations[selectedLanguage].activity}</label>
                             <InputText

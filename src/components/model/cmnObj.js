@@ -11,7 +11,8 @@ import { translations } from "../../configs/translations";
 import env from "../../configs/env"
 import axios from 'axios';
 import Token from "../../utilities/Token";
-import { ColorPicker } from 'primereact/colorpicker';
+// import { ColorPicker } from 'primereact/colorpicker';
+import CustomColorPicker from "../custom/CustomColorPicker.js"
 
 const CmnObj = (props) => {
 console.log(props, "*props*************************************************CmnObj*************************************************************")
@@ -155,6 +156,10 @@ console.log(props, "*props*************************************************CmnOb
         setDeleteDialogVisible(false);
     };
 
+    const onColorChange = (newColor) => {
+        const updatedCmnObj = { ...cmnObj, color: newColor };
+        setCmnObj(updatedCmnObj); // Ažuriranje ticEventobj sa novom bojom
+    };
     return (
         <div className="grid">
             <Toast ref={toast} />
@@ -210,7 +215,11 @@ console.log(props, "*props*************************************************CmnOb
                         <div className="field col-12 md:col-1">
                             <div className="flex-2 flex flex-column align-items-left">
                                 <label htmlFor="color">{translations[selectedLanguage].color}</label>
-                                <ColorPicker format="hex" id="color" value={cmnObj.color} onChange={(e) => onInputChange(e, 'text', 'color')}  />
+                                <CustomColorPicker
+                                    color={cmnObj.color || '#ffffff'}
+                                    onChange={onColorChange}
+                                />
+                                {/* <ColorPicker format="hex" id="color" value={cmnObj.color} onChange={(e) => onInputChange(e, 'text', 'color')}  /> */}
                             </div>
 
                         </div>

@@ -19,12 +19,13 @@ import CmnObjattsL from './cmnObjattsL';
 import CmnObjlinkL from './cmnObjlinkL';
 import CmnLocobjL from './cmnLocobjL';
 import CmnObjParL from './cmnObjparL';
+import ColorPickerWrapper from './ColorPickerWrapper';
 
 export default function CmnObjL(props) {
   console.log(props, "#props################################### CmnObjL ########################################")
   const { objtpCode: propsObjTpCode } = props;
   const { objtpCode: routeObjTpCode } = useParams();
-  const objtpCode = propsObjTpCode || routeObjTpCode;  
+  const objtpCode = propsObjTpCode || routeObjTpCode;
   let i = 0
   const objName = "cmn_obj"
   const selectedLanguage = localStorage.getItem('sl') || 'en'
@@ -40,7 +41,7 @@ export default function CmnObjL(props) {
   const [cmnObjlinkLVisible, setCmnObjlinkLVisible] = useState(false);
   const [cmnLocobjLVisible, setCmnLocobjLVisible] = useState(false);
   const [cmnObjparLVisible, setCmnObjparLVisible] = useState(false);
-  
+
   const [visible, setVisible] = useState(false);
   const [objTip, setObjtpTip] = useState('');
   const [cmnObjtpId, setCmnObjtpId] = useState(null);
@@ -67,11 +68,11 @@ export default function CmnObjL(props) {
   useEffect(() => {
     async function fetchData() {
       try {
-          const cmnObjtpService = new CmnObjtpService();
-          console.log(objtpCode, "*0*********CmnObjtpService************#########################")          
-          const data = await cmnObjtpService.getIdByItem (objtpCode);
-          console.log(data, "*1*********CmnObjtpService************#########################") 
-          setCmnObjtpId(data.id);
+        const cmnObjtpService = new CmnObjtpService();
+        console.log(objtpCode, "*0*********CmnObjtpService************#########################")
+        const data = await cmnObjtpService.getIdByItem(objtpCode);
+        console.log(data, "*1*********CmnObjtpService************#########################")
+        setCmnObjtpId(data.id);
       } catch (error) {
         console.error(error);
         // Obrada greške ako je potrebna
@@ -117,8 +118,8 @@ export default function CmnObjL(props) {
 
   const handleCmnObjparLDialogClose = (newObj) => {
     const localObj = { newObj };
-  };  
-  
+  };
+
   const findIndexById = (id) => {
     let index = -1;
 
@@ -150,8 +151,8 @@ export default function CmnObjL(props) {
 
   const openObjPar = () => {
     setCmnObjparLDialog();
-  };  
-  
+  };
+
   const onRowSelect = (event) => {
     toast.current.show({
       severity: "info",
@@ -216,10 +217,10 @@ export default function CmnObjL(props) {
           <Button label={translations[selectedLanguage].Place} icon="pi pi-sitemap" onClick={openLocObj} text raised disabled={!cmnObj} />
         </div>
         <div className="flex flex-wrap gap-1">
-        {props.objtpCode==='XBL' && (
-          <Button label={translations[selectedLanguage].BList} icon="pi pi-android" onClick={openObjPar} text raised disabled={!cmnObj} />
-        )}
-          </div>        
+          {props.objtpCode === 'XBL' && (
+            <Button label={translations[selectedLanguage].BList} icon="pi pi-android" onClick={openObjPar} text raised disabled={!cmnObj} />
+          )}
+        </div>
         <div className="flex-grow-1" />
         <b>{translations[selectedLanguage].ObjList}</b>
         <div className="flex-grow-1"></div>
@@ -301,7 +302,7 @@ export default function CmnObjL(props) {
     setCmnObjparLVisible(true);
 
   }
-  
+
   //  Dialog --->
 
   const header = renderHeader();
@@ -326,6 +327,14 @@ export default function CmnObjL(props) {
     );
   };
 
+  const colorBodyTemplate = (rowData) => {
+    return (
+        <>
+            <ColorPickerWrapper value={rowData.color} format={"hex"} />
+            {/* <ColorPicker format="hex" id="color" value={rowData.color} readOnly={true} /> */}
+        </>
+    );
+};  
   return (
     <div className="card">
       <Toast ref={toast} />
@@ -389,6 +398,12 @@ export default function CmnObjL(props) {
           sortable
           filter
           style={{ width: "30%" }}
+        ></Column>
+        <Column
+          field="color"
+          header={translations[selectedLanguage].Color}
+          body={colorBodyTemplate}
+          style={{ width: "20%" }}
         ></Column>
         <Column
           field="valid"
@@ -484,7 +499,7 @@ export default function CmnObjL(props) {
             lookUp={false}
           />
         )}
-      </Dialog>      
+      </Dialog>
       <Dialog
         header={translations[selectedLanguage].ObjparLista}
         visible={cmnObjparLVisible}
@@ -504,7 +519,7 @@ export default function CmnObjL(props) {
             lookUp={false}
           />
         )}
-      </Dialog>           
+      </Dialog>
     </div>
   );
 }

@@ -19,6 +19,7 @@ import DateFunction from "../../utilities/DateFunction";
 import CmnLocartL from "./cmnLocartL"
 import CmnTerrlocL from "./cmnTerrlocL"
 import CmnLoclinkL from "./cmnLoclinkL"
+import ColorPickerWrapper from './ColorPickerWrapper';
 
 
 export default function CmnLocL(props) {
@@ -344,7 +345,14 @@ export default function CmnLocL(props) {
       </div>
     );
   };
-
+  const colorBodyTemplate = (rowData) => {
+    return (
+        <>
+            <ColorPickerWrapper value={rowData.color} format={"hex"} />
+            {/* <ColorPicker format="hex" id="color" value={rowData.color} readOnly={true} /> */}
+        </>
+    );
+}; 
   return (
     <div className="card">
       <Toast ref={toast} />
@@ -406,6 +414,12 @@ export default function CmnLocL(props) {
           filter
           style={{ width: "35%" }}
         ></Column>
+        <Column
+          field="color"
+          header={translations[selectedLanguage].Color}
+          body={colorBodyTemplate}
+          style={{ width: "20%" }}
+        ></Column>        
         <Column
           field="valid"
           filterField="valid"

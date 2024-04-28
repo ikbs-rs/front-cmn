@@ -335,7 +335,9 @@ const EmptyEntities =
     "pdvnum": "",
     "begda": "",
     "endda": "",
-    "docid": ""
+    "docid": "",
+    "country": "",
+    "email": ""
   },
   "cmn_paraccount": {
     "id": null,

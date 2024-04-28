@@ -14,10 +14,11 @@ import { Dropdown } from 'primereact/dropdown';
 import { InputTextarea } from "primereact/inputtextarea";
 import { Calendar } from 'primereact/calendar';
 import DateFunction from '../../utilities/DateFunction';
-import { ColorPicker } from 'primereact/colorpicker';
+// import { ColorPicker } from 'primereact/colorpicker';
 import { Panel } from "primereact/panel";
 import { Fieldset } from 'primereact/fieldset';
 import { TabView, TabPanel } from 'primereact/tabview';
+import CustomColorPicker from "../custom/CustomColorPicker.js"
 
 const CmnLoc = (props) => {
 
@@ -25,7 +26,7 @@ const CmnLoc = (props) => {
     const selectedLanguage = localStorage.getItem('sl') || 'en';
     const SECTOR_CODE = 'XSCT'
     const SEAT_CODE = 'XSB'
-    const SEATBLOCK_CODE = 'XSSB'    
+    const SEATBLOCK_CODE = 'XSSB'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [cmnLoc, setCmnLoc] = useState(props.cmnLoc);
     const [submitted, setSubmitted] = useState(false);
@@ -133,7 +134,7 @@ const CmnLoc = (props) => {
             }
         }
         fetchData();
-    }, []);    
+    }, []);
     // Autocomplit>
 
     const findDropdownItemByCode = (code) => {
@@ -154,7 +155,7 @@ const CmnLoc = (props) => {
             const cmnLocService = new CmnLocService();
             const data = await cmnLocService.postCmnLoc(cmnLoc);
             cmnLoc.id = data;
-            if (cmnLoc.code == ""||cmnLoc.code == ""||!cmnLoc.code) cmnLoc.code = cmnLoc.id
+            if (cmnLoc.code == "" || cmnLoc.code == "" || !cmnLoc.code) cmnLoc.code = cmnLoc.id
             props.handleDialogClose({ obj: cmnLoc, locTip: locTip });
             props.setVisible(false);
             setLocTip("UPDATE")
@@ -175,7 +176,7 @@ const CmnLoc = (props) => {
             const newCmnLoclink = { ...cmnLoc, id: null };
             const data = await cmnLocService.postCmnLoc(newCmnLoclink);
             cmnLoc.id = data;
-            if (cmnLoc.code == ""||cmnLoc.code == ""||!cmnLoc.code) cmnLoc.code = cmnLoc.id
+            if (cmnLoc.code == "" || cmnLoc.code == "" || !cmnLoc.code) cmnLoc.code = cmnLoc.id
             props.handleDialogClose({ obj: cmnLoc, locTip: locTip });
             cmnLoc.code = ""
             cmnLoc.id = null
@@ -229,6 +230,11 @@ const CmnLoc = (props) => {
         }
     };
 
+    const onColorChange = (newColor) => {
+        const updatedCmnLoc = { ...cmnLoc, color: newColor };
+        setCmnLoc(updatedCmnLoc); // Ažuriranje ticEventobj sa novom bojom
+    };
+
     const onInputChange = (e, type, name, a) => {
         let val = '';
 
@@ -264,21 +270,25 @@ const CmnLoc = (props) => {
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-3">
                             <label htmlFor="code">{translations[selectedLanguage].Code}</label>
-                            <InputText id="code" autoFocus value={cmnLoc.code} onChange={(e) => onInputChange(e, 'text', 'code')} 
-                            required 
+                            <InputText id="code" autoFocus value={cmnLoc.code} onChange={(e) => onInputChange(e, 'text', 'code')}
+                                required
                             // className={classNames({ 'p-invalid': submitted && !cmnLoc.code })} 
                             />
                             {/* {submitted && !cmnLoc.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>} */}
                         </div>
-                        <div className="field col-12 md:col-8">
+                        <div className="field col-12 md:col-3">
                             <label htmlFor="text">{translations[selectedLanguage].Text}</label>
                             <InputText id="text" value={cmnLoc.text} onChange={(e) => onInputChange(e, 'text', 'text')} required className={classNames({ 'p-invalid': submitted && !cmnLoc.text })} />
                             {submitted && !cmnLoc.text && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
-                        <div className="field col-12 md:col-1">
+                        <div className="field col-12 md:col-3">
                             <div className="flex-1 flex flex-column align-items-left">
                                 <label htmlFor="color">{translations[selectedLanguage].color}</label>
-                                <ColorPicker format="hex" id="color" value={cmnLoc.color} onChange={(e) => onInputChange(e, 'text', 'color')} className="mb-3" />
+                                <CustomColorPicker
+                                    color={cmnLoc.color || '#ffffff'}
+                                    onChange={onColorChange}
+                                />
+                                {/* <ColorPicker format="hex" id="color" value={cmnLoc.color} onChange={(e) => onInputChange(e, 'text', 'color')} className="mb-3" /> */}
                             </div>
 
                         </div>
@@ -366,64 +376,64 @@ const CmnLoc = (props) => {
                                 <TabPanel header={translations[selectedLanguage].LocationsSeatBlock}>
                                     <LoclinkL key={"XSSB"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={cmnSeatblockId} TabView={true} dialog={false} loctpCode={SEATBLOCK_CODE} />
                                 </TabPanel>
-                            )}                            
+                            )}
                             <TabPanel header={translations[selectedLanguage].Locations}>
                                 <LoclinkL key={"III"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={null} TabView={true} dialog={false} loctpCode={"-1"} />
                             </TabPanel>
                             <TabPanel header={translations[selectedLanguage].drawing}>
                                 <SalPlace key={"III"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={null} TabView={true} dialog={false} loctpCode={"-1"} />
-                            </TabPanel>                            
+                            </TabPanel>
                         </TabView>
                     </div>
                 )}
                 {false && (
-                <Fieldset legend={translations[selectedLanguage].Gafic} toggleable collapsed="true">
-                {/* <Panel header={translations[selectedLanguage].Gafic} toggleable collapsed="true"> */}
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-4">
-                            <label htmlFor="graftp">{translations[selectedLanguage].graftp}</label>
-                            <InputText id="graftp" value={cmnLoc.graftp} onChange={(e) => onInputChange(e, 'text', 'graftp')} />
+                    <Fieldset legend={translations[selectedLanguage].Gafic} toggleable collapsed="true">
+                        {/* <Panel header={translations[selectedLanguage].Gafic} toggleable collapsed="true"> */}
+                        <div className="p-fluid formgrid grid">
+                            <div className="field col-12 md:col-4">
+                                <label htmlFor="graftp">{translations[selectedLanguage].graftp}</label>
+                                <InputText id="graftp" value={cmnLoc.graftp} onChange={(e) => onInputChange(e, 'text', 'graftp')} />
+                            </div>
+                            <div className="field col-12 md:col-4">
+                                <label htmlFor="radius">{translations[selectedLanguage].radius}</label>
+                                <InputText id="radius" value={cmnLoc.radius} onChange={(e) => onInputChange(e, 'text', 'radius')} />
+                            </div>
                         </div>
-                        <div className="field col-12 md:col-4">
-                            <label htmlFor="radius">{translations[selectedLanguage].radius}</label>
-                            <InputText id="radius" value={cmnLoc.radius} onChange={(e) => onInputChange(e, 'text', 'radius')} />
-                        </div>
-                    </div>
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-10">
-                            <label htmlFor="latlongs">{translations[selectedLanguage].latlongs}</label>
-                            <InputTextarea id="latlongs" value={cmnLoc.latlongs} onChange={(e) => onInputChange(e, 'text', 'latlongs')} rows={2} />
-                        </div>
-                    </div>
-
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-4">
-                            <label htmlFor="fillcolor">{translations[selectedLanguage].fillcolor}</label>
-                            <InputText id="fillcolor" value={cmnLoc.fillcolor} onChange={(e) => onInputChange(e, 'text', 'fillcolor')} />
-                        </div>
-                        <div className="field col-12 md:col-4">
-                            <label htmlFor="originfillcolor">{translations[selectedLanguage].originfillcolor}</label>
-                            <InputText id="originfillcolor" value={cmnLoc.originfillcolor} onChange={(e) => onInputChange(e, 'text', 'originfillcolor')} />
+                        <div className="p-fluid formgrid grid">
+                            <div className="field col-12 md:col-10">
+                                <label htmlFor="latlongs">{translations[selectedLanguage].latlongs}</label>
+                                <InputTextarea id="latlongs" value={cmnLoc.latlongs} onChange={(e) => onInputChange(e, 'text', 'latlongs')} rows={2} />
+                            </div>
                         </div>
 
-                    </div>
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-4">
-                            <label htmlFor="rownum">{translations[selectedLanguage].rownum}</label>
-                            <InputText id="rownum" value={cmnLoc.rownum} onChange={(e) => onInputChange(e, 'text', 'rownum')} />
+                        <div className="p-fluid formgrid grid">
+                            <div className="field col-12 md:col-4">
+                                <label htmlFor="fillcolor">{translations[selectedLanguage].fillcolor}</label>
+                                <InputText id="fillcolor" value={cmnLoc.fillcolor} onChange={(e) => onInputChange(e, 'text', 'fillcolor')} />
+                            </div>
+                            <div className="field col-12 md:col-4">
+                                <label htmlFor="originfillcolor">{translations[selectedLanguage].originfillcolor}</label>
+                                <InputText id="originfillcolor" value={cmnLoc.originfillcolor} onChange={(e) => onInputChange(e, 'text', 'originfillcolor')} />
+                            </div>
+
                         </div>
-                        <div className="field col-12 md:col-4">
-                            <label htmlFor="seatnum">{translations[selectedLanguage].seatnum}</label>
-                            <InputText id="seatnum" value={cmnLoc.seatnum} onChange={(e) => onInputChange(e, 'text', 'seatnum')} />
+                        <div className="p-fluid formgrid grid">
+                            <div className="field col-12 md:col-4">
+                                <label htmlFor="rownum">{translations[selectedLanguage].rownum}</label>
+                                <InputText id="rownum" value={cmnLoc.rownum} onChange={(e) => onInputChange(e, 'text', 'rownum')} />
+                            </div>
+                            <div className="field col-12 md:col-4">
+                                <label htmlFor="seatnum">{translations[selectedLanguage].seatnum}</label>
+                                <InputText id="seatnum" value={cmnLoc.seatnum} onChange={(e) => onInputChange(e, 'text', 'seatnum')} />
+                            </div>
+                            <div className="field col-12 md:col-4">
+                                <label htmlFor="icon">{translations[selectedLanguage].icon}</label>
+                                <InputText id="icon" value={cmnLoc.icon} onChange={(e) => onInputChange(e, 'text', 'icon')} />
+                            </div>
                         </div>
-                        <div className="field col-12 md:col-4">
-                            <label htmlFor="icon">{translations[selectedLanguage].icon}</label>
-                            <InputText id="icon" value={cmnLoc.icon} onChange={(e) => onInputChange(e, 'text', 'icon')} />
-                        </div>
-                    </div>
-                {/* </Panel> */}
-                </Fieldset>
-             )}
+                        {/* </Panel> */}
+                    </Fieldset>
+                )}
 
             </div>
             <DeleteDialog visible={deleteDialogVisible} inCmnLoc="delete" item={cmnLoc.roll} onHide={hideDeleteDialog} onDelete={handleDeleteClick} />
