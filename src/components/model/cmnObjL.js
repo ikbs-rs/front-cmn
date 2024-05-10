@@ -222,7 +222,7 @@ export default function CmnObjL(props) {
           )}
         </div>
         <div className="flex-grow-1" />
-        <b>{translations[selectedLanguage].ObjList}</b>
+        <b>{`${translations[selectedLanguage][props.objtpCode]||'Obekti '} ${translations[selectedLanguage].Lista}`}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -419,7 +419,7 @@ export default function CmnObjL(props) {
         ></Column>
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].Obj}
+        header={translations[selectedLanguage][objtpCode]}
         visible={visible}
         style={{ width: '70%' }}
         onHide={() => {

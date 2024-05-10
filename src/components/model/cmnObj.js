@@ -39,6 +39,9 @@ console.log(props, "*props*************************************************CmnOb
         async function fetchData() {
             try {
                 const objtpID = props.cmnObj.tp == null ? props.cmnObjtpId : props.cmnObj.tp
+                const _cmnObj = { ... cmnObj}
+                _cmnObj.tp = props.cmnObj.tp == null ? props.cmnObjtpId : props.cmnObj.tp
+                setCmnObj({ ..._cmnObj})
                 const url = `${env.CMN_BACK_URL}/cmn/x/objtp/?sl=${selectedLanguage}`;
                 const tokenLocal = await Token.getTokensLS();
                 const headers = {
