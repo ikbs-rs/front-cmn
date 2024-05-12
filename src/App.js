@@ -144,6 +144,7 @@ const App = () => {
                         { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXTCTP, icon: 'pi pi-fw pi-clone', to: '/objtctp/XTCTP' },
                         { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXDOC, icon: 'pi pi-fw pi-clone', to: '/objdoc/XDOC' },
                         { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXBL, icon: 'pi pi-fw pi-clone', to: '/objbl/XBL' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXPV, icon: 'pi pi-fw pi-clone', to: '/objpv/XPV' },
                         { action: 'pobjMenu', label: translations[selectedLanguage].Objects, icon: 'pi pi-fw pi-clone', to: '/obj/-1' },                      
                         { action: 'objattMenu', label: translations[selectedLanguage].Properties_object, icon: 'pi pi-fw pi-clone', to: '/objatt' },
                         { action: 'objatttpMenu', label: translations[selectedLanguage].Group_of_properties, icon: 'pi pi-fw pi-clone', to: '/objatttp' },
@@ -551,6 +552,8 @@ const App = () => {
                         <Route path="/objtctp/:objtpCode" element={<ObjW />} />
                         <Route path="/objdoc/:objtpCode" element={<ObjW />} />
                         <Route path="/objbl/:objtpCode" element={<ObjW />} />
+                        <Route path="/objpv/:objtpCode" element={<ObjW />} />
+                        
                         <Route path="/obj/:objtpCode" element={<ObjW />} />
 
                         <Route path="/objatttp" element={<ObjAttTp />} />

@@ -508,6 +508,7 @@ export const translations = {
         XBL: "Црна листа посетилаца",
         XLZO: "ЛЗО средства",
         Lista: "Листа",
+        ObjectsXPV: "Вредновање места",
     }
   };
   
