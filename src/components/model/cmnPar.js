@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { classNames } from 'primereact/utils';
 import { CmnParService } from "../../service/model/CmnParService";
 import { CmnPartpService } from "../../service/model/CmnPartpService";
+import { CmnTerrService } from "../../service/model/CmnTerrService";
 import './index.css';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -21,6 +22,8 @@ const CmnPar = (props) => {
     const [submitted, setSubmitted] = useState(false);
     const [ddCmnParItem, setDdCmnParItem] = useState(null);
     const [ddCmnParItems, setDdCmnParItems] = useState(null);
+    const [ddCountryItem, setDdCountryItem] = useState(null);
+    const [ddCountryItems, setDdCountryItems] = useState(null);
     const [cmnParItem, setCmnParItem] = useState(null);
     const [cmnParItems, setCmnParItems] = useState(null);
     const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnPar.begda || DateFunction.currDate())));
@@ -57,6 +60,34 @@ const CmnPar = (props) => {
         fetchData();
     }, []);
     // Autocomplit>
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const cmnTerrService = new CmnTerrService();
+                const data = await cmnTerrService.getTpLista('2');
+
+                setCmnParItems(data)
+                //console.log("******************", cmnParItem)
+
+                const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
+                setDdCountryItems(dataDD);
+                setDdCountryItem(dataDD.find((item) => item.code === props.cmnPar.countryid) || null);
+                if (props.cmnPar.tp) {
+                    const foundItem = data.find((item) => item.id === props.cmnPar.countryid);
+                    setCmnParItem(foundItem || null);
+                    cmnPar.ctp = foundItem.code
+                    cmnPar.ntp = foundItem.textx
+                }
+
+            } catch (error) {
+                console.error(error);
+                // Obrada greške ako je potrebna
+            }
+        }
+        fetchData();
+    }, []);
+
 
     // const handleCancelClick = () => {
     //     props.setVisible(false);
@@ -142,11 +173,19 @@ const CmnPar = (props) => {
         let val = ''
         if (type === "options") {
             val = (e.target && e.target.value && e.target.value.code) || '';
-            setDdCmnParItem(e.value);
-            const foundItem = cmnParItems.find((item) => item.id === val);
-            setCmnParItem(foundItem || null);
-            cmnPar.ntp = e.value.name
-            cmnPar.ctp = foundItem.code
+            if (name == 'tp') {
+                setDdCmnParItem(e.value);
+                const foundItem = cmnParItems.find((item) => item.id === val);
+                setCmnParItem(foundItem || null);
+                cmnPar.ntp = e.value.name
+                cmnPar.ctp = foundItem?.code
+            } else {
+                setDdCountryItem(e.value);
+                const foundItem = cmnParItems.find((item) => item.id === val);
+                // setCmnParItem(foundItem || null);
+                // cmnPar.ntp = e.value.name
+                // cmnPar.ctp = foundItem.code
+            }
         } else if (type === "Calendar") {
             //const dateVal = DateFunction.dateGetValue(e.value)
             val = (e.target && e.target.value) || '';
@@ -193,7 +232,7 @@ const CmnPar = (props) => {
                             <label htmlFor="text">{translations[selectedLanguage].Text}</label>
                             <InputText
                                 id="text"
-                                value={cmnPar.textx} onChange={(e) => onInputChange(e, "text", 'text')}
+                                value={cmnPar.text} onChange={(e) => onInputChange(e, "text", 'text')}
                                 required
                                 className={classNames({ 'p-invalid': submitted && !cmnPar.text })}
                             />
@@ -240,11 +279,17 @@ const CmnPar = (props) => {
                         </div>
 
                         <div className="field col-12 md:col-3">
-                            <label htmlFor="country">{translations[selectedLanguage].country}</label>
-                            <InputText
-                                id="country"
-                                value={cmnPar.country} onChange={(e) => onInputChange(e, "text", 'country')}
+                            <label htmlFor="countryid">{translations[selectedLanguage].Country} *</label>
+                            <Dropdown id="countryid"
+                                value={ddCountryItem}
+                                options={ddCountryItems}
+                                onChange={(e) => onInputChange(e, "options", 'countryid')}
+                                required
+                                optionLabel="name"
+                                placeholder="Select One"
+                                className={classNames({ 'p-invalid': submitted && !cmnPar.countryid })}
                             />
+                            {submitted && !cmnPar.countryid && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
 
 
@@ -268,7 +313,7 @@ const CmnPar = (props) => {
                                 id="email"
                                 value={cmnPar.email} onChange={(e) => onInputChange(e, "text", 'email')}
                             />
-                        </div>                        
+                        </div>
                         <div className="field col-12 md:col-6">
                             <label htmlFor="activity">{translations[selectedLanguage].activity}</label>
                             <InputText

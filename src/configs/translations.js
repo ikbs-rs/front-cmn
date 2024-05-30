@@ -509,6 +509,8 @@ export const translations = {
         XLZO: "ЛЗО средства",
         Lista: "Листа",
         ObjectsXPV: "Вредновање места",
+        email: "Email",
+        Country: "Држава",
     }
   };
   

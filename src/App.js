@@ -12,6 +12,7 @@ import AppRightMenu from './AppRightMenu';
 import Um from './components/model/cmnUmL';
 import Loc from './components/model/cmnLocL';
 import LocW from './components/model/cmnLocW';
+import Locatt from './components/model/cmnLocattL';
 import LocTP from './components/model/cmnLoctpL';
 import ObjTp from './components/model/cmnObjtpL';
 import Obj from './components/model/cmnObjL';
@@ -106,6 +107,7 @@ const App = () => {
                     icon: 'pi pi-fw pi-map',
                     items: [
                         { label: translations[selectedLanguage].Location_type, icon: 'pi pi-fw pi-clone', to: '/loctp' },
+                        { label: translations[selectedLanguage].Properties_location, icon: 'pi pi-fw pi-clone' , to: '/locatt'},                        
                         { label: translations[selectedLanguage].LocationsVenue, icon: 'pi pi-fw pi-clone', to: '/locsc/XV'  },
                         { label: translations[selectedLanguage].LocationsScene, icon: 'pi pi-fw pi-clone', to: '/locsc/XSC'  },
                         { label: translations[selectedLanguage].LocationsSector, icon: 'pi pi-fw pi-clone', to: '/locsct/XSCT'  },
@@ -113,7 +115,6 @@ const App = () => {
                         { label: translations[selectedLanguage].LocationsSeatBlock, icon: 'pi pi-fw pi-clone', to: '/locssb/XSSB'  },
                         { label: translations[selectedLanguage].Locations, icon: 'pi pi-fw pi-clone', to: '/loc/-1'  },
                         { site: site, label: translations[selectedLanguage].LocTree, icon: 'pi pi-fw pi-clone', to: '/loctree' },
-                      //d  { label: translations[selectedLanguage].Properties_location, icon: 'pi pi-fw pi-calendar' , to: '/locatt'},
                        // { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/loclinktp'}
                     ]
                 },
@@ -542,7 +543,7 @@ const App = () => {
                         <Route path="/locsct/:loctpId" element={<LocW />} />
                         <Route path="/locsb/:loctpId" element={<LocW />} />  
                         <Route path="/locssb/:loctpId" element={<LocW />} />                     
-                        <Route path="/locatt" element={<Um />} />
+                        <Route path="/locatt" element={<Locatt />} />
                         <Route path="/loclinktp" element={<Um />} />
 
                         <Route path="/objtp" element={<ObjTp />} />

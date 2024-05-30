@@ -20,6 +20,8 @@ import CmnLocartL from "./cmnLocartL"
 import CmnTerrlocL from "./cmnTerrlocL"
 import CmnLoclinkL from "./cmnLoclinkL"
 import ColorPickerWrapper from './ColorPickerWrapper';
+import CmnLocattsL from "./cmnLocattsL"
+
 
 
 export default function CmnLocL(props) {
@@ -44,6 +46,7 @@ export default function CmnLocL(props) {
   const [locTip, setLocTip] = useState('');
   const [cmnLocartLVisible, setCmnLocartLVisible] = useState(false);
   const [cmnLoclinkLVisible, setCmnLoclinkLVisible] = useState(false);
+  const [cmnLocattsLVisible, setCmnLocattsLVisible] = useState(false);
 
   const [cmnTerrlocLVisible, setCmnTerrlocLVisible] = useState(false);
 
@@ -130,6 +133,10 @@ export default function CmnLocL(props) {
     return index;
   };
 
+  const handleCmnLocattsLDialogClose = (newObj) => {
+    const localObj = { newObj };
+  };
+
   const handleCmnLocartLDialogClose = (newObj) => {
     const localObj = { newObj };
   }; 
@@ -144,6 +151,10 @@ export default function CmnLocL(props) {
 
   const openNew = () => {
     setCmnLocDialog(emptyCmnLoc);
+  };
+
+  const openLocAtt = () => {
+    setCmnLocattsLDialog();
   };
 
   const openLocart = () => {
@@ -215,6 +226,13 @@ export default function CmnLocL(props) {
     setGlobalFilterValue(value1);
   };
 
+
+  const setCmnLocattsLDialog = () => {
+    setShowMyComponent(true);
+    setCmnLocattsLVisible(true);
+
+  }
+
   const setCmnLocartDialog = () => {
     setShowMyComponent(true);
     setCmnLocartLVisible(true);
@@ -249,6 +267,9 @@ export default function CmnLocL(props) {
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
+        <div className="flex flex-wrap gap-1">
+          <Button label={translations[selectedLanguage].Attributes} icon="pi pi-table" onClick={openLocAtt} text raised disabled={!cmnLoc} />
+        </div>        
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].Links} icon="pi pi-sitemap" onClick={openLocLink} text raised disabled={!cmnLoc} />
         </div>        
@@ -522,7 +543,27 @@ export default function CmnLocL(props) {
             lookUp={false}
           />
         )}
-      </Dialog>           
+      </Dialog>   
+      <Dialog
+        header={translations[selectedLanguage].LocattsLista}
+        visible={cmnLocattsLVisible}
+        style={{ width: '70%' }}
+        onHide={() => {
+          setCmnLocattsLVisible(false);
+          setShowMyComponent(false);
+        }}
+      >
+        {showMyComponent && (
+          <CmnLocattsL
+            parameter={"inputTextValue"}
+            cmnLoc={cmnLoc}
+            handleCmnLocattsLDialogClose={handleCmnLocattsLDialogClose}
+            setCmnLocattsLVisible={setCmnLocattsLVisible}
+            dialog={true}
+            lookUp={false}
+          />
+        )}
+      </Dialog>              
     </div>
   );
 }

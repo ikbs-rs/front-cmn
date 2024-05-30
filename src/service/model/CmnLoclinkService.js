@@ -142,14 +142,14 @@ export class CmnLoclinkService {
 
     async postGrpLoclink(obj,newObj, addItems, begda, enda) {
         try {
-            console.log(addItems, "********************    ***postGrpEventattsk9999999999")
             const selectedLanguage = localStorage.getItem('sl') || 'en'
             if (obj.id===null) {
                 throw new Error(
                     "obj must be filled!"
                 );
             }
-            const url = `${env.CMN_BACK_URL}/cmn/loclink/_s/param/?stm=cmn_grploclink_s&table=${JSON.stringify(obj)}&par1=${addItems}&begda=${begda}&endda=${enda}&sl=${selectedLanguage}`;
+            const url = `${env.CMN_BACK_URL}/cmn/loclink/_s/param/?stm=cmn_grploclink_s&objId1=${obj.id}&objId2=${obj.tp}&par1=${addItems}&begda=${begda}&endda=${enda}&sl=${selectedLanguage}`;
+            console.log(addItems, "@@@@@@*****************postGrpEventatts********************@@@@@@@@@@@", url, "@@+@@", "@@+@@", newObj)
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ export class CmnLoclinkService {
             const jsonObj = JSON.stringify(newObj)
             
             const response = await axios.post(url, {jsonObj}, { headers });
-            console.log(response.data, "***************************postGrpEventatts*******************************", url)
+            console.log(response.data, "* BMV **************************postGrpEventatts*******************************", url)
             return response.data.item;
         } catch (error) {
             console.error(error);

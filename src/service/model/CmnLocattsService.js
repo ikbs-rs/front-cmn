@@ -2,19 +2,19 @@ import axios from 'axios';
 import env from "../../configs/env"
 import Token from "../../utilities/Token";
 
-export class CmnTerrService {
+export class CmnLocattsService {
 
-    async getTpLista(objId) {
+    async getLista(objId) {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.CMN_BACK_URL}/cmn/x/terr/_v/lista/?stm=cmn_terrtp_v&objid=${objId}&sl=${selectedLanguage}`;
+        const url = `${env.CMN_BACK_URL}/cmn/loc/_v/lista/?stm=cmn_locatts_v&objid=${objId}&sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
           Authorization: tokenLocal.token
         };
     
         try {
+            console.log(url, "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
           const response = await axios.get(url, { headers });
-          console.log(url, "++++++++++++++++++++", response)
           return response.data.item;
         } catch (error) {
           console.error(error);
@@ -22,27 +22,9 @@ export class CmnTerrService {
         }
       }
 
-      async getLista(objId) {
+    async getCmnLocattss() {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.CMN_BACK_URL}/cmn/x/terr/_v/lista/?stm=cmn_terr_v&objid=${objId}&sl=${selectedLanguage}`;
-        const tokenLocal = await Token.getTokensLS();
-        const headers = {
-          Authorization: tokenLocal.token
-        };
-    
-        try {
-          const response = await axios.get(url, { headers });
-          console.log(url, "++++++++++++++++++++", response)
-          return response.data.item;
-        } catch (error) {
-          console.error(error);
-          throw error;
-        }
-      }
-
-    async getCmnTerrs() {
-        const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.CMN_BACK_URL}/cmn/x/terr/?sl=${selectedLanguage}`;
+        const url = `${env.CMN_BACK_URL}/cmn/locatts/?sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
             Authorization: tokenLocal.token
@@ -57,9 +39,9 @@ export class CmnTerrService {
         }
     }
 
-    async getCmnTerr(objId) {
+    async getCmnLocatts(objId) {
         const selectedLanguage = localStorage.getItem('sl') || 'en'
-        const url = `${env.CMN_BACK_URL}/cmn/x/terr/${objId}/?sl=${selectedLanguage}`;
+        const url = `${env.CMN_BACK_URL}/cmn/locatts/${objId}/?sl=${selectedLanguage}`;
         const tokenLocal = await Token.getTokensLS();
         const headers = {
             Authorization: tokenLocal.token
@@ -75,23 +57,22 @@ export class CmnTerrService {
     }
 
 
-    async postCmnTerr(newObj) {
+    async postCmnLocatts(newObj) {
         try {
-            console.log(newObj, "6666666666666666666666666666666666")
             const selectedLanguage = localStorage.getItem('sl') || 'en'
             if (newObj.action === null || newObj.roll === null) {
                 throw new Error(
                     "Items must be filled!"
                 );
             }
-            const url = `${env.CMN_BACK_URL}/cmn/x/terr/?sl=${selectedLanguage}`;
+            const url = `${env.CMN_BACK_URL}/cmn/locatts/?sl=${selectedLanguage}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': tokenLocal.token
             };
             const jsonObj = JSON.stringify(newObj)
-console.log("*-*-*-*-*", url, newObj, jsonObj)
+
             const response = await axios.post(url, jsonObj, { headers });
             return response.data.items;
         } catch (error) {
@@ -100,7 +81,7 @@ console.log("*-*-*-*-*", url, newObj, jsonObj)
         }
     }
 
-    async putCmnTerr(newObj) {
+    async putCmnLocatts(newObj) {
         try {
             const selectedLanguage = localStorage.getItem('sl') || 'en'
             if (newObj.action === null || newObj.roll === null)  {
@@ -108,7 +89,7 @@ console.log("*-*-*-*-*", url, newObj, jsonObj)
                     "Items must be filled!"
                 );
             }
-            const url = `${env.CMN_BACK_URL}/cmn/x/terr/?sl=${selectedLanguage}`;
+            const url = `${env.CMN_BACK_URL}/cmn/locatts/?sl=${selectedLanguage}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Content-Type': 'application/json',
@@ -125,9 +106,9 @@ console.log("*-*-*-*-*", url, newObj, jsonObj)
 
     }
 
-    async deleteCmnTerr(newObj) {
+    async deleteCmnLocatts(newObj) {
         try {
-            const url = `${env.CMN_BACK_URL}/cmn/x/terr/${newObj.id}`;
+            const url = `${env.CMN_BACK_URL}/cmn/locatts/${newObj.id}`;
             const tokenLocal = await Token.getTokensLS();
             const headers = {
                 'Authorization': tokenLocal.token
