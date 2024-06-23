@@ -414,6 +414,13 @@ export default function CmnParL(props) {
           filter
           style={{ width: "20%" }}
         ></Column>
+        <Column
+          field="email"
+          header={translations[selectedLanguage].email}
+          sortable
+          filter
+          style={{ width: "20%" }}
+        ></Column>        
       </DataTable>
       <Dialog
         header={translations[selectedLanguage].Par}
