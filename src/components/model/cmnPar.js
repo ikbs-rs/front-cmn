@@ -238,6 +238,16 @@ const CmnPar = (props) => {
                             />
                             {submitted && !cmnPar.text && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
+
+
+
+                        <div className="field col-12 md:col-8">
+                            <label htmlFor="short">{translations[selectedLanguage].short}</label>
+                            <InputText
+                                id="short"
+                                value={cmnPar.short} onChange={(e) => onInputChange(e, "text", 'short')}
+                            />
+                        </div>
                         <div className="field col-12 md:col-7">
                             <label htmlFor="tp">{translations[selectedLanguage].Type} *</label>
                             <Dropdown id="tp"
@@ -251,16 +261,6 @@ const CmnPar = (props) => {
                             />
                             {submitted && !cmnPar.tp && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
-
-
-                        <div className="field col-12 md:col-8">
-                            <label htmlFor="short">{translations[selectedLanguage].short}</label>
-                            <InputText
-                                id="short"
-                                value={cmnPar.short} onChange={(e) => onInputChange(e, "text", 'short')}
-                            />
-                        </div>
-
                         <div className="field col-12 md:col-5">
                             <label htmlFor="address">{translations[selectedLanguage].address}</label>
                             <InputText
