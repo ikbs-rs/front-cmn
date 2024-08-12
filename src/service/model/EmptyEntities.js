@@ -365,7 +365,8 @@ const EmptyEntities =
     "att": null,
     "text": "",
     "begda": "",
-    "endda": ""
+    "endda": "",
+    "zzcode": ""
   },
   "cmn_parattx": {
     "id": null,

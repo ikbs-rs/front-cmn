@@ -213,6 +213,15 @@ const CmnParatts = (props) => {
                         </div>
                     </div>
                     <div className="p-fluid formgrid grid">
+                        <div className="field col-12 md:col-8">
+                            <label htmlFor="zzcode">{translations[selectedLanguage].Code}</label>
+                            <InputText
+                                id="zzcode"
+                                value={cmnParatts.zzcode} onChange={(e) => onInputChange(e, "text", 'zzcode')}
+                            />
+                        </div>
+                    </div>
+                    <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-5">
                             <label htmlFor="begda">{translations[selectedLanguage].Begda} *</label>
                             <Calendar
