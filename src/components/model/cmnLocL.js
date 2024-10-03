@@ -71,6 +71,7 @@ export default function CmnLocL(props) {
         if (i < 2) {
           const cmnLocService = new CmnLocService();
           const data = await cmnLocService.getListaLL(loctpCode);
+
           setCmnLocs(data);
 
           initFilters();
@@ -280,7 +281,7 @@ export default function CmnLocL(props) {
           <Button label={translations[selectedLanguage].Terr} icon="pi pi-building" onClick={openTerrloc} text raised disabled={!cmnLoc} />
         </div>            
         <div className="flex-grow-1"></div>
-        <b>{translations[selectedLanguage].LocationList}</b>
+        <b>{`${translations[selectedLanguage][props.loctpId]||'Локације '} ${translations[selectedLanguage].Lista}`}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -389,7 +390,7 @@ export default function CmnLocL(props) {
         removableSort
         filters={filters}
         scrollable
-        scrollHeight="550px"
+        scrollHeight="630px"
         virtualScrollerOptions={{ itemSize: 46 }}
         tableStyle={{ minWidth: "50rem" }}
         metaKeySelection={false}
@@ -408,6 +409,13 @@ export default function CmnLocL(props) {
           style={{ minWidth: '4rem' }}
         />
         <Column
+          field="text"
+          header={translations[selectedLanguage].Text}
+          sortable
+          filter
+          style={{ width: "30%" }}
+        ></Column>        
+        <Column
           field="code"
           header={translations[selectedLanguage].Code}
           sortable
@@ -415,22 +423,15 @@ export default function CmnLocL(props) {
           style={{ width: "15%" }}
         ></Column>
         <Column
-          field="text"
-          header={translations[selectedLanguage].Text}
+          field="ngrp"
+          header={translations[selectedLanguage].Group}
           sortable
           filter
-          style={{ width: "30%" }}
-        ></Column>
-        <Column
-          field="ctp"
-          header={translations[selectedLanguage].Code}
-          sortable
-          filter
-          style={{ width: "15%" }}
-        ></Column>
+          style={{ width: "35%" }}
+        ></Column>        
         <Column
           field="ntp"
-          header={translations[selectedLanguage].Text}
+          header={translations[selectedLanguage].Type}
           sortable
           filter
           style={{ width: "35%" }}
@@ -455,7 +456,7 @@ export default function CmnLocL(props) {
         ></Column>
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].Location}
+        header={`${translations[selectedLanguage][props.loctpId]||'Локација '}`}
         visible={visible}
         style={{ width: '95%' }}
         onHide={() => {

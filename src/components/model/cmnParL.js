@@ -57,6 +57,7 @@ export default function CmnParL(props) {
           //!!!!! OVDE MI TREBAJU PODACI KOJE PRIMAM SA PARENT KOMPONENTA
           if (props.independent || parentData ) {           
             const data = await cmnParService.getLista();
+            console.log(data, "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
             setCmnPars(data);
             initFilters();
           }

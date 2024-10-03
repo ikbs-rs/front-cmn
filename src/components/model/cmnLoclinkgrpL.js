@@ -28,7 +28,7 @@ export default function CmnLoclinkgrpL(props) {
   const [showMyComponent, setShowMyComponent] = useState(true);
   const [locTip, setLocTip] = useState('');
   const [cmnLoctpId, setCmnLoctpId] = useState(null);
-  const loctpCode = props.loctpCode ;
+  const loctpCode = props.loctpCode;
 
   const selectedLanguage = localStorage.getItem('sl') || 'en'
   const [cmnLoclinkgrps, setCmnLoclinkgrps] = useState([]);
@@ -151,7 +151,7 @@ export default function CmnLoclinkgrpL(props) {
     setConfirmDialogVisible(true);
     await setAddItems(false)
   };
-  
+
   const handleGetSelectedCopyRowsClick = async () => {
     setConfirmDialogVisible(true);
     await setAddItems(true)
@@ -198,7 +198,7 @@ export default function CmnLoclinkgrpL(props) {
     console.log(selectedProducts, "***********handleConfirm********************", addItems)
     setSubmitted(true);
     const cmnLoclinkService = new CmnLoclinkService(selectedProducts);
-    await cmnLoclinkService.postGrpLoclink(props.cmnLoc, selectedProducts, addItems, DateFunction.currDate(), '99991231');
+    await cmnLoclinkService.postGrpLoclink(props.cmnLoc, selectedProducts, addItems, DateFunction.currDate(), '99991231', props.cmnLoctpId);
     props.handleCmnLoclinkgrpLDialogClose({ obj: props.cmnLoc });
     toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Поставке успешно копиране ?', life: 3000 });
     setVisible(false);
@@ -258,7 +258,7 @@ export default function CmnLoclinkgrpL(props) {
   const hideDeleteDialog = () => {
     setDeleteDialogVisible(false);
   };
-  
+
   const renderHeader = () => {
     return (
       <div className="flex card-container">
@@ -269,10 +269,10 @@ export default function CmnLoclinkgrpL(props) {
         />
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
-        </div>        
+        </div>
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].Copy} icon="pi pi-copy" severity="danger" onClick={handleGetSelectedCopyRowsClick} text raised />
-        </div> 
+        </div>
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].Add} icon="pi pi-plus" onClick={handleGetSelectedAddRowsClick} severity="warning" text raised />
         </div>
@@ -315,7 +315,7 @@ export default function CmnLoclinkgrpL(props) {
   };
 
   const header = renderHeader();
-  
+
   const locTemplate = (rowData) => {
     return (
       <div className="flex flex-wrap gap-1">
@@ -350,7 +350,7 @@ export default function CmnLoclinkgrpL(props) {
           onClick={handleGetSelectedRowsClick}
         />
       </div> */}
-      <DataTable  
+      <DataTable
         value={cmnLoclinkgrps}
         size={"small"}
         selectionMode={rowClick ? null : "checkbox"}
@@ -372,17 +372,19 @@ export default function CmnLoclinkgrpL(props) {
           selectionMode="multiple"
           headerStyle={{ width: "3rem" }}
         ></Column>
-        <Column field="code" header={translations[selectedLanguage].code} sortable> </Column>
-        <Column field="text" header={translations[selectedLanguage].text} sortable> </Column>
-        <Column field="ntp" header={translations[selectedLanguage].ntp} sortable> </Column>
-        <Column field="ctp" header={translations[selectedLanguage].ninputtp} sortable> </Column>
+        <Column field="text" header={translations[selectedLanguage].text} sortable style={{ width: "30%" }}> </Column>
+        <Column field="code" header={translations[selectedLanguage].code} sortable style={{ width: "10%" }}> </Column>
+        <Column field="ngrp" header={translations[selectedLanguage].ngrp} sortable style={{ width: "25%" }}> </Column>
+        <Column field="cgrp" header={translations[selectedLanguage].cgrp} sortable style={{ width: "10%" }}> </Column>
+        <Column field="ntp" header={translations[selectedLanguage].ntp} sortable style={{ width: "25%" }}> </Column>
+        {/* <Column field="ctp" header={translations[selectedLanguage].ninputtp} sortable> </Column> */}
         <Column
           //bodyClassName="text-center"
           body={locTemplate}
           exportable={false}
           headerClassName="w-10rem"
           style={{ minWidth: '4rem' }}
-        />        
+        />
         {/* <Column field="ddlist" header={translations[selectedLanguage].ddlist}></Column> */}
       </DataTable>
       {selectedRowsData.length > 0 && (
@@ -422,7 +424,7 @@ export default function CmnLoclinkgrpL(props) {
             <span className="p-dialog-header-close-icon pi pi-times"></span>
           </button>
         </div>
-      </Dialog>      
+      </Dialog>
       <ConfirmDialog
         visible={confirmDialogVisible}
         onHide={() => setConfirmDialogVisible(false)}

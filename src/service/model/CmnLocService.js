@@ -38,6 +38,23 @@ export class CmnLocService {
       throw error;
     }
   }
+  async getListaCtp(objId) {
+    const selectedLanguage = localStorage.getItem('sl') || 'en'
+    const url = `${env.CMN_BACK_URL}/cmn/x/loc/_v/lista/?stm=cmn_locctp_v&objid=${objId}&id=t.code&sl=${selectedLanguage}`;
+    const tokenLocal = await Token.getTokensLS();
+    const headers = {
+      Authorization: tokenLocal.token
+    };
+
+    try {
+      const response = await axios.get(url, { headers });
+      console.log(url, "*****************getListaLL******************", response.data)
+      return response.data.item;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 
   async getObjTree() {
     const selectedLanguage = localStorage.getItem('sl') || 'en'

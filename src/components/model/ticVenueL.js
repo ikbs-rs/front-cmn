@@ -8,35 +8,35 @@ import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
 import './index.css';
-import { CmnUmService } from "../../service/model/CmnUmService";
-import CmnUm from './cmnUm';
+import { TicVenueService } from "../../service/model/TicVenueService";
+import TicVenue from './ticVenue';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
 import { translations } from "../../configs/translations";
 
-export default function CmnUmL(props) {
+export default function TicVenueL(props) {
   let i = 0
-  const objName = "cmn_um"
+  const objName = "tic_venue"
   const selectedLanguage = localStorage.getItem('sl')||'en'
-  const emptyCmnUm = EmptyEntities[objName]
+  const emptyTicVenue = EmptyEntities[objName]
   const [showMyComponent, setShowMyComponent] = useState(true);
-  const [cmnUms, setCmnUms] = useState([]);
-  const [cmnUm, setCmnUm] = useState(emptyCmnUm);
+  const [ticVenues, setTicVenues] = useState([]);
+  const [ticVenue, setTicVenue] = useState(emptyTicVenue);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
-  const [umTip, setUmTip] = useState('');
+  const [venueTip, setVenueTip] = useState('');
 
   useEffect(() => {
     async function fetchData() {
       try {
         ++i
         if (i<2) {  
-        const cmnUmService = new CmnUmService();
-        const data = await cmnUmService.getCmnUms();
-        setCmnUms(data);
+        const ticVenueService = new TicVenueService();
+        const data = await ticVenueService.getTicVenues();
+        setTicVenues(data);
         initFilters();
         }
       } catch (error) {
@@ -50,31 +50,31 @@ export default function CmnUmL(props) {
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
 
-    let _cmnUms = [...cmnUms];
-    let _cmnUm = { ...localObj.newObj.obj };
+    let _ticVenues = [...ticVenues];
+    let _ticVenue = { ...localObj.newObj.obj };
 
     //setSubmitted(true);
-    if (localObj.newObj.umTip === "CREATE") {
-      _cmnUms.push(_cmnUm);
-    } else if (localObj.newObj.umTip === "UPDATE") {
-      const index = findIndexById(localObj.newObj.obj.id);
-      _cmnUms[index] = _cmnUm;
-    } else if ((localObj.newObj.umTip === "DELETE")) {
-      _cmnUms = cmnUms.filter((val) => val.id !== localObj.newObj.obj.id);
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnUm Delete', life: 3000 });
+    if (localObj.newObj.venueTip === "CREATE") {
+      _ticVenues.push(_ticVenue);
+    } else if (localObj.newObj.venueTip === "UPDATE") {
+      const index = findIndexById(localObj.newObj.obj.venue_id);
+      _ticVenues[index] = _ticVenue;
+    } else if ((localObj.newObj.venueTip === "DELETE")) {
+      _ticVenues = ticVenues.filter((val) => val.venue_id !== localObj.newObj.obj.venue_id);
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'TicVenue Delete', life: 3000 });
     } else {
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnUm ?', life: 3000 });
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'TicVenue ?', life: 3000 });
     }
-    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.umTip}`, life: 3000 });
-    setCmnUms(_cmnUms);
-    setCmnUm(emptyCmnUm);
+    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.venueTip}`, life: 3000 });
+    setTicVenues(_ticVenues);
+    setTicVenue(_ticVenue);
   };
 
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < cmnUms.length; i++) {
-      if (cmnUms[i].id === id) {
+    for (let i = 0; i < ticVenues.length; i++) {
+      if (ticVenues[i].venue_id === id) {
         index = i;
         break;
       }
@@ -84,14 +84,14 @@ export default function CmnUmL(props) {
   };
 
   const openNew = () => {
-    setCmnUmDialog(emptyCmnUm);
+    setTicVenueDialog(emptyTicVenue);
   };
 
   const onRowSelect = (event) => {
     toast.current.show({
       severity: "info",
       summary: "Action Selected",
-      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
+      detail: `Id: ${event.data.venue_id} Name: ${event.data.textx}`,
       life: 3000,
     });
   };
@@ -100,7 +100,7 @@ export default function CmnUmL(props) {
     toast.current.show({
       severity: "warn",
       summary: "Action Unselected",
-      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
+      detail: `Id: ${event.data.venue_id} Name: ${event.data.textx}`,
       life: 3000,
     });
   };
@@ -142,7 +142,7 @@ export default function CmnUmL(props) {
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
         <div className="flex-grow-1" />
-        <b>{translations[selectedLanguage].UmList}</b>
+        <b>{translations[selectedLanguage].VenueList}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -194,10 +194,10 @@ export default function CmnUmL(props) {
   };
 
   // <--- Dialog
-  const setCmnUmDialog = (cmnUm) => {
+  const setTicVenueDialog = (ticVenue) => {
     setVisible(true)
-    setUmTip("CREATE")
-    setCmnUm({ ...cmnUm });
+    setVenueTip("CREATE")
+    setTicVenue({ ...ticVenue });
   }
   //  Dialog --->
 
@@ -213,8 +213,8 @@ export default function CmnUmL(props) {
           icon="pi pi-pencil"
           style={{ width: '24px', height: '24px' }}
           onClick={() => {
-            setCmnUmDialog(rowData)
-            setUmTip("UPDATE")
+            setTicVenueDialog(rowData)
+            setVenueTip("UPDATE")
           }}
           text
           raised ></Button>
@@ -227,11 +227,12 @@ export default function CmnUmL(props) {
     <div className="card">
       <Toast ref={toast} />
       <DataTable
-        dataKey="id"
+        dataKey="venue_id"
         selectionMode="single"
-        selection={cmnUm}
+        selection={ticVenue}
         loading={loading}
-        value={cmnUms}
+        size={"small"}
+        value={ticVenues}
         header={header}
         showGridlines
         removableSort
@@ -244,9 +245,9 @@ export default function CmnUmL(props) {
         tableStyle={{ minWidth: "50rem" }}
         metaKeySelection={false}
         paginator
-        rows={10}
-        rowsPerPageOptions={[5, 10, 25, 50]}
-        onSelectionChange={(e) => setCmnUm(e.value)}
+        rows={25}
+        rowsPerPageOptions={[25, 50, 75, 100]}
+        onSelectionChange={(e) => setTicVenue(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
       >
@@ -265,42 +266,30 @@ export default function CmnUmL(props) {
           style={{ width: "25%" }}
         ></Column>
         <Column
-          field="textx"
+          field="venue_name"
           header={translations[selectedLanguage].Text}
           sortable
           filter
           style={{ width: "60%" }}
         ></Column>
-        <Column
-          field="valid"
-          filterField="valid"
-          dataType="numeric"
-          header={translations[selectedLanguage].Valid}
-          sortable
-          filter
-          filterElement={validFilterTemplate}
-          style={{ width: "15%" }}
-          bodyClassName="text-center"
-          body={validBodyTemplate}
-        ></Column>
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].Um}
+        header={translations[selectedLanguage].Venue}
         visible={visible}
-        style={{ width: '50%' }}
+        style={{ width: '95%', height: '100%' }}
         onHide={() => {
           setVisible(false);
           setShowMyComponent(false);
         }}
       >
         {showMyComponent && (
-          <CmnUm
+          <TicVenue
             parameter={"inputTextValue"}
-            cmnUm={cmnUm}
+            ticVenue={ticVenue}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
-            umTip={umTip}
+            venueTip={venueTip}
           />
         )}
       </Dialog>

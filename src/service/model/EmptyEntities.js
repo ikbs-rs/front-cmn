@@ -7,6 +7,13 @@ const EmptyEntities =
 		"text": "",
 		"valid": null 
   },
+  "tic_venuetp": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "valid": "1"
+  },
   "cmn_ccardx": {
     "id": null,
     "site": null,
@@ -84,7 +91,8 @@ const EmptyEntities =
     "tp": null,
     "valid": "1",
     "color": "",
-    "icon": ""
+    "icon": "",
+    "grp": ""
   },
   "cmn_locatt": {
     "id": null,
@@ -170,6 +178,16 @@ const EmptyEntities =
     "lang": "",
     "grammcase": "1",
     "text": ""
+  },  
+  "cmn_locvenue": {
+    "id": null,
+    "site": null,
+    "venue": null,
+    "loc": null,
+    "val": "",
+    "begda": "",
+    "endda": "",
+    "pic": ""
   },
   "cmn_menu": {
     "id": null,
@@ -338,7 +356,8 @@ const EmptyEntities =
     "docid": "",
     "country": "",
     "email": "",
-		"countryid": null
+		"countryid": null,
+    "birthday": ""
   },
   "cmn_paraccount": {
     "id": null,

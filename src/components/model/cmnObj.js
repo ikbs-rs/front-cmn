@@ -15,7 +15,7 @@ import Token from "../../utilities/Token";
 import CustomColorPicker from "../custom/CustomColorPicker.js"
 
 const CmnObj = (props) => {
-console.log(props, "*props*************************************************CmnObj*************************************************************")
+console.log(props, "*props*HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHCmnObjH")
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [dropdownItem, setDropdownItem] = useState(null);
@@ -80,7 +80,13 @@ console.log(props, "*props*************************************************CmnOb
             setSubmitted(true);
             const cmnObjService = new CmnObjService();
             const data = await cmnObjService.postCmnObj(cmnObj);
+            console.log("00-HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
+            // console.log(data, "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
             cmnObj.id = data
+
+            // if (cmnObj.code == "" || !cmnObj.code) {
+            //     cmnObj.code = data.code
+            // }            
             props.handleDialogClose({ obj: cmnObj, objTip: props.objTip });
             props.setVisible(false);
         } catch (err) {

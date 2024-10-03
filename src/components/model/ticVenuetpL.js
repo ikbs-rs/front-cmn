@@ -8,35 +8,35 @@ import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
 import './index.css';
-import { CmnUmService } from "../../service/model/CmnUmService";
-import CmnUm from './cmnUm';
+import { TicVenuetpService } from "../../service/model/TicVenuetpService";
+import TicVenuetp from './ticVenuetp';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
 import { translations } from "../../configs/translations";
 
-export default function CmnUmL(props) {
+export default function TicVenuetpL(props) {
   let i = 0
-  const objName = "cmn_um"
+  const objName = "tic_venuetp"
   const selectedLanguage = localStorage.getItem('sl')||'en'
-  const emptyCmnUm = EmptyEntities[objName]
+  const emptyTicVenuetp = EmptyEntities[objName]
   const [showMyComponent, setShowMyComponent] = useState(true);
-  const [cmnUms, setCmnUms] = useState([]);
-  const [cmnUm, setCmnUm] = useState(emptyCmnUm);
+  const [ticVenuetps, setTicVenuetps] = useState([]);
+  const [ticVenuetp, setTicVenuetp] = useState(emptyTicVenuetp);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
-  const [umTip, setUmTip] = useState('');
+  const [venuetpTip, setVenuetpTip] = useState('');
 
   useEffect(() => {
     async function fetchData() {
       try {
         ++i
         if (i<2) {  
-        const cmnUmService = new CmnUmService();
-        const data = await cmnUmService.getCmnUms();
-        setCmnUms(data);
+        const ticVenuetpService = new TicVenuetpService();
+        const data = await ticVenuetpService.getTicVenuetps();
+        setTicVenuetps(data);
         initFilters();
         }
       } catch (error) {
@@ -50,31 +50,31 @@ export default function CmnUmL(props) {
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
 
-    let _cmnUms = [...cmnUms];
-    let _cmnUm = { ...localObj.newObj.obj };
+    let _ticVenuetps = [...ticVenuetps];
+    let _ticVenuetp = { ...localObj.newObj.obj };
 
     //setSubmitted(true);
-    if (localObj.newObj.umTip === "CREATE") {
-      _cmnUms.push(_cmnUm);
-    } else if (localObj.newObj.umTip === "UPDATE") {
+    if (localObj.newObj.venuetpTip === "CREATE") {
+      _ticVenuetps.push(_ticVenuetp);
+    } else if (localObj.newObj.venuetpTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
-      _cmnUms[index] = _cmnUm;
-    } else if ((localObj.newObj.umTip === "DELETE")) {
-      _cmnUms = cmnUms.filter((val) => val.id !== localObj.newObj.obj.id);
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnUm Delete', life: 3000 });
+      _ticVenuetps[index] = _ticVenuetp;
+    } else if ((localObj.newObj.venuetpTip === "DELETE")) {
+      _ticVenuetps = ticVenuetps.filter((val) => val.id !== localObj.newObj.obj.id);
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'TicVenuetp Delete', life: 3000 });
     } else {
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnUm ?', life: 3000 });
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'TicVenuetp ?', life: 3000 });
     }
-    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.umTip}`, life: 3000 });
-    setCmnUms(_cmnUms);
-    setCmnUm(emptyCmnUm);
+    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.venuetpTip}`, life: 3000 });
+    setTicVenuetps(_ticVenuetps);
+    setTicVenuetp(emptyTicVenuetp);
   };
 
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < cmnUms.length; i++) {
-      if (cmnUms[i].id === id) {
+    for (let i = 0; i < ticVenuetps.length; i++) {
+      if (ticVenuetps[i].id === id) {
         index = i;
         break;
       }
@@ -84,14 +84,14 @@ export default function CmnUmL(props) {
   };
 
   const openNew = () => {
-    setCmnUmDialog(emptyCmnUm);
+    setTicVenuetpDialog(emptyTicVenuetp);
   };
 
   const onRowSelect = (event) => {
     toast.current.show({
       severity: "info",
       summary: "Action Selected",
-      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
+      detail: `Id: ${event.data.id} Name: ${event.data.text}`,
       life: 3000,
     });
   };
@@ -100,7 +100,7 @@ export default function CmnUmL(props) {
     toast.current.show({
       severity: "warn",
       summary: "Action Unselected",
-      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
+      detail: `Id: ${event.data.id} Name: ${event.data.text}`,
       life: 3000,
     });
   };
@@ -112,7 +112,7 @@ export default function CmnUmL(props) {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
-      textx: {
+      text: {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
@@ -142,7 +142,7 @@ export default function CmnUmL(props) {
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
         <div className="flex-grow-1" />
-        <b>{translations[selectedLanguage].UmList}</b>
+        <b>{translations[selectedLanguage].VenueTpList}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -194,10 +194,10 @@ export default function CmnUmL(props) {
   };
 
   // <--- Dialog
-  const setCmnUmDialog = (cmnUm) => {
+  const setTicVenuetpDialog = (ticVenuetp) => {
     setVisible(true)
-    setUmTip("CREATE")
-    setCmnUm({ ...cmnUm });
+    setVenuetpTip("CREATE")
+    setTicVenuetp({ ...ticVenuetp });
   }
   //  Dialog --->
 
@@ -213,8 +213,8 @@ export default function CmnUmL(props) {
           icon="pi pi-pencil"
           style={{ width: '24px', height: '24px' }}
           onClick={() => {
-            setCmnUmDialog(rowData)
-            setUmTip("UPDATE")
+            setTicVenuetpDialog(rowData)
+            setVenuetpTip("UPDATE")
           }}
           text
           raised ></Button>
@@ -229,9 +229,9 @@ export default function CmnUmL(props) {
       <DataTable
         dataKey="id"
         selectionMode="single"
-        selection={cmnUm}
+        selection={ticVenuetp}
         loading={loading}
-        value={cmnUms}
+        value={ticVenuetps}
         header={header}
         showGridlines
         removableSort
@@ -244,9 +244,9 @@ export default function CmnUmL(props) {
         tableStyle={{ minWidth: "50rem" }}
         metaKeySelection={false}
         paginator
-        rows={10}
-        rowsPerPageOptions={[5, 10, 25, 50]}
-        onSelectionChange={(e) => setCmnUm(e.value)}
+        rows={25}
+        rowsPerPageOptions={[25, 50, 75, 100]}
+        onSelectionChange={(e) => setTicVenuetp(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
       >
@@ -265,7 +265,7 @@ export default function CmnUmL(props) {
           style={{ width: "25%" }}
         ></Column>
         <Column
-          field="textx"
+          field="text"
           header={translations[selectedLanguage].Text}
           sortable
           filter
@@ -285,22 +285,22 @@ export default function CmnUmL(props) {
         ></Column>
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].Um}
+        header={translations[selectedLanguage].VenueTp}
         visible={visible}
-        style={{ width: '50%' }}
+        style={{ width: '70%' }}
         onHide={() => {
           setVisible(false);
           setShowMyComponent(false);
         }}
       >
         {showMyComponent && (
-          <CmnUm
+          <TicVenuetp
             parameter={"inputTextValue"}
-            cmnUm={cmnUm}
+            ticVenuetp={ticVenuetp}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
-            umTip={umTip}
+            venuetpTip={venuetpTip}
           />
         )}
       </Dialog>

@@ -28,6 +28,7 @@ const CmnPar = (props) => {
     const [cmnParItems, setCmnParItems] = useState(null);
     const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnPar.begda || DateFunction.currDate())));
     const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate('99991231' || DateFunction.currDate())))
+    const [birthday, setBirthday] = useState(props.cmnPar?.birthday?new Date(DateFunction.formatJsDate(props.cmnPar.birthday)):null);
 
     const calendarRef = useRef(null);
 
@@ -109,11 +110,14 @@ const CmnPar = (props) => {
             setSubmitted(true);
             cmnPar.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
             cmnPar.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
+            cmnPar.birthday = birthday?DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(birthday)):null;
+            
             const cmnParService = new CmnParService();
             const data = await cmnParService.postCmnPar(cmnPar);
-            cmnPar.id = data
+            console.log(data, "##################################################################################")
+            cmnPar.id = data.id
             if (cmnPar.code === null || cmnPar.code === "") {
-                cmnPar.code = cmnPar.id;
+                cmnPar.code = data.code;
             }
             props.handleDialogClose({ obj: cmnPar, parTip: props.parTip });
             props.setVisible(false);
@@ -132,6 +136,7 @@ const CmnPar = (props) => {
             setSubmitted(true);
             cmnPar.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
             cmnPar.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
+            cmnPar.birthday = birthday?DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(birthday)):null;
             const cmnParService = new CmnParService();
 
             await cmnParService.putCmnPar(cmnPar);
@@ -197,6 +202,9 @@ const CmnPar = (props) => {
                 case "endda":
                     setEndda(e.value)
                     break;
+                case "birthday":
+                    setBirthday(e.value)
+                    break;
                 default:
                     console.error("Pogresan naziv polja")
             }
@@ -219,7 +227,7 @@ const CmnPar = (props) => {
             <div className="col-12">
                 <div className="card">
                     <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-5">
+                        <div className="field col-12 md:col-3">
                             <label htmlFor="code">{translations[selectedLanguage].Code}</label>
                             <InputText id="code" autoFocus
                                 value={cmnPar.code} onChange={(e) => onInputChange(e, "text", 'code')}
@@ -228,7 +236,7 @@ const CmnPar = (props) => {
                             />
                             {submitted && !cmnPar.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
-                        <div className="field col-12 md:col-12">
+                        <div className="field col-12 md:col-9">
                             <label htmlFor="text">{translations[selectedLanguage].Text}</label>
                             <InputText
                                 id="text"
@@ -314,6 +322,7 @@ const CmnPar = (props) => {
                                 value={cmnPar.email} onChange={(e) => onInputChange(e, "text", 'email')}
                             />
                         </div>
+
                         <div className="field col-12 md:col-6">
                             <label htmlFor="activity">{translations[selectedLanguage].activity}</label>
                             <InputText
@@ -358,6 +367,15 @@ const CmnPar = (props) => {
                             <Calendar
                                 value={endda}
                                 onChange={(e) => onInputChange(e, "Calendar", 'endda')}
+                                showIcon
+                                dateFormat="dd.mm.yy"
+                            />
+                        </div>
+                        <div className="field col-12 md:col-4">
+                            <label htmlFor="birthday">{translations[selectedLanguage].Birthday} *</label>
+                            <Calendar
+                                value={birthday}
+                                onChange={(e) => onInputChange(e, "Calendar", 'birthday')}
                                 showIcon
                                 dateFormat="dd.mm.yy"
                             />

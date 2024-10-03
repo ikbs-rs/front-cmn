@@ -96,7 +96,19 @@ const AppSubmenu = forwardRef((props, ref) => {
 
         return (
             <NavLink to={item.to} {...commonLinkProps} className={({ isActive }) => classNames(commonLinkProps.className, isActive ? 'active-menuitem-routelink' : undefined)}>
-                {content}
+                {({ isActive }) => (
+                    <>
+                        <i className={menuitemIconClassName}></i>
+                        <span
+                            className={isActive ? "layout-menuitem-active-text" : "layout-menuitem-text"}
+                        >
+                            {item.label}
+                        </span>
+                        {item.items && <i className="pi pi-fw pi-angle-down layout-submenu-toggler"></i>}
+                        {item.badge && <Badge value={item.badge} />}
+                        <Ripple />
+                    </>
+                )}
             </NavLink>
         );
     };

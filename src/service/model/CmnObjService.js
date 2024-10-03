@@ -100,6 +100,7 @@ export class CmnObjService {
         );
       }
       const url = `${env.CMN_BACK_URL}/cmn/x/obj/?sl=${selectedLanguage}`;
+      console.log("**************"  , url, "****************")
       const tokenLocal = await Token.getTokensLS();
       const headers = {
         'Content-Type': 'application/json',
@@ -108,8 +109,8 @@ export class CmnObjService {
       const jsonObj = JSON.stringify(newObj)
 
       const response = await axios.post(url, jsonObj, { headers });
-      //console.log("**************"  , response, "****************")
-      return response.data.items;
+      console.log("**************"  , response.data, "****************######################################################################################")
+      return response.data.items|| response.data.item;
     } catch (error) {
       console.error(error);
       throw error;

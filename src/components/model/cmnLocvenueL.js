@@ -7,37 +7,46 @@ import { Button } from "primereact/button";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
-import './index.css';
-import { CmnUmService } from "../../service/model/CmnUmService";
-import CmnUm from './cmnUm';
+import { CmnLocvenueService } from "../../service/model/CmnLocvenueService";
+import CmnLocvenue from './cmnLocvenue';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
+import './index.css';
 import { translations } from "../../configs/translations";
+import DateFunction from "../../utilities/DateFunction";
 
-export default function CmnUmL(props) {
-  let i = 0
-  const objName = "cmn_um"
+
+export default function CmnLocvenueL(props) {
+console.log(props, 'HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH')
+  const objName = "cmn_locvenue"
   const selectedLanguage = localStorage.getItem('sl')||'en'
-  const emptyCmnUm = EmptyEntities[objName]
+  const emptyCmnLocvenue = EmptyEntities[objName]
+  emptyCmnLocvenue.loc = props.cmnLoc.id
   const [showMyComponent, setShowMyComponent] = useState(true);
-  const [cmnUms, setCmnUms] = useState([]);
-  const [cmnUm, setCmnUm] = useState(emptyCmnUm);
+  const [cmnLocvenues, setCmnLocvenues] = useState([]);
+  const [cmnLocvenue, setCmnLocvenue] = useState(emptyCmnLocvenue);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
-  const [umTip, setUmTip] = useState('');
+  const [locvenueTip, setLocvenueTip] = useState('');
+  let i = 0
+  const handleCancelClick = () => {
+    props.setCmnLocvenueLVisible(false);
+  };
 
   useEffect(() => {
     async function fetchData() {
       try {
         ++i
-        if (i<2) {  
-        const cmnUmService = new CmnUmService();
-        const data = await cmnUmService.getCmnUms();
-        setCmnUms(data);
-        initFilters();
+        if (i < 2) {
+          const cmnLocvenueService = new CmnLocvenueService();
+          const data = await cmnLocvenueService.getLista(props.cmnLoc.id);
+          console.log("Link podaci", data)
+          setCmnLocvenues(data);
+
+          initFilters();
         }
       } catch (error) {
         console.error(error);
@@ -50,31 +59,30 @@ export default function CmnUmL(props) {
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
 
-    let _cmnUms = [...cmnUms];
-    let _cmnUm = { ...localObj.newObj.obj };
-
+    let _cmnLocvenues = [...cmnLocvenues];
+    let _cmnLocvenue = { ...localObj.newObj.obj };
     //setSubmitted(true);
-    if (localObj.newObj.umTip === "CREATE") {
-      _cmnUms.push(_cmnUm);
-    } else if (localObj.newObj.umTip === "UPDATE") {
+    if (localObj.newObj.locvenueTip === "CREATE") {
+      _cmnLocvenues.push(_cmnLocvenue);
+    } else if (localObj.newObj.locvenueTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
-      _cmnUms[index] = _cmnUm;
-    } else if ((localObj.newObj.umTip === "DELETE")) {
-      _cmnUms = cmnUms.filter((val) => val.id !== localObj.newObj.obj.id);
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnUm Delete', life: 3000 });
+      _cmnLocvenues[index] = _cmnLocvenue;
+    } else if ((localObj.newObj.locvenueTip === "DELETE")) {
+      _cmnLocvenues = cmnLocvenues.filter((val) => val.id !== localObj.newObj.obj.id);
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnLocvenue Delete', life: 3000 });
     } else {
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnUm ?', life: 3000 });
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnLocvenue ?', life: 3000 });
     }
-    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.umTip}`, life: 3000 });
-    setCmnUms(_cmnUms);
-    setCmnUm(emptyCmnUm);
+    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.locvenueTip}`, life: 3000 });
+    setCmnLocvenues(_cmnLocvenues);
+    setCmnLocvenue(emptyCmnLocvenue);
   };
 
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < cmnUms.length; i++) {
-      if (cmnUms[i].id === id) {
+    for (let i = 0; i < cmnLocvenues.length; i++) {
+      if (cmnLocvenues[i].id === id) {
         index = i;
         break;
       }
@@ -84,14 +92,15 @@ export default function CmnUmL(props) {
   };
 
   const openNew = () => {
-    setCmnUmDialog(emptyCmnUm);
+    setCmnLocvenueDialog(emptyCmnLocvenue);
   };
 
   const onRowSelect = (event) => {
+    //cmnLocvenue.begda = event.data.begda
     toast.current.show({
       severity: "info",
       summary: "Action Selected",
-      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
+      detail: `Id: ${event.data.id} Name: ${event.data.text}`,
       life: 3000,
     });
   };
@@ -100,7 +109,7 @@ export default function CmnUmL(props) {
     toast.current.show({
       severity: "warn",
       summary: "Action Unselected",
-      detail: `Id: ${event.data.id} Name: ${event.data.textx}`,
+      detail: `Id: ${event.data.id} Name: ${event.data.text}`,
       life: 3000,
     });
   };
@@ -108,15 +117,22 @@ export default function CmnUmL(props) {
   const initFilters = () => {
     setFilters({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-      code: {
+      ctp: {
         operator: FilterOperator.AND,
         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
       },
-      textx: {
+      ntp: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],       
       },
-      valid: { value: null, matchMode: FilterMatchMode.EQUALS },
+      endda: {
+        operator: FilterOperator.AND,
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],       
+      },
+      begda: {
+        operator: FilterOperator.AND,
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],       
+      }      
     });
     setGlobalFilterValue("");
   };
@@ -138,11 +154,14 @@ export default function CmnUmL(props) {
   const renderHeader = () => {
     return (
       <div className="flex card-container">
+        <div className="flex flex-wrap gap-1" />
+        <Button label={translations[selectedLanguage].Cancel} icon="pi pi-times" onClick={handleCancelClick} text raised
+        />
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
-        <div className="flex-grow-1" />
-        <b>{translations[selectedLanguage].UmList}</b>
+        <div className="flex-grow-1"></div>
+        <b>{translations[selectedLanguage].LocvenueList}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -166,45 +185,22 @@ export default function CmnUmL(props) {
     );
   };
 
-  const validBodyTemplate = (rowData) => {
-    const valid = rowData.valid == 1?true:false
-    return (
-      <i
-        className={classNames("pi", {
-          "text-green-500 pi-check-circle": valid,
-          "text-red-500 pi-times-circle": !valid
-        })}
-      ></i>
-    );
-  };
-
-  const validFilterTemplate = (options) => {
-    return (
-      <div className="flex align-items-center gap-2">
-        <label htmlFor="verified-filter" className="font-bold">
-        {translations[selectedLanguage].Valid}
-        </label>
-        <TriStateCheckbox
-          inputId="verified-filter"
-          value={options.value}
-          onChange={(e) => options.filterCallback(e.value)}
-        />
-      </div>
-    );
+  const formatDateColumn = (rowData, field) => {
+    return DateFunction.formatDate(rowData[field]);
   };
 
   // <--- Dialog
-  const setCmnUmDialog = (cmnUm) => {
+  const setCmnLocvenueDialog = (cmnLocvenue) => {
     setVisible(true)
-    setUmTip("CREATE")
-    setCmnUm({ ...cmnUm });
+    setLocvenueTip("CREATE")
+    setCmnLocvenue({ ...cmnLocvenue });
   }
   //  Dialog --->
 
   const header = renderHeader();
   // heder za filter/>
 
-  const actionTemplate = (rowData) => {
+  const locvenueTemplate = (rowData) => {
     return (
       <div className="flex flex-wrap gap-1">
 
@@ -213,8 +209,8 @@ export default function CmnUmL(props) {
           icon="pi pi-pencil"
           style={{ width: '24px', height: '24px' }}
           onClick={() => {
-            setCmnUmDialog(rowData)
-            setUmTip("UPDATE")
+            setCmnLocvenueDialog(rowData)
+            setLocvenueTip("UPDATE")
           }}
           text
           raised ></Button>
@@ -226,83 +222,113 @@ export default function CmnUmL(props) {
   return (
     <div className="card">
       <Toast ref={toast} />
+      <div className="col-12">
+        <div className="card">
+          <div className="p-fluid formgrid grid">
+            <div className="field col-12 md:col-6">
+              <label htmlFor="code">{translations[selectedLanguage].Code}</label>
+              <InputText id="code"
+                value={props.cmnLoc.code}
+                disabled={true}
+              />
+            </div>
+            <div className="field col-12 md:col-6">
+              <label htmlFor="text">{translations[selectedLanguage].Text}</label>
+              <InputText
+                id="text"
+                value={props.cmnLoc.textx}
+                disabled={true}
+              />
+            </div>           
+          </div>
+        </div>
+      </div>
       <DataTable
         dataKey="id"
         selectionMode="single"
-        selection={cmnUm}
+        selection={cmnLocvenue}
+        size={"small"}
         loading={loading}
-        value={cmnUms}
+        value={cmnLocvenues}
         header={header}
         showGridlines
         removableSort
         filters={filters}
         scrollable
-        sortField="code"        
-        sortOrder={1}
-        scrollHeight="630px"
+        scrollHeight="550px"
         virtualScrollerOptions={{ itemSize: 46 }}
         tableStyle={{ minWidth: "50rem" }}
         metaKeySelection={false}
         paginator
         rows={10}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        onSelectionChange={(e) => setCmnUm(e.value)}
+        onSelectionChange={(e) => setCmnLocvenue(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
       >
         <Column
           //bodyClassName="text-center"
-          body={actionTemplate}
+          body={locvenueTemplate}
           exportable={false}
           headerClassName="w-10rem"
           style={{ minWidth: '4rem' }}
-        />        
+        />
         <Column
-          field="code"
+          field="cvenue"
           header={translations[selectedLanguage].Code}
           sortable
           filter
-          style={{ width: "25%" }}
+          style={{ width: "20%" }}
         ></Column>
         <Column
-          field="textx"
+          field="nvenue"
           header={translations[selectedLanguage].Text}
           sortable
           filter
           style={{ width: "60%" }}
-        ></Column>
+        ></Column>       
         <Column
-          field="valid"
-          filterField="valid"
-          dataType="numeric"
-          header={translations[selectedLanguage].Valid}
+          field="begda"
+          header={translations[selectedLanguage].Begda}
           sortable
           filter
-          filterElement={validFilterTemplate}
-          style={{ width: "15%" }}
-          bodyClassName="text-center"
-          body={validBodyTemplate}
-        ></Column>
+          style={{ width: "10%" }}
+          body={(rowData) => formatDateColumn(rowData, "begda")}
+        ></Column>  
+        <Column
+          field="endda"
+          header={translations[selectedLanguage].Endda}
+          sortable
+          filter
+          style={{ width: "10%" }}
+          body={(rowData) => formatDateColumn(rowData, "endda")}
+        ></Column>         
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].Um}
+        header={translations[selectedLanguage].Link}
         visible={visible}
-        style={{ width: '50%' }}
+        style={{ width: '90%' }}
         onHide={() => {
           setVisible(false);
           setShowMyComponent(false);
         }}
       >
         {showMyComponent && (
-          <CmnUm
+          <CmnLocvenue
             parameter={"inputTextValue"}
-            cmnUm={cmnUm}
+            cmnLocvenue={cmnLocvenue}
+            cmnLoc={props.cmnLoc}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
-            umTip={umTip}
+            locvenueTip={locvenueTip}
           />
         )}
+        <div className="p-dialog-header-icons" style={{ display: 'none' }}>
+          <button className="p-dialog-header-close p-link">
+            <span className="p-dialog-header-close-icon pi pi-times"></span>
+          </button>
+        </div>
       </Dialog>
     </div>
   );

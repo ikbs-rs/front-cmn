@@ -19,27 +19,38 @@ import { Panel } from "primereact/panel";
 import { Fieldset } from 'primereact/fieldset';
 import { TabView, TabPanel } from 'primereact/tabview';
 import CustomColorPicker from "../custom/CustomColorPicker.js"
+import TicVenueL from './ticVenueL.js';
+import CmnLocvenueL from './cmnLocvenueL.js';
 
 const CmnLoc = (props) => {
 
-    // console.log(props, "****$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$###########$$$$$$$$$$$$$$$##############################", props.loctpCode == "XSC")
+    console.log(props, "****$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$###########$$$$$$$$$$$$$$$##############################", props.loctpCode == "XSC")
     const selectedLanguage = localStorage.getItem('sl') || 'en';
     const SECTOR_CODE = 'XSCT'
     const SEAT_CODE = 'XSB'
     const SEATBLOCK_CODE = 'XSSB'
+    const LABEL_CODE = 'XLBT'
+    const SCENA_CODE = 'XSC'
+    const VIEW_CODE = 'XVW'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [cmnLoc, setCmnLoc] = useState(props.cmnLoc);
+    const [cmnLocgrp, setCmnLocgrp] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [ddCmnLocItem, setDdCmnLocItem] = useState(props.cmnLoc.cmnLoctpId);
     const [ddCmnLocItems, setDdCmnLocItems] = useState(null);
+    const [ddCmnLocgrpItem, setDdCmnLocgrpItem] = useState(null);
+    const [ddCmnLocgrpItems, setDdCmnLocgrpItems] = useState(null);
     const [cmnLocItem, setCmnLocItem] = useState(null);
     const [cmnLocItems, setCmnLocItems] = useState(null);
+    const [cmnLocgrpItem, setCmnLocgrpItem] = useState(null);
+    const [cmnLocgrpItems, setCmnLocgrpItems] = useState(null);
     const [dropdownItem, setDropdownItem] = useState(null);
     const [dropdownItems, setDropdownItems] = useState(null);
     const [locTip, setLocTip] = useState(props.locTip);
     const [cmnSectorId, setCmnSectorId] = useState(null);
     const [cmnSeatblockId, setCmnSeatblockId] = useState(null);
     const [cmnSeatId, setCmnSeatId] = useState(null);
+    const [cmnLabelId, setCmnLabelId] = useState(null);
 
     const calendarRef = useRef(null);
 
@@ -90,6 +101,38 @@ const CmnLoc = (props) => {
     useEffect(() => {
         async function fetchData() {
             try {
+                const cmnLocService = new CmnLocService();
+                const data = await cmnLocService.getListaCtp('XV');
+
+                setCmnLocgrpItems(data);
+                //console.log("******************", cmnLocItem)
+
+                const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
+                setDdCmnLocgrpItems(dataDD);
+                setDdCmnLocgrpItem(dataDD.find((item) => item.code === cmnLoc?.grp) || null);
+                const _cmnLocgrp = { ...cmnLocgrp }
+                setCmnLocgrp(_cmnLocgrp)
+                //console.log(cmnLoc, "************_cmnLoc****************", _cmnLoc, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", loctpID)
+                if (cmnLoc?.grp) {
+                    const foundItem = data.find((item) => item.id === cmnLoc.grp);
+                    //console.log(foundItem, "$$$$$$$$$$$$$$$$$$$$$$$$$foundItem$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", loctpID)
+                    setCmnLocgrpItem(foundItem || null);
+                    if (foundItem) {
+                        cmnLoc.cgrp = foundItem.code || null;
+                        cmnLoc.ngrp = foundItem.textx || null;
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                // Obrada greške ako je potrebna
+            }
+        }
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
                 const cmnLoctpService = new CmnLoctpService();
                 //console.log("***cmnLocL*******CmnLoctpService************&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
                 const data = await cmnLoctpService.getIdByItem(SECTOR_CODE);
@@ -102,7 +145,21 @@ const CmnLoc = (props) => {
         }
         fetchData();
     }, []);
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const cmnLoctpService = new CmnLoctpService();
+                //console.log("***cmnLocL*******CmnLoctpService************&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+                const data = await cmnLoctpService.getIdByItem(LABEL_CODE);
 
+                setCmnLabelId(data.id);
+            } catch (error) {
+                console.error(error);
+                // Obrada greške ako je potrebna
+            }
+        }
+        fetchData();
+    }, []);
     useEffect(() => {
         async function fetchData() {
             try {
@@ -154,8 +211,19 @@ const CmnLoc = (props) => {
             setSubmitted(true);
             const cmnLocService = new CmnLocService();
             const data = await cmnLocService.postCmnLoc(cmnLoc);
-            cmnLoc.id = data;
-            if (cmnLoc.code == "" || cmnLoc.code == "" || !cmnLoc.code) cmnLoc.code = cmnLoc.id
+
+            cmnLoc.id = data.id;
+            if (cmnLoc.code == "" || !cmnLoc.code) {
+                cmnLoc.code = data.code
+            }
+
+            cmnLoc.grp = data.grp
+            const foundItem = cmnLocgrpItems.find((item) => item.id === cmnLoc.grp);
+            if (foundItem?.text || foundItem?.text=="") {
+            cmnLoc.ngrp = foundItem?.text;  
+            } else {
+                cmnLoc.ngrp = cmnLoc.text
+            }          
             props.handleDialogClose({ obj: cmnLoc, locTip: locTip });
             props.setVisible(false);
             setLocTip("UPDATE")
@@ -175,8 +243,14 @@ const CmnLoc = (props) => {
             const cmnLocService = new CmnLocService();
             const newCmnLoclink = { ...cmnLoc, id: null };
             const data = await cmnLocService.postCmnLoc(newCmnLoclink);
-            cmnLoc.id = data;
-            if (cmnLoc.code == "" || cmnLoc.code == "" || !cmnLoc.code) cmnLoc.code = cmnLoc.id
+            console.log(data, "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL", data.code)
+            cmnLoc.id = data.id;
+            if (cmnLoc.code == "" || !cmnLoc.code) {
+                cmnLoc.code = data.code
+            }
+            cmnLoc.grp = data.grp
+            const foundItem = cmnLocgrpItems.find((item) => item.id === cmnLoc.grp);
+            cmnLoc.ngrp = foundItem.text;             
             props.handleDialogClose({ obj: cmnLoc, locTip: locTip });
             cmnLoc.code = ""
             cmnLoc.id = null
@@ -239,13 +313,19 @@ const CmnLoc = (props) => {
         let val = '';
 
         if (type === 'options') {
-            val = (e.target && e.target.value && e.target.value.code) || '';
+            val = (e.target && e.target.value && e.target.value.code) || null;
             if (name == 'tp') {
                 setDdCmnLocItem(e.value);
                 const foundItem = cmnLocItems.find((item) => item.id === val);
                 setCmnLocItem(foundItem || null);
-                cmnLoc.ntp = e.value.name;
-                cmnLoc.ctp = foundItem.code;
+                cmnLoc.ntp = e.value?.name;
+                cmnLoc.ctp = foundItem?.code;
+            } else if (name == 'grp') {
+                setDdCmnLocgrpItem(e.value);
+                const foundItem = cmnLocgrpItems.find((item) => item.id === val);
+                setCmnLocgrpItem(foundItem || null);
+                cmnLoc.ngrp = e.value?.name;
+                cmnLoc.cgrp = foundItem?.code;
             } else {
                 setDropdownItem(e.value);
             }
@@ -281,6 +361,20 @@ const CmnLoc = (props) => {
                             <InputText id="text" value={cmnLoc.text} onChange={(e) => onInputChange(e, 'text', 'text')} required className={classNames({ 'p-invalid': submitted && !cmnLoc.text })} />
                             {submitted && !cmnLoc.text && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
+                        <div className="field col-12 md:col-2">
+                            <label htmlFor="grp">{translations[selectedLanguage].Group} *</label>
+                            <Dropdown
+                                id="grp"
+                                value={ddCmnLocgrpItem}
+                                options={ddCmnLocgrpItems}
+                                onChange={(e) => onInputChange(e, 'options', 'grp')}
+                                required
+                                showClear
+                                optionLabel="name"
+                                placeholder="Select One"
+                                className={classNames({ 'p-invalid': submitted && !cmnLoc.grp })}
+                            />
+                        </div>                        
                         <div className="field col-12 md:col-3">
                             <div className="flex-1 flex flex-column align-items-left">
                                 <label htmlFor="color">{translations[selectedLanguage].color}</label>
@@ -305,6 +399,7 @@ const CmnLoc = (props) => {
                                 options={ddCmnLocItems}
                                 onChange={(e) => onInputChange(e, 'options', 'tp')}
                                 required
+                                showClear
                                 optionLabel="name"
                                 placeholder="Select One"
                                 className={classNames({ 'p-invalid': submitted && !cmnLoc.tp })}
@@ -361,10 +456,26 @@ const CmnLoc = (props) => {
                     <div className="card">
 
                         <TabView>
+                            {props.loctpCode == "XV" && (
+                                <TabPanel header={translations[selectedLanguage].LocationsScena}>
+                                    <LoclinkL key={"XV"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={cmnSeatId} TabView={true} dialog={false} loctpCode={SCENA_CODE} />
+                                </TabPanel>
+                            )}
                             {props.loctpCode == "XSC" && (
 
                                 <TabPanel header={translations[selectedLanguage].LocationsSector}>
                                     <LoclinkL key={"XSCT"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={cmnSectorId} TabView={true} dialog={false} loctpCode={SECTOR_CODE} />
+                                </TabPanel>
+                            )}
+
+                            {props.loctpCode == "XSC" && (
+                                <TabPanel header={translations[selectedLanguage].XVW}>
+                                    <LoclinkL key={"XVW"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={cmnLabelId} TabView={true} dialog={false} loctpCode={VIEW_CODE} />
+                                </TabPanel>
+                            )}
+                            {props.loctpCode == "XSC" && (
+                                <TabPanel header={translations[selectedLanguage].XLBT}>
+                                    <LoclinkL key={"XLBT"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={cmnLabelId} TabView={true} dialog={false} loctpCode={LABEL_CODE} />
                                 </TabPanel>
                             )}
                             {props.loctpCode == "XSC" && (
@@ -380,9 +491,12 @@ const CmnLoc = (props) => {
                             <TabPanel header={translations[selectedLanguage].Locations}>
                                 <LoclinkL key={"III"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={null} TabView={true} dialog={false} loctpCode={"-1"} />
                             </TabPanel>
-                            <TabPanel header={translations[selectedLanguage].drawing}>
-                                <SalPlace key={"III"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={null} TabView={true} dialog={false} loctpCode={"-1"} />
+                            <TabPanel header={translations[selectedLanguage].Venue}>
+                                <CmnLocvenueL key={"IV"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={null} venue_id={null} TabView={true} dialog={false} loctpCode={"-1"} />
                             </TabPanel>
+                            {/* <TabPanel header={translations[selectedLanguage].drawing}>
+                                <SalPlace key={"IV"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={null} venue_id={null} TabView={true} dialog={false} loctpCode={"-1"} />
+                            </TabPanel> */}
                         </TabView>
                     </div>
                 )}

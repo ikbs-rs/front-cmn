@@ -247,6 +247,7 @@ export default function CmnLocartL(props) {
         dataKey="id"
         selectionMode="single"
         selection={cmnLocart}
+        size={"small"}
         loading={loading}
         value={cmnLocarts}
         header={header}

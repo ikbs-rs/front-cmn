@@ -8,6 +8,7 @@ import AppFooter from './AppFooter';
 import AppConfig from './AppConfig';
 import AppMenu from './AppMenu';
 import AppRightMenu from './AppRightMenu';
+import './index.css';
 
 import Um from './components/model/cmnUmL';
 import Loc from './components/model/cmnLocL';
@@ -50,6 +51,8 @@ import { useDispatch } from 'react-redux';
 import { setLanguage } from './store/actions';
 import { translations } from "./configs/translations";
 import { checkPermissions } from "./security/interceptors"
+import TicVenueL from './components/model/ticVenueL';
+import TicVenuetpL from './components/model/ticVenuetpL';
 
 const App = () => {
     const dispatch = useDispatch();
@@ -107,14 +110,17 @@ const App = () => {
                     icon: 'pi pi-fw pi-map',
                     items: [
                         { label: translations[selectedLanguage].Location_type, icon: 'pi pi-fw pi-clone', to: '/loctp' },
-                        { label: translations[selectedLanguage].Properties_location, icon: 'pi pi-fw pi-clone' , to: '/locatt'},                        
+                        { label: translations[selectedLanguage].Properties_location, icon: 'pi pi-fw pi-clone' , to: '/locatt'},   
+                        { label: translations[selectedLanguage].VenueTp, icon: 'pi pi-fw pi-clone' , to: '/venuetp'},   
+                        { label: translations[selectedLanguage].Sketches, icon: 'pi pi-fw pi-clone' , to: '/venue'},                    
                         { label: translations[selectedLanguage].LocationsVenue, icon: 'pi pi-fw pi-clone', to: '/locsc/XV'  },
                         { label: translations[selectedLanguage].LocationsScene, icon: 'pi pi-fw pi-clone', to: '/locsc/XSC'  },
                         { label: translations[selectedLanguage].LocationsSector, icon: 'pi pi-fw pi-clone', to: '/locsct/XSCT'  },
                         { label: translations[selectedLanguage].entrance, icon: 'pi pi-fw pi-clone', to: '/locsb/XSB'  },
                         { label: translations[selectedLanguage].LocationsSeatBlock, icon: 'pi pi-fw pi-clone', to: '/locssb/XSSB'  },
+                        { label: translations[selectedLanguage].LocationsView, icon: 'pi pi-fw pi-clone', to: '/locssb/XVW'  },
                         { label: translations[selectedLanguage].Locations, icon: 'pi pi-fw pi-clone', to: '/loc/-1'  },
-                        { site: site, label: translations[selectedLanguage].LocTree, icon: 'pi pi-fw pi-clone', to: '/loctree' },
+                        // { site: site, label: translations[selectedLanguage].LocTree, icon: 'pi pi-fw pi-clone', to: '/loctree' },
                        // { label: translations[selectedLanguage].Type_of_relationship, icon: 'pi pi-fw pi-calendar' , to: '/loclinktp'}
                     ]
                 },
@@ -143,7 +149,7 @@ const App = () => {
                         { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXPM, icon: 'pi pi-fw pi-clone', to: '/objpm/XPM' },
                         { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXORG, icon: 'pi pi-fw pi-clone', to: '/objorg/XORG' },
                         { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXTCTP, icon: 'pi pi-fw pi-clone', to: '/objtctp/XTCTP' },
-                        { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXDOC, icon: 'pi pi-fw pi-clone', to: '/objdoc/XDOC' },
+                        { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXDOC, icon: 'pi pi-fw pi-clone', to: '/objdoc/XUID' },
                         { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXBL, icon: 'pi pi-fw pi-clone', to: '/objbl/XBL' },
                         { action: 'pobjMenu', label: translations[selectedLanguage].ObjectsXPV, icon: 'pi pi-fw pi-clone', to: '/objpv/XPV' },
                         { action: 'pobjMenu', label: translations[selectedLanguage].Objects, icon: 'pi pi-fw pi-clone', to: '/obj/-1' },                      
@@ -544,6 +550,8 @@ const App = () => {
                         <Route path="/locsb/:loctpId" element={<LocW />} />  
                         <Route path="/locssb/:loctpId" element={<LocW />} />                     
                         <Route path="/locatt" element={<Locatt />} />
+                        <Route path="/venuetp" element={<TicVenuetpL />} />
+                        <Route path="/venue" element={<TicVenueL />} />
                         <Route path="/loclinktp" element={<Um />} />
 
                         <Route path="/objtp" element={<ObjTp />} />
