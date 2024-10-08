@@ -1,14 +1,14 @@
 const env = {
-    DOMEN: 'https://172.16.26.245',
+    DOMEN: 'https://82.117.213.106',
     SITE: 'TIC',
-    START_URL: 'https://172.16.26.245/start/',
-    ADM_URL: 'https://172.16.26.245/adm/',
-    CMN_URL: 'https://172.16.26.245/cmn/',
-    TIC_URL: 'https://172.16.26.245/tic/',
-    JWT_BACK_URL: 'https://172.16.26.245/badm',
-    ADM_BACK_URL: 'https://172.16.26.245/badm',
-    CMN_BACK_URL: 'https://172.16.26.245/bcmn',
-    TIC_BACK_URL: 'https://172.16.26.245/btic',
+    START_URL: 'https://82.117.213.106/start/',
+    ADM_URL: 'https://82.117.213.106/adm/',
+    CMN_URL: 'https://82.117.213.106/cmn/',
+    TIC_URL: 'https://82.117.213.106/tic/',
+    JWT_BACK_URL: 'https://82.117.213.106/badm',
+    ADM_BACK_URL: 'https://82.117.213.106/badm',
+    CMN_BACK_URL: 'https://82.117.213.106/bcmn',
+    TIC_BACK_URL: 'https://82.117.213.106/btic',
   };
   
   export default env;
