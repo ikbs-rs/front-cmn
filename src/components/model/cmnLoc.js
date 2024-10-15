@@ -36,7 +36,7 @@ const CmnLoc = (props) => {
     const [cmnLoc, setCmnLoc] = useState(props.cmnLoc);
     const [cmnLocgrp, setCmnLocgrp] = useState(null);
     const [submitted, setSubmitted] = useState(false);
-    const [ddCmnLocItem, setDdCmnLocItem] = useState(props.cmnLoc.cmnLoctpId);
+    const [ddCmnLocItem, setDdCmnLocItem] = useState(props.cmnLoc?.cmnLoctpId||props.cmnLoctpId);
     const [ddCmnLocItems, setDdCmnLocItems] = useState(null);
     const [ddCmnLocgrpItem, setDdCmnLocgrpItem] = useState(null);
     const [ddCmnLocgrpItems, setDdCmnLocgrpItems] = useState(null);

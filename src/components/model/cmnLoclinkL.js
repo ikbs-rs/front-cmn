@@ -10,6 +10,7 @@ import { Toast } from "primereact/toast";
 import { CmnLoclinkService } from "../../service/model/CmnLoclinkService";
 import { CmnLoctpService } from "../../service/model/CmnLoctpService";
 import CmnLoclink from './cmnLoclink';
+import CmnLoc from './cmnLoc';
 import CmnLoclinkgrpL from './cmnLoclinkgrpL';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
@@ -17,6 +18,8 @@ import './index.css';
 import { translations } from "../../configs/translations";
 import DateFunction from "../../utilities/DateFunction";
 import { Dropdown } from 'primereact/dropdown';
+import { useParams } from 'react-router-dom';
+import { CmnLocService } from "../../service/model/CmnLocService";
 
 
 export default function CmnLoclinkL(props) {
@@ -28,9 +31,17 @@ export default function CmnLoclinkL(props) {
   emptyCmnLoclink.loctp2 = props.cmnLoc.tp
   emptyCmnLoclink.loctp1 = props.cmnLoctpId
 
+
   const [showMyComponent, setShowMyComponent] = useState(true);
   const [cmnLoclinks, setCmnLoclinks] = useState([]);
   const [cmnLoclink, setCmnLoclink] = useState(emptyCmnLoclink);
+
+  const [cmnLoctpId, setCmnLoctpId] = useState(props.cmnLoctpId);
+  const [locTip, setLocTip] = useState('');
+  const [cmnLoc, setCmnLoc] = useState();
+  const [loctpCode, setLoctpCode] = useState(props.loctpCode);
+  const [locVisible, setLocVisible] = useState(false);
+
   if (!cmnLoclink?.cloctp1) {
     setCmnLoclink({ ...cmnLoclink, cloctp1: props.loctpCode });
   }
@@ -40,7 +51,7 @@ export default function CmnLoclinkL(props) {
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
-  
+
   const [cmnLoclinkgrpLVisible, setCmnLoclinkgrpLVisible] = useState(false);
   const [loclinkTip, setLoclinkTip] = useState('');
 
@@ -51,7 +62,7 @@ export default function CmnLoclinkL(props) {
   const [cmnLoctp, setCmnLoctp] = useState({});
   const [cmnLoctps, setCmnLoctps] = useState([]);
   const [refCode, setRefCode] = useState(props.loctpCode);
-  
+
 
 
   let i = 0
@@ -97,8 +108,8 @@ export default function CmnLoclinkL(props) {
       }
     }
     fetchData();
-  }, []);  
-  
+  }, []);
+
   const handleCmnLoclinkgrpLDialogClose = (newObj) => {
     const localObj = { newObj };
     setRefresh(++refresh);
@@ -144,11 +155,11 @@ export default function CmnLoclinkL(props) {
   const openNew = () => {
     setCmnLoclinkDialog(emptyCmnLoclink);
   };
-  
+
 
   const openGrpLink = () => {
     setCmnLoclinkgrpDialog();
-  };  
+  };
   const onRowSelect = (event) => {
     toast.current.show({
       severity: "info",
@@ -176,7 +187,7 @@ export default function CmnLoclinkL(props) {
     _cmnLoclink.tp = val;
     //emptyTicEventloc.tp = val;
     setCmnLoclink(_cmnLoclink);
-    setRefCode(foundItem?.code||'-1')
+    setRefCode(foundItem?.code || '-1')
     setRefresh(++refresh);
   }
 
@@ -221,26 +232,26 @@ export default function CmnLoclinkL(props) {
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
         <div className="flex flex-wrap gap-1">
-          <Button label={translations[selectedLanguage].GrpLink} icon="pi pi-plus" severity="warning" onClick={openGrpLink} text raised  />
-        </div>        
+          <Button label={translations[selectedLanguage].GrpLink} icon="pi pi-plus" severity="warning" onClick={openGrpLink}  raised />
+        </div>
         <div className="flex-grow-1"></div>
         <b>{translations[selectedLanguage].LoclinkList}</b>
         <div className="flex-grow-1"></div>
 
-        {props.loctpCode==-1 && (
-        <div className="flex-grow-1 ">
-          <label htmlFor="tp">{translations[selectedLanguage].Type} *</label>
-          <Dropdown id="tp"
-            value={ddCmnLoctpItem}
-            options={ddCmnLoctpItems}
-            onChange={(e) => onLoctpChange(e)}
-            showClear
-            optionLabel="name"
-            placeholder="Select One"
-          />
-        </div>
+        {props.loctpCode == -1 && (
+          <div className="flex-grow-1 ">
+            <label htmlFor="tp">{translations[selectedLanguage].Type} *</label>
+            <Dropdown id="tp"
+              value={ddCmnLoctpItem}
+              options={ddCmnLoctpItems}
+              onChange={(e) => onLoctpChange(e)}
+              showClear
+              optionLabel="name"
+              placeholder="Select One"
+            />
+          </div>
         )}
-        
+
 
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -325,10 +336,22 @@ export default function CmnLoclinkL(props) {
     setLoclinkTip("CREATE")
     setCmnLoclink({ ...cmnLoclink });
   }
-    
+
   const setCmnLoclinkgrpDialog = () => {
     setCmnLoclinkgrpLVisible(true)
-  }  
+  }
+
+  const setCmnLocDialog = async (cmnLoclink) => {
+
+    const cmnLocService = new CmnLocService();
+    const data = await cmnLocService.getCmnLoc(cmnLoclink.loc1);
+    await setCmnLoc({ ...data });
+    console.log(cmnLoc, "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHS")
+    setLocTip("CREATE")
+    setCmnLoctpId(props.cmnLoctpId)
+    // setShowMyComponent(true)
+    setLocVisible(true)
+  }
   //  Dialog --->
 
   const header = renderHeader();
@@ -353,6 +376,24 @@ export default function CmnLoclinkL(props) {
     );
   };
 
+  const locTemplate = (rowData) => {
+    return (
+      <div className="flex flex-wrap gap-1">
+
+        <Button
+          type="button"
+          icon="pi pi-wrench"
+          severity="warning"
+          style={{ width: '24px', height: '24px' }}
+          onClick={() => {
+            setCmnLocDialog(rowData)
+            setLocTip("UPDATE")
+          }}
+          raised ></Button>
+
+      </div>
+    );
+  };
   return (
     <div className="card">
       <Toast ref={toast} />
@@ -474,6 +515,13 @@ export default function CmnLoclinkL(props) {
           style={{ width: "10%" }}
           body={(rowData) => formatDateColumn(rowData, "endda")}
         ></Column>
+        <Column
+          //bodyClassName="text-center"
+          body={locTemplate}
+          exportable={false}
+          headerClassName="w-10rem"
+          style={{ minWidth: '4rem' }}
+        />
       </DataTable>
       <Dialog
         header={translations[selectedLanguage].Loclink}
@@ -502,8 +550,8 @@ export default function CmnLoclinkL(props) {
             <span className="p-dialog-header-close-icon pi pi-times"></span>
           </button>
         </div>
-      </Dialog>        
-        <Dialog
+      </Dialog>
+      <Dialog
         header={translations[selectedLanguage].Loclinkgrp}
         visible={cmnLoclinkgrpLVisible}
         style={{ width: '60%' }}
@@ -523,13 +571,42 @@ export default function CmnLoclinkL(props) {
             cmnLoctpId={props.cmnLoctpId}
             loctpCode={props.loctpCode}
           />
-        )}        
+        )}
         <div className="p-dialog-header-icons" style={{ display: 'none' }}>
           <button className="p-dialog-header-close p-link">
             <span className="p-dialog-header-close-icon pi pi-times"></span>
           </button>
         </div>
       </Dialog>
+      <Dialog
+        header={`${translations[selectedLanguage][props.loctpId]||'Локација '}`}
+        visible={locVisible}
+        style={{ width: '95%' }}
+        onHide={() => {
+          setLocVisible(false);
+          setShowMyComponent(false);
+        }}
+      >
+        {locVisible && (
+          <CmnLoc
+            parameter={props}
+            cmnLoctpId={props.cmnLoctpId}
+            loctpCode={loctpCode}
+            cmnLoc={cmnLoc}
+            handleDialogClose={handleDialogClose}
+            setVisible={setLocVisible}
+            dialog={true}
+            locTip={locTip}
+
+          />
+        )}
+        <div className="p-dialog-header-icons" style={{ display: 'none' }}>
+          <button className="p-dialog-header-close p-link">
+            <span className="p-dialog-header-close-icon pi pi-times"></span>
+          </button>
+        </div>
+      </Dialog>
+
     </div>
   );
 }
