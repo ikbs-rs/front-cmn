@@ -106,7 +106,7 @@ export default function CmnLocL(props) {
     let _cmnLoc = { ...localObj.newObj.obj };
     //setSubmitted(true);
     if (localObj.newObj.locTip === "CREATE") {
-      _cmnLocs.push(_cmnLoc);
+      _cmnLocs.unshift(_cmnLoc);
     } else if (localObj.newObj.locTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
       _cmnLocs[index] = _cmnLoc;

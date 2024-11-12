@@ -51,6 +51,7 @@ const CmnLoc = (props) => {
     const [cmnSeatblockId, setCmnSeatblockId] = useState(null);
     const [cmnSeatId, setCmnSeatId] = useState(null);
     const [cmnLabelId, setCmnLabelId] = useState(null);
+    const [cmnViewId, setCmnViewId] = useState(null);
 
     const calendarRef = useRef(null);
 
@@ -185,6 +186,22 @@ const CmnLoc = (props) => {
                 const data = await cmnLoctpService.getIdByItem(SEAT_CODE);
 
                 setCmnSeatId(data.id);
+            } catch (error) {
+                console.error(error);
+                // Obrada greške ako je potrebna
+            }
+        }
+        fetchData();
+    }, []);
+    
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const cmnLoctpService = new CmnLoctpService();
+                //console.log("***cmnLocL*******CmnLoctpService************&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+                const data = await cmnLoctpService.getIdByItem(VIEW_CODE);
+
+                setCmnViewId(data.id);
             } catch (error) {
                 console.error(error);
                 // Obrada greške ako je potrebna
@@ -470,7 +487,7 @@ const CmnLoc = (props) => {
 
                             {props.loctpCode == "XSC" && (
                                 <TabPanel header={translations[selectedLanguage].XVW}>
-                                    <LoclinkL key={"XVW"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={cmnLabelId} TabView={true} dialog={false} loctpCode={VIEW_CODE} />
+                                    <LoclinkL key={"XVW"} locId={cmnLoc.id} cmnLoc={cmnLoc} cmnLoctpId={cmnViewId} TabView={true} dialog={false} loctpCode={VIEW_CODE} />
                                 </TabPanel>
                             )}
                             {props.loctpCode == "XSC" && (

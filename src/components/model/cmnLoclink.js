@@ -57,7 +57,7 @@ const CmnLoclink = (props) => {
                 const response = await axios.get(url, { headers });
                 const data = response.data.items;
 
-                const loctpID = props.cmnLoclink.loctp1 == null ? props.cmnLoctpId : props.cmnLoclink.loctp1
+                const loctpID = props.cmnLoclink.loctp1 == null ? props.cmnLoctpId : props.cmnLoclink.loctp1||-1
                 setCmnLoctp1Items(data);
                 const _cmnLoctp1 = data.find((item) => item.id === loctpID) || null
                 console.log(_cmnLoctp1,"####################################################################################", data)
@@ -78,7 +78,7 @@ const CmnLoclink = (props) => {
         async function fetchData() {
             try {
                 //const tp = cmnLoclink.loctp1 || -1
-                const tp = cmnLoclink.loctp1 == null ? props.cmnLoctpId : cmnLoclink.loctp1
+                const tp = cmnLoclink.loctp1 == null ? props.cmnLoctpId : cmnLoclink.loctp1||-1
                 const url = `${env.CMN_BACK_URL}/cmn/x/loc/getall/tp/${tp}/?sl=${selectedLanguage}`;
                 const tokenLocal = await Token.getTokensLS();
                 const headers = {

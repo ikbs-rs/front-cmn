@@ -73,12 +73,28 @@ export default function CmnLoclinkL(props) {
   useEffect(() => {
     async function fetchData() {
       try {
+
+          const cmnLoctpService = new CmnLoctpService();
+          const data = await cmnLoctpService.getCmnLoctp (props.cmnLoctpId);
+          console.log(props.loctpCode, "/////////////////////////////////////////////////////////////getListaLL////////////////////////////////////////////////////////////////////////")          
+          setCmnLoctp(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData();
+  }, [props.cmnLoctpId]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
         ++i
         if (i < 2) {
           let loctpCode = props.loctpCode ? refCode : props.cmnLoc.loctpCode
           const cmnLoclinkService = new CmnLoclinkService();
           console.log(props.loctpCode, "/////////////////////////////////////////////////////////////getListaLL////////////////////////////////////////////////////////////////////////")
           const data = await cmnLoclinkService.getListaLL(props.cmnLoc.id, loctpCode);
+
           setCmnLoclinks(data);
           initFilters();
         }
@@ -235,7 +251,7 @@ export default function CmnLoclinkL(props) {
           <Button label={translations[selectedLanguage].GrpLink} icon="pi pi-plus" severity="warning" onClick={openGrpLink}  raised />
         </div>
         <div className="flex-grow-1"></div>
-        <b>{translations[selectedLanguage].LoclinkList}</b>
+        <b>{`${translations[selectedLanguage][props.loctpCode] ||'Локације '} ${translations[selectedLanguage].Link } - ${translations[selectedLanguage].Lista}`}</b>
         <div className="flex-grow-1"></div>
 
         {props.loctpCode == -1 && (
@@ -451,20 +467,7 @@ export default function CmnLoclinkL(props) {
           headerClassName="w-10rem"
           style={{ minWidth: '4rem' }}
         />
-        <Column
-          field="cloctp1"
-          header={translations[selectedLanguage].CodeLocTp}
-          sortable
-          filter
-          style={{ width: "10%" }}
-        ></Column>
-        <Column
-          field="nloctp1"
-          header={translations[selectedLanguage].TextLocTp}
-          sortable
-          filter
-          style={{ width: "20%" }}
-        ></Column>
+
         <Column
           field="cloc1"
           header={translations[selectedLanguage].CodeLoc}
@@ -479,6 +482,20 @@ export default function CmnLoclinkL(props) {
           filter
           style={{ width: "20%" }}
         ></Column>
+        <Column
+          field="nloctp1"
+          header={translations[selectedLanguage].TextLocTp}
+          sortable
+          filter
+          style={{ width: "20%" }}
+        ></Column>  
+        <Column
+          field="cloctp1"
+          header={translations[selectedLanguage].CodeLocTp}
+          sortable
+          filter
+          style={{ width: "10%" }}
+        ></Column>              
         <Column
           field="onoff"
           header={translations[selectedLanguage].On_off}
@@ -524,7 +541,7 @@ export default function CmnLoclinkL(props) {
         />
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].Loclink}
+        header={`${translations[selectedLanguage][props.loctpCode] ||'Локације '} ${translations[selectedLanguage].Link }`}
         visible={visible}
         style={{ width: '60%' }}
         onHide={() => {
@@ -552,7 +569,7 @@ export default function CmnLoclinkL(props) {
         </div>
       </Dialog>
       <Dialog
-        header={translations[selectedLanguage].Loclinkgrp}
+        header={`${translations[selectedLanguage][props.loctpCode] ||'Локације '} \- ${translations[selectedLanguage].Lista}`}
         visible={cmnLoclinkgrpLVisible}
         style={{ width: '60%' }}
         onHide={() => {
@@ -579,7 +596,7 @@ export default function CmnLoclinkL(props) {
         </div>
       </Dialog>
       <Dialog
-        header={`${translations[selectedLanguage][props.loctpId]||'Локација '}`}
+        header={`${translations[selectedLanguage][props.loctpCode]||'Локација '}`}
         visible={locVisible}
         style={{ width: '95%' }}
         onHide={() => {
