@@ -359,6 +359,29 @@ const EmptyEntities =
 		"countryid": null,
     "birthday": ""
   },
+  "cmn_cpar": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "tp": null,
+    "text": "",
+    "short": "",
+    "address": "",
+    "place": "",
+    "postcode": "",
+    "tel": "",
+    "activity": "",
+    "pib": "",
+    "idnum": "",
+    "pdvnum": "",
+    "begda": "",
+    "endda": "",
+    "docid": "",
+    "country": "",
+    "email": "",
+		"countryid": null,
+    "birthday": ""
+  },
   "cmn_paraccount": {
     "id": null,
     "site": null,
@@ -440,6 +463,14 @@ const EmptyEntities =
     "valid": "1",
 		"xcode": ""
   },
+  "cmn_cpartp": {
+    "id": null,
+    "site": null,
+    "code": "",
+    "text": "",
+    "valid": "1",
+		"xcode": ""
+  },
   "cmn_partpx": {
     "id": null,
     "site": null,
@@ -448,7 +479,23 @@ const EmptyEntities =
     "grammcase": "1",
     "text": ""
   },
+  "cmn_cpartpx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
   "cmn_parx": {
+    "id": null,
+    "site": null,
+    "tableid": null,
+    "lang": "",
+    "grammcase": "1",
+    "text": ""
+  },
+  "cmn_cparx": {
     "id": null,
     "site": null,
     "tableid": null,

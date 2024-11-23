@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { classNames } from 'primereact/utils';
-import { CmnParService } from "../../service/model/CmnParService";
-import { CmnPartpService } from "../../service/model/CmnPartpService";
+import { CmnCparService } from "../../service/model/CmnCparService";
+import { CmnCpartpService } from "../../service/model/CmnCpartpService";
 import { CmnTerrService } from "../../service/model/CmnTerrService";
 import './index.css';
 import { InputText } from 'primereact/inputtext';
@@ -14,22 +14,22 @@ import { Calendar } from "primereact/calendar";
 import DateFunction from "../../utilities/DateFunction";
 import env from '../../configs/env';
 
-const CmnPar = (props) => {
+const CmnCpar = (props) => {
     const selectedLanguage = localStorage.getItem('sl') || 'en'
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
-    const [cmnPar, setCmnPar] = useState(props.cmnPar);
+    const [cmnCpar, setCmnCpar] = useState(props.cmnCpar);
     const [submitted, setSubmitted] = useState(false);
-    const [ddCmnParItem, setDdCmnParItem] = useState(null);
-    const [ddCmnParItems, setDdCmnParItems] = useState(null);
+    const [ddCmnCparItem, setDdCmnCparItem] = useState(null);
+    const [ddCmnCparItems, setDdCmnCparItems] = useState(null);
     const [ddCountryItem, setDdCountryItem] = useState(null);
     const [ddCountryItems, setDdCountryItems] = useState(null);
-    const [cmnParItem, setCmnParItem] = useState(null);
-    const [cmnParItems, setCmnParItems] = useState(null);
+    const [cmnCparItem, setCmnCparItem] = useState(null);
+    const [cmnCparItems, setCmnCparItems] = useState(null);
     const [cmnCounryItem, setCmnCounryItem] = useState(null);
     const [cmnCounryItems, setCmnCounryItems] = useState(null);
-    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnPar.begda || DateFunction.currDate())));
+    const [begda, setBegda] = useState(new Date(DateFunction.formatJsDate(props.cmnCpar.begda || DateFunction.currDate())));
     const [endda, setEndda] = useState(new Date(DateFunction.formatJsDate('99991231' || DateFunction.currDate())))
-    const [birthday, setBirthday] = useState(props.cmnPar?.birthday?new Date(DateFunction.formatJsDate(props.cmnPar.birthday)):null);
+    const [birthday, setBirthday] = useState(props.cmnCpar?.birthday?new Date(DateFunction.formatJsDate(props.cmnCpar.birthday)):null);
 
     const calendarRef = useRef(null);
 
@@ -38,20 +38,20 @@ const CmnPar = (props) => {
     useEffect(() => {
         async function fetchData() {
             try {
-                const cmnPartpService = new CmnPartpService();
-                const data = await cmnPartpService.getCmnPartps();
+                const cmnCpartpService = new CmnCpartpService();
+                const data = await cmnCpartpService.getCmnCpartps();
 
-                setCmnParItems(data)
-                //console.log("******************", cmnParItem)
+                setCmnCparItems(data)
+                //console.log("******************", cmnCparItem)
 
                 const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
-                setDdCmnParItems(dataDD);
-                setDdCmnParItem(dataDD.find((item) => item.code === props.cmnPar.tp) || null);
-                if (props.cmnPar.tp) {
-                    const foundItem = data.find((item) => item.id === props.cmnPar.tp);
-                    setCmnParItem(foundItem || null);
-                    cmnPar.ctp = foundItem.code
-                    cmnPar.ntp = foundItem.textx
+                setDdCmnCparItems(dataDD);
+                setDdCmnCparItem(dataDD.find((item) => item.code === props.cmnCpar.tp) || null);
+                if (props.cmnCpar.tp) {
+                    const foundItem = data.find((item) => item.id === props.cmnCpar.tp);
+                    setCmnCparItem(foundItem || null);
+                    cmnCpar.ctp = foundItem.code
+                    cmnCpar.ntp = foundItem.textx
                 }
 
             } catch (error) {
@@ -70,16 +70,16 @@ const CmnPar = (props) => {
                 const data = await cmnTerrService.getTpLista('2');
 
                 setCmnCounryItems(data)
-                //console.log("******************", cmnParItem)
+                //console.log("******************", cmnCparItem)
 
                 const dataDD = data.map(({ textx, id }) => ({ name: textx, code: id }));
                 setDdCountryItems(dataDD);
-                setDdCountryItem(dataDD.find((item) => item.code === props.cmnPar.countryid) || null);
-                if (props.cmnPar.tp) {
-                    const foundItem = data.find((item) => item.id === props.cmnPar.countryid);
+                setDdCountryItem(dataDD.find((item) => item.code === props.cmnCpar.countryid) || null);
+                if (props.cmnCpar.tp) {
+                    const foundItem = data.find((item) => item.id === props.cmnCpar.countryid);
                     setCmnCounryItem(foundItem || null);
-                    cmnPar.cterr = foundItem.code
-                    cmnPar.nterr = foundItem.textx
+                    cmnCpar.cterr = foundItem.code
+                    cmnCpar.nterr = foundItem.textx
                 }
 
             } catch (error) {
@@ -109,22 +109,22 @@ const CmnPar = (props) => {
     const handleCreateClick = async () => {
         try {
             setSubmitted(true);
-            cmnPar.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
-            cmnPar.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
-            cmnPar.birthday = birthday?DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(birthday)):null;
+            cmnCpar.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
+            cmnCpar.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
+            cmnCpar.birthday = birthday?DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(birthday)):null;
             
-            const cmnParService = new CmnParService();
-            const data = await cmnParService.postCmnPar(cmnPar);
-            cmnPar.id = data.id
-            if (cmnPar.code === null || cmnPar.code === "") {
-                cmnPar.code = data.code;
+            const cmnCparService = new CmnCparService();
+            const data = await cmnCparService.postCmnCpar(cmnCpar);
+            cmnCpar.id = data.id
+            if (cmnCpar.code === null || cmnCpar.code === "") {
+                cmnCpar.code = data.code;
             }
-            props.handleDialogClose({ obj: cmnPar, parTip: props.parTip });
+            props.handleDialogClose({ obj: cmnCpar, cparTip: props.cparTip });
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "CmnPar ",
+                summary: "CmnCpar ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -134,19 +134,19 @@ const CmnPar = (props) => {
     const handleSaveClick = async () => {
         try {
             setSubmitted(true);
-            cmnPar.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
-            cmnPar.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
-            cmnPar.birthday = birthday?DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(birthday)):null;
-            const cmnParService = new CmnParService();
+            cmnCpar.begda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(begda));
+            cmnCpar.endda = DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(endda));
+            cmnCpar.birthday = birthday?DateFunction.formatDateToDBFormat(DateFunction.dateGetValue(birthday)):null;
+            const cmnCparService = new CmnCparService();
 
-            await cmnParService.putCmnPar(cmnPar);
-            const newObj = { obj: cmnPar, parTip: props.parTip }
+            await cmnCparService.putCmnCpar(cmnCpar);
+            const newObj = { obj: cmnCpar, cparTip: props.cparTip }
             props.handleDialogClose(newObj);
             props.setVisible(false);
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "CmnPar ",
+                summary: "CmnCpar ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -160,15 +160,15 @@ const CmnPar = (props) => {
     const handleDeleteClick = async () => {
         try {
             setSubmitted(true);
-            const cmnParService = new CmnParService();
-            await cmnParService.deleteCmnPar(cmnPar);
-            props.handleDialogClose({ obj: cmnPar, parTip: 'DELETE' });
+            const cmnCparService = new CmnCparService();
+            await cmnCparService.deleteCmnCpar(cmnCpar);
+            props.handleDialogClose({ obj: cmnCpar, cparTip: 'DELETE' });
             props.setVisible(false);
             hideDeleteDialog();
         } catch (err) {
             toast.current.show({
                 severity: "error",
-                summary: "CmnPar ",
+                summary: "CmnCpar ",
                 detail: `${err.response.data.error}`,
                 life: 5000,
             });
@@ -180,17 +180,17 @@ const CmnPar = (props) => {
         if (type === "options") {
             val = (e.target && e.target.value && e.target.value.code) || '';
             if (name == 'tp') {
-                setDdCmnParItem(e.value);
-                const foundItem = cmnParItems.find((item) => item.id === val);
-                setCmnParItem(foundItem || null);
-                cmnPar.ntp = e.value.name
-                cmnPar.ctp = foundItem?.code
+                setDdCmnCparItem(e.value);
+                const foundItem = cmnCparItems.find((item) => item.id === val);
+                setCmnCparItem(foundItem || null);
+                cmnCpar.ntp = e.value.name
+                cmnCpar.ctp = foundItem?.code
             } else {
                 setDdCountryItem(e.value);
                 const foundItem = cmnCounryItems.find((item) => item.id === val);
                 // setCmnCounryItem(foundItem || null);
-                // cmnPar.ntp = e.value.name
-                // cmnPar.ctp = foundItem.code
+                // cmnCpar.ntp = e.value.name
+                // cmnCpar.ctp = foundItem.code
             }
         } else if (type === "Calendar") {
             //const dateVal = DateFunction.dateGetValue(e.value)
@@ -198,7 +198,7 @@ const CmnPar = (props) => {
             switch (name) {
                 case "begda":
                     setBegda(e.value)
-                    //cmnPar.begda = DateFunction.formatDateToDBFormat(dateVal)
+                    //cmnCpar.begda = DateFunction.formatDateToDBFormat(dateVal)
                     break;
                 case "endda":
                     setEndda(e.value)
@@ -211,10 +211,11 @@ const CmnPar = (props) => {
             }
         } else {
             val = (e.target && e.target.value) || '';
+            console.log(val, "*******************", e.target)
         }
-        let _cmnPar = { ...cmnPar };
-        _cmnPar[`${name}`] = val;
-        setCmnPar(_cmnPar);
+        let _cmnCpar = { ...cmnCpar };
+        _cmnCpar[`${name}`] = val;
+        setCmnCpar(_cmnCpar);
     };
 
     const hideDeleteDialog = () => {
@@ -230,21 +231,21 @@ const CmnPar = (props) => {
                         <div className="field col-12 md:col-3">
                             <label htmlFor="code">{translations[selectedLanguage].Code}</label>
                             <InputText id="code" autoFocus
-                                value={cmnPar.code} onChange={(e) => onInputChange(e, "text", 'code')}
+                                value={cmnCpar.code} onChange={(e) => onInputChange(e, "text", 'code')}
                                 required
-                                className={classNames({ 'p-invalid': submitted && !cmnPar.code })}
+                                className={classNames({ 'p-invalid': submitted && !cmnCpar.code })}
                             />
-                            {submitted && !cmnPar.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnCpar.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
                         <div className="field col-12 md:col-9">
                             <label htmlFor="text">{translations[selectedLanguage].Text}</label>
                             <InputText
                                 id="text"
-                                value={cmnPar.text} onChange={(e) => onInputChange(e, "text", 'text')}
+                                value={cmnCpar.text} onChange={(e) => onInputChange(e, "text", 'text')}
                                 required
-                                className={classNames({ 'p-invalid': submitted && !cmnPar.text })}
+                                className={classNames({ 'p-invalid': submitted && !cmnCpar.text })}
                             />
-                            {submitted && !cmnPar.text && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnCpar.text && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
 
 
@@ -253,27 +254,27 @@ const CmnPar = (props) => {
                             <label htmlFor="short">{translations[selectedLanguage].short}</label>
                             <InputText
                                 id="short"
-                                value={cmnPar.short} onChange={(e) => onInputChange(e, "text", 'short')}
+                                value={cmnCpar.short} onChange={(e) => onInputChange(e, "text", 'short')}
                             />
                         </div>
                         <div className="field col-12 md:col-7">
                             <label htmlFor="tp">{translations[selectedLanguage].Type} *</label>
                             <Dropdown id="tp"
-                                value={ddCmnParItem}
-                                options={ddCmnParItems}
+                                value={ddCmnCparItem}
+                                options={ddCmnCparItems}
                                 onChange={(e) => onInputChange(e, "options", 'tp')}
                                 required
                                 optionLabel="name"
                                 placeholder="Select One"
-                                className={classNames({ 'p-invalid': submitted && !cmnPar.tp })}
+                                className={classNames({ 'p-invalid': submitted && !cmnCpar.tp })}
                             />
-                            {submitted && !cmnPar.tp && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnCpar.tp && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
                         <div className="field col-12 md:col-5">
                             <label htmlFor="address">{translations[selectedLanguage].address}</label>
                             <InputText
                                 id="address"
-                                value={cmnPar.address} onChange={(e) => onInputChange(e, "text", 'address')}
+                                value={cmnCpar.address} onChange={(e) => onInputChange(e, "text", 'address')}
                             />
 
                         </div>
@@ -282,7 +283,7 @@ const CmnPar = (props) => {
                             <label htmlFor="place">{translations[selectedLanguage].place}</label>
                             <InputText
                                 id="place"
-                                value={cmnPar.place} onChange={(e) => onInputChange(e, "text", 'place')}
+                                value={cmnCpar.place} onChange={(e) => onInputChange(e, "text", 'place')}
                             />
                         </div>
 
@@ -295,9 +296,9 @@ const CmnPar = (props) => {
                                 required
                                 optionLabel="name"
                                 placeholder="Select One"
-                                className={classNames({ 'p-invalid': submitted && !cmnPar.countryid })}
+                                className={classNames({ 'p-invalid': submitted && !cmnCpar.countryid })}
                             />
-                            {submitted && !cmnPar.countryid && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
+                            {submitted && !cmnCpar.countryid && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
 
 
@@ -305,21 +306,21 @@ const CmnPar = (props) => {
                             <label htmlFor="postcode">{translations[selectedLanguage].postcode}</label>
                             <InputText
                                 id="postcode"
-                                value={cmnPar.postcode} onChange={(e) => onInputChange(e, "text", 'postcode')}
+                                value={cmnCpar.postcode} onChange={(e) => onInputChange(e, "text", 'postcode')}
                             />
                         </div>
                         <div className="field col-12 md:col-4">
                             <label htmlFor="tel">{translations[selectedLanguage].tel}</label>
                             <InputText
                                 id="tel"
-                                value={cmnPar.tel} onChange={(e) => onInputChange(e, "text", 'tel')}
+                                value={cmnCpar.tel} onChange={(e) => onInputChange(e, "text", 'tel')}
                             />
                         </div>
                         <div className="field col-12 md:col-4">
                             <label htmlFor="email">{translations[selectedLanguage].email}</label>
                             <InputText
                                 id="email"
-                                value={cmnPar.email} onChange={(e) => onInputChange(e, "text", 'email')}
+                                value={cmnCpar.email} onChange={(e) => onInputChange(e, "text", 'email')}
                             />
                         </div>
 
@@ -327,7 +328,7 @@ const CmnPar = (props) => {
                             <label htmlFor="activity">{translations[selectedLanguage].activity}</label>
                             <InputText
                                 id="activity"
-                                value={cmnPar.activity} onChange={(e) => onInputChange(e, "text", 'activity')}
+                                value={cmnCpar.activity} onChange={(e) => onInputChange(e, "text", 'activity')}
                             />
                         </div>
 
@@ -335,14 +336,14 @@ const CmnPar = (props) => {
                             <label htmlFor="pib">{translations[selectedLanguage].pib}</label>
                             <InputText
                                 id="pib"
-                                value={cmnPar.pib} onChange={(e) => onInputChange(e, "text", 'pib')}
+                                value={cmnCpar.pib} onChange={(e) => onInputChange(e, "text", 'pib')}
                             />
                         </div>
                         <div className="field col-12 md:col-6">
                             <label htmlFor="idnum">{translations[selectedLanguage].idnum}</label>
                             <InputText
                                 id="idnum"
-                                value={cmnPar.idnum} onChange={(e) => onInputChange(e, "text", 'idnum')}
+                                value={cmnCpar.idnum} onChange={(e) => onInputChange(e, "text", 'idnum')}
                             />
                         </div>
 
@@ -350,7 +351,7 @@ const CmnPar = (props) => {
                             <label htmlFor="pdvnum">{translations[selectedLanguage].pdvnum}</label>
                             <InputText
                                 id="pdvnum"
-                                value={cmnPar.pdvnum} onChange={(e) => onInputChange(e, "text", 'pdvnum')}
+                                value={cmnCpar.pdvnum} onChange={(e) => onInputChange(e, "text", 'pdvnum')}
                             />
                         </div>
                         <div className="field col-12 md:col-6">
@@ -394,7 +395,7 @@ const CmnPar = (props) => {
 
                         <div className="flex-grow-1"></div>
                         <div className="flex flex-wrap gap-1">
-                            {(props.parTip === 'CREATE') ? (
+                            {(props.cparTip === 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Create}
                                     icon="pi pi-check"
@@ -403,7 +404,7 @@ const CmnPar = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.parTip !== 'CREATE') ? (
+                            {(props.cparTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Delete}
                                     icon="pi pi-trash"
@@ -412,7 +413,7 @@ const CmnPar = (props) => {
                                     outlined
                                 />
                             ) : null}
-                            {(props.parTip !== 'CREATE') ? (
+                            {(props.cparTip !== 'CREATE') ? (
                                 <Button
                                     label={translations[selectedLanguage].Save}
                                     icon="pi pi-check"
@@ -428,8 +429,8 @@ const CmnPar = (props) => {
             </div>
             <DeleteDialog
                 visible={deleteDialogVisible}
-                inCmnPar="delete"
-                item={cmnPar.roll}
+                inCmnCpar="delete"
+                item={cmnCpar.roll}
                 onHide={hideDeleteDialog}
                 onDelete={handleDeleteClick}
             />
@@ -437,4 +438,4 @@ const CmnPar = (props) => {
     );
 };
 
-export default CmnPar;
+export default CmnCpar;

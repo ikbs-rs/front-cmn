@@ -1,47 +1,39 @@
 import React, { useState, useEffect, useRef } from "react";
-import { classNames } from "primereact/utils";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
-import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Toast } from "primereact/toast";
-import { CmnParService } from "../../service/model/CmnParService";
-import CmnPar from './cmnPar';
+import { CmnCparService } from "../../service/model/CmnCparService";
+import CmnCpar from './cmnCpar';
 import { EmptyEntities } from '../../service/model/EmptyEntities';
 import { Dialog } from 'primereact/dialog';
 import './index.css';
 import { translations } from "../../configs/translations";
 import DateFunction from "../../utilities/DateFunction";
-import CmnParattsL from './cmnParattsL';
-import CmnParlinkL from './cmnParlinkL';
-import TicParprivilegeL from './ticParprivilegeL';
 import env from '../../configs/env';
 
-export default function CmnParL(props) {
+export default function CmnCparL(props) {
 
-  const objName = "cmn_par"
+  const objName = "cmn_cpar"
   const selectedLanguage = localStorage.getItem('sl') || 'en'
-  const emptyCmnPar = EmptyEntities[objName]
+  const emptyCmnCpar = EmptyEntities[objName]
   const [showMyComponent, setShowMyComponent] = useState(true);
-  const [cmnPars, setCmnPars] = useState([]);
-  const [cmnPar, setCmnPar] = useState(emptyCmnPar);
+  const [cmnCpars, setCmnCpars] = useState([]);
+  const [cmnCpar, setCmnCpar] = useState(emptyCmnCpar);
   const [filters, setFilters] = useState('');
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
-  const [parTip, setParTip] = useState('');
-  const [cmnParattsLVisible, setCmnParattsLVisible] = useState(false);
-  const [cmnParlinkLVisible, setCmnParlinkLVisible] = useState(false);
-  const [ticParprivilegeLVisible, setTicParprivilegeLVisible] = useState(false);
+  const [cparTip, setCparTip] = useState('');
   const [parentData, setParentData] = useState(null);
 
   let i = 0
   const handleCancelClick = () => {
-    if (props.setCmnParLVisible)
-    props.setCmnParLVisible(false);
+    if (props.setCmnCparLVisible)
+    props.setCmnCparLVisible(false);
     if (parentData) {
       const dataToSend = { type: 'dataFromIframe', visible: false };
       sendToParent(dataToSend);
@@ -51,16 +43,13 @@ export default function CmnParL(props) {
   useEffect(() => {
     async function fetchData() {
       try {
-        ++i
-        if (i < 2) {
-          const cmnParService = new CmnParService();
+          const cmnCparService = new CmnCparService();
           //!!!!! OVDE MI TREBAJU PODACI KOJE PRIMAM SA PARENT KOMPONENTA
           if (props.independent || parentData ) {           
-            const data = await cmnParService.getLista();
-            setCmnPars(data);
+            const data = await cmnCparService.getLista();
+            setCmnCpars(data);
             initFilters();
           }
-        }
       } catch (error) {
         console.error(error);
         // Obrada greške ako je potrebna
@@ -117,42 +106,30 @@ export default function CmnParL(props) {
   const handleDialogClose = (newObj) => {
     const localObj = { newObj };
 
-    let _cmnPars = [...cmnPars];
-    let _cmnPar = { ...localObj.newObj.obj };
+    let _cmnCpars = [...cmnCpars];
+    let _cmnCpar = { ...localObj.newObj.obj };
     //setSubmitted(true);
-    if (localObj.newObj.parTip === "CREATE") {
-      _cmnPars.unshift(_cmnPar);
-    } else if (localObj.newObj.parTip === "UPDATE") {
+    if (localObj.newObj.cparTip === "CREATE") {
+      _cmnCpars.unshift(_cmnCpar);
+    } else if (localObj.newObj.cparTip === "UPDATE") {
       const index = findIndexById(localObj.newObj.obj.id);
-      _cmnPars[index] = _cmnPar;
-    } else if ((localObj.newObj.parTip === "DELETE")) {
-      _cmnPars = cmnPars.filter((val) => val.id !== localObj.newObj.obj.id);
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnPar Delete', life: 3000 });
+      _cmnCpars[index] = _cmnCpar;
+    } else if ((localObj.newObj.cparTip === "DELETE")) {
+      _cmnCpars = cmnCpars.filter((val) => val.id !== localObj.newObj.obj.id);
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnCpar Delete', life: 3000 });
     } else {
-      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnPar ?', life: 3000 });
+      toast.current.show({ severity: 'success', summary: 'Successful', detail: 'CmnCpar ?', life: 3000 });
     }
-    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.parTip}`, life: 3000 });
-    setCmnPars(_cmnPars);
-    setCmnPar(emptyCmnPar);
-  };
-
-  const handleCmnParattsLDialogClose = (newObj) => {
-    const localObj = { newObj };
-  };
-
-  const handleCmnParlinkLDialogClose = (newObj) => {
-    const localObj = { newObj };
-  };
-
-  const handleTicParprivilegeDialogClose = (newObj) => {
-    const localObj = { newObj };
+    toast.current.show({ severity: 'success', summary: 'Successful', detail: `{${objName}} ${localObj.newObj.cparTip}`, life: 3000 });
+    setCmnCpars(_cmnCpars);
+    setCmnCpar(emptyCmnCpar);
   };
 
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < cmnPars.length; i++) {
-      if (cmnPars[i].id === id) {
+    for (let i = 0; i < cmnCpars.length; i++) {
+      if (cmnCpars[i].id === id) {
         index = i;
         break;
       }
@@ -162,23 +139,11 @@ export default function CmnParL(props) {
   };
 
   const openNew = () => {
-    setCmnParDialog(emptyCmnPar);
-  };
-
-  const openParAtt = () => {
-    setCmnParattsLDialog();
-  };
-
-  const openParLink = () => {
-    setCmnParlinkLDialog();
-  };
-
-  const openParPrivilege = () => {
-    setTicParprivilegeLDialog();
+    setCmnCparDialog(emptyCmnCpar);
   };
 
   const onRowSelect = (event) => {
-    //cmnPar.begda = event.data.begda
+    //cmnCpar.begda = event.data.begda
     toast.current.show({
       severity: "info",
       summary: "Action Selected",
@@ -247,17 +212,8 @@ export default function CmnParL(props) {
         <div className="flex flex-wrap gap-1">
           <Button label={translations[selectedLanguage].New} icon="pi pi-plus" severity="success" onClick={openNew} text raised />
         </div>
-        <div className="flex flex-wrap gap-1">
-          <Button label={translations[selectedLanguage].Attributes} icon="pi pi-table" onClick={openParAtt} text raised disabled={!cmnPar} />
-        </div>
-        <div className="flex flex-wrap gap-1">
-          <Button label={translations[selectedLanguage].Links} icon="pi pi-sitemap" onClick={openParLink} text raised disabled={!cmnPar} />
-        </div>
-        <div className="flex flex-wrap gap-1">
-          <Button label={translations[selectedLanguage].Privilege} icon="pi pi-wallet" onClick={openParPrivilege} text raised disabled={!cmnPar} />
-        </div>
         <div className="flex-grow-1"></div>
-        <b>{translations[selectedLanguage].ParList}</b>
+        <b>{translations[selectedLanguage].CparList}</b>
         <div className="flex-grow-1"></div>
         <div className="flex flex-wrap gap-1">
           <span className="p-input-icon-left">
@@ -287,25 +243,10 @@ export default function CmnParL(props) {
 
   // <--- Dialog
 
-  const setCmnParattsLDialog = () => {
-    setShowMyComponent(true);
-    setCmnParattsLVisible(true);
-  }
-
-  const setCmnParlinkLDialog = () => {
-    setShowMyComponent(true);
-    setCmnParlinkLVisible(true);
-  }
-
-  const setTicParprivilegeLDialog = () => {
-    setShowMyComponent(true);
-    setTicParprivilegeLVisible(true);
-  }
-
-  const setCmnParDialog = (cmnPar) => {
+  const setCmnCparDialog = (cmnCpar) => {
     setVisible(true)
-    setParTip("CREATE")
-    setCmnPar({ ...cmnPar });
+    setCparTip("CREATE")
+    setCmnCpar(cmnCpar);
   }
   //  Dialog --->
 
@@ -321,8 +262,8 @@ export default function CmnParL(props) {
           icon="pi pi-pencil"
           style={{ width: '24px', height: '24px' }}
           onClick={() => {
-            setCmnParDialog(rowData)
-            setParTip("UPDATE")
+            setCmnCparDialog(rowData)
+            setCparTip("UPDATE")
           }}
           text
           raised ></Button>
@@ -338,9 +279,9 @@ export default function CmnParL(props) {
       <DataTable
         dataKey="id"
         selectionMode="single"
-        selection={cmnPar}
+        selection={cmnCpar}
         loading={loading}
-        value={cmnPars}
+        value={cmnCpars}
         header={header}
         showGridlines
         removableSort
@@ -351,7 +292,7 @@ export default function CmnParL(props) {
         paginator
         rows={50}
         rowsPerPageOptions={[50, 100, 250, 500]}
-        onSelectionChange={(e) => setCmnPar(e.value)}
+        onSelectionChange={(e) => setCmnCpar(e.value)}
         onRowSelect={onRowSelect}
         onRowUnselect={onRowUnselect}
       >
@@ -420,7 +361,7 @@ export default function CmnParL(props) {
         ></Column>        
       </DataTable>
       <Dialog
-        header={translations[selectedLanguage].Par}
+        header={translations[selectedLanguage].Cpar}
         visible={visible}
         style={{ width: '60%' }}
         onHide={() => {
@@ -429,13 +370,13 @@ export default function CmnParL(props) {
         }}
       >
         {showMyComponent && (
-          <CmnPar
+          <CmnCpar
             parameter={"inputTextValue"}
-            cmnPar={cmnPar}
+            cmnCpar={cmnCpar}
             handleDialogClose={handleDialogClose}
             setVisible={setVisible}
             dialog={true}
-            parTip={parTip}
+            cparTip={cparTip}
           />
         )}
         <div className="p-dialog-header-icons" style={{ display: 'none' }}>
@@ -443,66 +384,6 @@ export default function CmnParL(props) {
             <span className="p-dialog-header-close-icon pi pi-times"></span>
           </button>
         </div>
-      </Dialog>
-      <Dialog
-        header={translations[selectedLanguage].ParattsLista}
-        visible={cmnParattsLVisible}
-        style={{ width: '70%' }}
-        onHide={() => {
-          setCmnParattsLVisible(false);
-          setShowMyComponent(false);
-        }}
-      >
-        {showMyComponent && (
-          <CmnParattsL
-            parameter={"inputTextValue"}
-            cmnPar={cmnPar}
-            handleCmnParattsLDialogClose={handleCmnParattsLDialogClose}
-            setCmnParattsLVisible={setCmnParattsLVisible}
-            dialog={true}
-            lookUp={false}
-          />
-        )}
-      </Dialog>
-      <Dialog
-        header={translations[selectedLanguage].ParlinkLista}
-        visible={cmnParlinkLVisible}
-        style={{ width: '70%' }}
-        onHide={() => {
-          setCmnParlinkLVisible(false);
-          setShowMyComponent(false);
-        }}
-      >
-        {showMyComponent && (
-          <CmnParlinkL
-            parameter={"inputTextValue"}
-            cmnPar={cmnPar}
-            handleCmnParlinkLDialogClose={handleCmnParlinkLDialogClose}
-            setCmnParlinkLVisible={setCmnParlinkLVisible}
-            dialog={true}
-            lookUp={false}
-          />
-        )}
-      </Dialog>
-      <Dialog
-        header={translations[selectedLanguage].ParprivilegeLista}
-        visible={ticParprivilegeLVisible}
-        style={{ width: '70%' }}
-        onHide={() => {
-          setTicParprivilegeLVisible(false);
-          setShowMyComponent(false);
-        }}
-      >
-        {showMyComponent && (
-          <TicParprivilegeL
-            parameter={"inputTextValue"}
-            cmnPar={cmnPar}
-            handleTicParprivilegeLDialogClose={handleTicParprivilegeDialogClose}
-            setTicParprivilegeLVisible={setTicParprivilegeLVisible}
-            dialog={true}
-            lookUp={false}
-          />
-        )}
       </Dialog>
     </div>
   );

@@ -28,6 +28,8 @@ import ObjAttTp from './components/model/cmnObjatttpL';
 import Link from './components/model/cmnLinkL';
 import Partp from './components/model/cmnPartpL';
 import Par from './components/model/cmnParL';
+import Cpartp from './components/model/cmnCpartpL';
+import Cpar from './components/model/cmnCparL';
 import Paratt from './components/model/cmnParattL';
 import Terrtp from './components/model/cmnTerrtpL';
 import Terr from './components/model/cmnTerrL';
@@ -108,11 +110,11 @@ const App = () => {
                 {
                     label: translations[selectedLanguage].Location_administration,
                     icon: 'pi pi-fw pi-map',
-                    items: [
-                        { label: translations[selectedLanguage].Location_type, icon: 'pi pi-fw pi-clone', to: '/loctp' },
-                        { label: translations[selectedLanguage].Properties_location, icon: 'pi pi-fw pi-clone' , to: '/locatt'},   
+                    items: [ 
                         { label: translations[selectedLanguage].VenueTp, icon: 'pi pi-fw pi-clone' , to: '/venuetp'},   
-                        { label: translations[selectedLanguage].Sketches, icon: 'pi pi-fw pi-clone' , to: '/venue'},                    
+                        { label: translations[selectedLanguage].Sketches, icon: 'pi pi-fw pi-clone' , to: '/venue'},  
+                        { label: translations[selectedLanguage].Location_type, icon: 'pi pi-fw pi-clone', to: '/loctp' },
+                        { label: translations[selectedLanguage].Properties_location, icon: 'pi pi-fw pi-clone' , to: '/locatt'},                                            
                         { label: translations[selectedLanguage].LocationsVenue, icon: 'pi pi-fw pi-clone', to: '/locsc/XV'  },
                         { label: translations[selectedLanguage].LocationsScene, icon: 'pi pi-fw pi-clone', to: '/locsc/XSC'  },
                         { label: translations[selectedLanguage].LocationsSector, icon: 'pi pi-fw pi-clone', to: '/locsct/XSCT'  },
@@ -165,6 +167,8 @@ const App = () => {
                     label: translations[selectedLanguage].Other,
                     icon: 'pi pi-table',
                     items: [
+                        { action: 'cpartpMenu', label: translations[selectedLanguage].Type_cpartners, icon: 'pi pi-fw pi-clone', to: '/cpartp' },
+                        { action: 'cparpMenu', label: translations[selectedLanguage].Business_cpartners, icon: 'pi pi-fw pi-clone', to: '/cpar'  },                        
                         { label: translations[selectedLanguage].Program_modules, icon: 'pi pi-clone', to: '/module' },
                   //      { label: translations[selectedLanguage].Menu_administration, icon: 'pi pi-fw pi-clone', to: '/menu' },
                         { label: translations[selectedLanguage].Units_of_measurement, icon: 'pi pi-fw pi-clone', to: '/um' },
@@ -533,6 +537,8 @@ const App = () => {
                         <Route path="/um" element={<Um />} />
                         <Route path="/partp" element={<Partp />} />
                         <Route path="/par" element={<Par independent={true}/>} />
+                        <Route path="/cpartp" element={<Cpartp />} />
+                        <Route path="/cpar" element={<Cpar independent={true}/>} />
                         <Route path="/paratt" element={<Paratt />} />
                         <Route path="/terrtp" element={<Terrtp />} />
                         <Route path="/terr" element={<Terr />} />

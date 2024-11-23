@@ -202,16 +202,6 @@ const CmnParatts = (props) => {
                             {submitted && !cmnParatts.att && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>}
                         </div>
                     </div>
-
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-11">
-                            <label htmlFor="text">{translations[selectedLanguage].Value}</label>
-                            <InputText
-                                id="text"
-                                value={cmnParatts.text} onChange={(e) => onInputChange(e, "text", 'text')}
-                            />
-                        </div>
-                    </div>
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-8">
                             <label htmlFor="zzcode">{translations[selectedLanguage].Code}</label>
@@ -221,6 +211,16 @@ const CmnParatts = (props) => {
                             />
                         </div>
                     </div>
+                    <div className="p-fluid formgrid grid">
+                        <div className="field col-12 md:col-11">
+                            <label htmlFor="text">{translations[selectedLanguage].Value}</label>
+                            <InputText
+                                id="text"
+                                value={cmnParatts.text} onChange={(e) => onInputChange(e, "text", 'text')}
+                            />
+                        </div>
+                    </div>
+
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-5">
                             <label htmlFor="begda">{translations[selectedLanguage].Begda} *</label>
