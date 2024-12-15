@@ -1,14 +1,14 @@
 const env = {
-    DOMEN: 'https://188.93.122.138',
+    DOMEN: 'https://app.ticketline.rs',
     SITE: 'TIC',
-    START_URL: 'https://188.93.122.138/start/',
-    ADM_URL: 'https://188.93.122.138/adm/',
-    CMN_URL: 'https://188.93.122.138/cmn/',
-    TIC_URL: 'https://188.93.122.138/tic/',
-    JWT_BACK_URL: 'https://188.93.122.138/badm',
-    ADM_BACK_URL: 'https://188.93.122.138/badm',
-    CMN_BACK_URL: 'https://188.93.122.138/bcmn',
-    TIC_BACK_URL: 'https://188.93.122.138/btic',
+    START_URL: 'https://app.ticketline.rs/start/',
+    ADM_URL: 'https://app.ticketline.rs/adm/',
+    CMN_URL: 'https://app.ticketline.rs/cmn/',
+    TIC_URL: 'https://app.ticketline.rs/tic/',
+    JWT_BACK_URL: 'https://app.ticketline.rs/badm',
+    ADM_BACK_URL: 'https://app.ticketline.rs/badm',
+    CMN_BACK_URL: 'https://app.ticketline.rs/bcmn',
+    TIC_BACK_URL: 'https://app.ticketline.rs/btic',
   };
   
   export default env;
