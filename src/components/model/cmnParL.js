@@ -447,7 +447,7 @@ export default function CmnParL(props) {
       <Dialog
         header={translations[selectedLanguage].ParattsLista}
         visible={cmnParattsLVisible}
-        style={{ width: '70%' }}
+        style={{ width: '95%' }}
         onHide={() => {
           setCmnParattsLVisible(false);
           setShowMyComponent(false);

@@ -276,28 +276,70 @@ export default function CmnParattsL(props) {
           header={translations[selectedLanguage].Code}
           sortable
           filter
-          style={{ width: "15%" }}
+          style={{ width: "5%" }}
         ></Column>
         <Column
           field="ntp"
           header={translations[selectedLanguage].Text}
           sortable
           filter
-          style={{ width: "35%" }}
+          style={{ width: "15%" }}
         ></Column>
         <Column
           field="text"
           header={translations[selectedLanguage].Value}
           sortable
           filter
-          style={{ width: "20%" }}
-        ></Column>        
+          style={{ width: "10%" }}
+        ></Column>    
+        <Column
+          field="opis1"
+          header={translations[selectedLanguage].opis1}
+          sortable
+          filter
+          style={{ width: "10%" }}
+        ></Column>  
+        <Column
+          field="vrednost1"
+          header={translations[selectedLanguage].vrednost1}
+          sortable
+          filter
+          style={{ width: "10%" }}
+        ></Column>   
+        <Column
+          field="opis2"
+          header={translations[selectedLanguage].opis2}
+          sortable
+          filter
+          style={{ width: "10%" }}
+        ></Column>  
+        <Column
+          field="vrednost2"
+          header={translations[selectedLanguage].vrednost2}
+          sortable
+          filter
+          style={{ width: "10%" }}
+        ></Column>  
+        <Column
+          field="opis3"
+          header={translations[selectedLanguage].opis3}
+          sortable
+          filter
+          style={{ width: "10%" }}
+        ></Column>  
+        <Column
+          field="vrednost3"
+          header={translations[selectedLanguage].vrednost3}
+          sortable
+          filter
+          style={{ width: "10%" }}
+        ></Column>                               
         <Column
           field="begda"
           header={translations[selectedLanguage].Begda}
           sortable
           filter
-          style={{ width: "10%" }}
+          style={{ width: "5%" }}
           body={(rowData) => formatDateColumn(rowData, "begda")}
         ></Column>  
         <Column
@@ -305,7 +347,7 @@ export default function CmnParattsL(props) {
           header={translations[selectedLanguage].Endda}
           sortable
           filter
-          style={{ width: "10%" }}
+          style={{ width: "5%" }}
           body={(rowData) => formatDateColumn(rowData, "endda")}
         ></Column>         
       </DataTable>

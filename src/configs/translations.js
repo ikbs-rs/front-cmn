@@ -541,6 +541,12 @@ export const translations = {
         ngrp: "Група",
         cgrp: "Шифра групе",
         Skica: "Мапа",
+        opis1: "Опис1",
+        vrednost1: "Вредност1",
+        opis2: "Опис2",
+        vrednost2: "Вредност2",
+        opis3: "Опис3",
+        vrednost3: "Вредност3",
     }
   };
   

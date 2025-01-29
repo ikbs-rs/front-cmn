@@ -220,7 +220,62 @@ const CmnParatts = (props) => {
                             />
                         </div>
                     </div>
+                    {/******************** */}
+                    <div className="p-fluid formgrid grid">
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="opis1">{translations[selectedLanguage].opis1}</label>
+                            <InputText
+                                id="opis1"
+                                value={cmnParatts.opis1} onChange={(e) => onInputChange(e, "text", 'opis1')}
+                            />
+                        </div>
 
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="vrednost1">{translations[selectedLanguage].vrednost1}</label>
+                            <InputText
+                                id="vrednost1"
+                                value={cmnParatts.vrednost1} onChange={(e) => onInputChange(e, "text", 'vrednost1')}
+                            />
+                        </div>
+                    </div>
+                    {/******************** */}   
+                    {/******************** */}
+                    <div className="p-fluid formgrid grid">
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="opis2">{translations[selectedLanguage].opis2}</label>
+                            <InputText
+                                id="opis2"
+                                value={cmnParatts.opis2} onChange={(e) => onInputChange(e, "text", 'opis2')}
+                            />
+                        </div>
+
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="vrednost2">{translations[selectedLanguage].vrednost2}</label>
+                            <InputText
+                                id="vrednost2"
+                                value={cmnParatts.vrednost2} onChange={(e) => onInputChange(e, "text", 'vrednost2')}
+                            />
+                        </div>
+                    </div>
+                    {/******************** */}
+                    <div className="p-fluid formgrid grid">
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="opis3">{translations[selectedLanguage].opis3}</label>
+                            <InputText
+                                id="opis3"
+                                value={cmnParatts.opis3} onChange={(e) => onInputChange(e, "text", 'opis3')}
+                            />
+                        </div>
+
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="vrednost3">{translations[selectedLanguage].vrednost3}</label>
+                            <InputText
+                                id="vrednost3"
+                                value={cmnParatts.vrednost3} onChange={(e) => onInputChange(e, "text", 'vrednost3')}
+                            />
+                        </div>
+                    </div>
+                    {/******************** */}                                      
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-5">
                             <label htmlFor="begda">{translations[selectedLanguage].Begda} *</label>

@@ -408,7 +408,13 @@ const EmptyEntities =
     "text": "",
     "begda": "",
     "endda": "",
-    "zzcode": ""
+    "zzcode": "",
+    "opis1": "",
+    "vrednost1": "",
+    "opis2": "",
+    "vrednost2": "",
+    "opis3": "",
+    "vrednost3": ""
   },
   "cmn_parattx": {
     "id": null,
