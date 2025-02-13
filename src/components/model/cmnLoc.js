@@ -365,7 +365,7 @@ const CmnLoc = (props) => {
             <div className="col-12">
                 <div className="card">
                     <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-3">
+                        <div className="field col-12 md:col-2">
                             <label htmlFor="code">{translations[selectedLanguage].Code}</label>
                             <InputText id="code" autoFocus value={cmnLoc.code} onChange={(e) => onInputChange(e, 'text', 'code')}
                                 required
@@ -391,8 +391,16 @@ const CmnLoc = (props) => {
                                 placeholder="Select One"
                                 className={classNames({ 'p-invalid': submitted && !cmnLoc.grp })}
                             />
-                        </div>                        
-                        <div className="field col-12 md:col-3">
+                        </div>  
+                        <div className="field col-12 md:col-2">
+                            <label htmlFor="kapacitet">{translations[selectedLanguage].Kapacitet}</label>
+                            <InputText id="kapacitet" value={cmnLoc.kapacitet} onChange={(e) => onInputChange(e, 'text', 'kapacitet')}
+                                required
+                            // className={classNames({ 'p-invalid': submitted && !cmnLoc.code })} 
+                            />
+                            {/* {submitted && !cmnLoc.code && <small className="p-error">{translations[selectedLanguage].Requiredfield}</small>} */}
+                        </div>                                              
+                        <div className="field col-12 md:col-2">
                             <div className="flex-1 flex flex-column align-items-left">
                                 <label htmlFor="color">{translations[selectedLanguage].color}</label>
                                 <CustomColorPicker

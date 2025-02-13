@@ -547,6 +547,7 @@ export const translations = {
         vrednost2: "Вредност2",
         opis3: "Опис3",
         vrednost3: "Вредност3",
+        Kapacitet: "Капацитет",
     }
   };
   

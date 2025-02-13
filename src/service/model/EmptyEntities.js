@@ -92,7 +92,8 @@ const EmptyEntities =
     "valid": "1",
     "color": "",
     "icon": "",
-    "grp": ""
+    "grp": "",
+		"kapacitet": "0"
   },
   "cmn_locatt": {
     "id": null,
